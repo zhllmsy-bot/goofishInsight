@@ -94,6 +94,8 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
                 "target_buy_ceiling": 8200,
                 "reliability_score": 82.35,
                 "latest_seen_at": datetime.now(UTC).isoformat(),
+                "schema_id": 42,
+                "schema": {"schemaId": 42, "summary": {"lockingAttrCount": 4}},
             },
             view="spec",
             baseline_date=date(2026, 4, 8),
@@ -102,6 +104,7 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
 
         self.assertEqual(session.added, [row])
         self.assertEqual(row.category_id, "cat-apple")
+        self.assertEqual(row.schema_id, 42)
         self.assertEqual(row.baseline_key, "spec:MacBook Pro / M5 / 16G / 512G")
         self.assertEqual(row.memory_gb, 16)
         self.assertEqual(row.storage_gb, 512)
@@ -126,6 +129,7 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
     def test_upsert_updates_existing_baseline(self) -> None:
         existing = BuyPriceBaseline(
             category_id="cat-apple",
+            schema_id=42,
             baseline_key="spec:MacBook Pro / M5",
             baseline_date=date(2026, 4, 8),
             sample_size=1,
@@ -148,6 +152,8 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
                 "seller_sample_count": 3,
                 "fair_price": 9000,
                 "target_buy_ceiling": 8400,
+                "schema_id": 42,
+                "schema": {"schemaId": 42, "summary": {"lockingAttrCount": 4}},
             },
             view="spec",
             baseline_date=date(2026, 4, 8),
@@ -210,6 +216,8 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
                 "seller_sample_count": 8,
                 "fair_price": 9000,
                 "target_buy_ceiling": 8400,
+                "schema_id": 42,
+                "schema": {"schemaId": 42, "summary": {"lockingAttrCount": 4}},
             },
             view="product",
             baseline_date=date(2026, 4, 8),

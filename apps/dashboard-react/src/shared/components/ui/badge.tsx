@@ -4,15 +4,15 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
 
 const badgeVariants = cva(
-  'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold leading-none',
+  'inline-flex items-center gap-1 rounded-[var(--radius-sm)] border px-2 py-1 text-[length:var(--text-caption-size)] font-semibold leading-[var(--text-caption-line)]',
   {
     variants: {
       variant: {
-        default: 'border-white/12 bg-white/8 text-slate-200',
-        action: 'border-radar-500 bg-radar-500 text-ink-950',
-        success: 'border-radar-500/45 bg-radar-500/12 text-radar-400',
-        danger: 'border-rose-200 bg-rose-50 text-rose-700',
-        dark: 'border-white/12 bg-ink-950 text-slate-100',
+        default: 'border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--ink-secondary)]',
+        action: 'border-[var(--brand-600)] bg-[var(--brand-tint)] text-[var(--brand-on-tint)]',
+        success: 'border-[var(--signal-success)] bg-[var(--surface-1)] text-[var(--signal-success)]',
+        danger: 'border-[var(--signal-danger)] bg-[var(--surface-1)] text-[var(--signal-danger)]',
+        dark: 'border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--ink-primary)]',
       },
     },
     defaultVariants: {

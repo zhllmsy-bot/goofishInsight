@@ -34,6 +34,7 @@ from goofish_insight.models import (
     ItemIngestRejection,
     ItemSpecEnrichment,
     ModelScore,
+    SkuSpecSchemaSnapshot,
 )
 
 __all__ = [
@@ -67,4 +68,5 @@ __all__ = [
     "ItemIngestRejection",
     "ItemSpecEnrichment",
     "ModelScore",
+    "SkuSpecSchemaSnapshot",
 ]

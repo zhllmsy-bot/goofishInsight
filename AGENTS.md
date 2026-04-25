@@ -7,6 +7,7 @@
 - After changing service-layer code, run the relevant tests before reporting success.
 - Treat `python -m goofish_insight.cli` as the canonical local entrypoint.
 - Treat [docs/23-best-practice-architecture-implementation-spec.md](<repo-root>/docs/23-best-practice-architecture-implementation-spec.md) as the current best-practice architecture baseline when changing data contracts, resident jobs, pricing eligibility, or runtime controls.
+- Treat [docs/32-dashboard-ui-design-system-migration-todolist-20260425.md](<repo-root>/docs/32-dashboard-ui-design-system-migration-todolist-20260425.md) as the dashboard UI constitution baseline when changing React dashboard UI.
 
 ## Project Purpose
 
@@ -77,6 +78,14 @@ Within `apps/collector/src/goofish_insight`:
 - When using a remote model provider, always inspect the run sidecars before blaming the data. Transport, billing, or auth failures can masquerade as low confidence.
 - Resident jobs must be convergent. Every long-running worker should have a bounded candidate set, repeat-result freeze behavior, no-progress backoff, and an operator-visible stop path.
 - Report resident progress using deduplicated business output such as unique item count, new `complete` rows, or new pricing-eligible rows. Do not present retry counts as business progress.
+
+## Dashboard UI Principles
+
+- Build buyer-decision surfaces first: the first screen should help decide buy, watch, skip, or inspect evidence.
+- Use the token and theme files under `apps/dashboard-react/src/themes`; do not add raw color literals to dashboard CSS or TSX.
+- Keep Light and Dark behavior together; top-level UI changes must work in both themes.
+- Use `AppFrame` for the dashboard shell and the allowed business composites: `OpportunityCard`, `AnalyticsCard`, `KpiTile`, and `PriceGauge`.
+- Run `npm run design-system:check -w @goofish/dashboard-react` for ordinary UI work and `npm run design-system:audit -w @goofish/dashboard-react` for broader migrations.
 
 ## Model Provider Contract
 

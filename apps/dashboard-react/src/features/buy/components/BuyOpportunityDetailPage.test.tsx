@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderDashboardApp } from '../../../test/renderApp';
+import { requestBodyText, requestUrl } from '../../../test/fetchMock';
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -20,7 +21,8 @@ describe('BuyOpportunityDetailPage', () => {
 
   it('shows outcome proof and ROI evidence when purchase feedback is available', async () => {
     fetchMock.mockImplementation(async (input, init) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
       if (url.pathname === '/api/buy/opportunities/opp-1') {
         return jsonResponse({
           categoryCode: 'apple_computer',
@@ -81,7 +83,7 @@ describe('BuyOpportunityDetailPage', () => {
       throw new Error(`Unexpected request: ${url.pathname}`);
     });
 
-    renderDashboardApp('/buy/opportunities/opp-1?category_code=apple_computer');
+    renderDashboardApp('/opportunity/opp-1?category_code=apple_computer');
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'MacBook Pro M5 Pro 16G 512G' })).toBeInTheDocument();
@@ -95,7 +97,7 @@ describe('BuyOpportunityDetailPage', () => {
         if (callInit?.method !== 'POST') {
           return false;
         }
-        const payload = JSON.parse(String(callInit.body ?? '{}')) as Record<string, unknown>;
+        const payload = JSON.parse(requestBodyText(callInit.body)) as Record<string, unknown>;
         return payload.feedbackType === 'engagement' && payload.feedbackLabel === 'detail_opened';
       });
       expect(engagementCall).toBeDefined();
@@ -104,7 +106,8 @@ describe('BuyOpportunityDetailPage', () => {
 
   it('requires purchase outcome fields before marking an opportunity purchased', async () => {
     fetchMock.mockImplementation(async (input, init) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
       if (url.pathname === '/api/buy/opportunities/opp-1') {
         return jsonResponse({
           categoryCode: 'apple_computer',
@@ -145,7 +148,7 @@ describe('BuyOpportunityDetailPage', () => {
       }
 
       if (url.pathname === '/api/buy/feedback' && init?.method === 'POST') {
-        const payload = JSON.parse(String(init.body ?? '{}')) as Record<string, unknown>;
+        const payload = JSON.parse(requestBodyText(init.body)) as Record<string, unknown>;
         if (payload.feedbackType === 'engagement') {
           return jsonResponse({
             opportunityId: 'opp-1',
@@ -175,7 +178,7 @@ describe('BuyOpportunityDetailPage', () => {
       throw new Error(`Unexpected request: ${url.pathname}`);
     });
 
-    renderDashboardApp('/buy/opportunities/opp-1?category_code=apple_computer');
+    renderDashboardApp('/opportunity/opp-1?category_code=apple_computer');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: '已成交' })).toBeInTheDocument();

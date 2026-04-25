@@ -23,7 +23,16 @@ function readString(value: unknown, fallback: string = ''): string {
   if (value === null || value === undefined || value === '') {
     return fallback;
   }
-  return String(value);
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+  return fallback;
 }
 
 function readNumber(value: unknown, fallback: number = 0): number {
@@ -39,8 +48,8 @@ export function DraftEditor({ draft, onBuildPersistPayload }: DraftEditorProps) 
   const catalog = payload?.catalog;
   const category = catalog?.category;
   const template = catalog?.template;
-  const catalogAttributes = catalog?.attributes ?? [];
-  const templateItems = template?.items ?? [];
+  const catalogAttributes = useMemo(() => catalog?.attributes ?? [], [catalog?.attributes]);
+  const templateItems = useMemo(() => template?.items ?? [], [template?.items]);
 
   const initialRows = useMemo(
     () => initializeDraftAttributeRows(analysis, catalogAttributes, templateItems),
@@ -84,8 +93,8 @@ export function DraftEditor({ draft, onBuildPersistPayload }: DraftEditorProps) 
     if (reuseEnabled && reuseSuggestion?.category?.id && reuseSuggestion?.template?.id) {
       return {
         requestId: categoryMeta.requestId,
-        categoryId: String(reuseSuggestion.category.id),
-        templateId: String(reuseSuggestion.template.id),
+        categoryId: readString(reuseSuggestion.category.id),
+        templateId: readString(reuseSuggestion.template.id),
         mappings: (payload.mappings ?? []).map((mapping) => ({ ...mapping })),
       };
     }

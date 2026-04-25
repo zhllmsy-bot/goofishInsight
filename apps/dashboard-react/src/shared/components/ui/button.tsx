@@ -5,20 +5,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex min-h-9 items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-[background,border-color,color,transform,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex min-h-10 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-md)] border px-4 text-[length:var(--text-body-size)] font-semibold leading-[var(--text-body-line)] shadow-[var(--shadow-sm)] transition-[background,border-color,color,box-shadow] duration-[var(--motion-fast)] ease-[var(--ease-standard)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-600)] disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'border border-white/12 bg-white/10 px-4 text-slate-50 hover:-translate-y-0.5 hover:bg-white/15',
-        secondary: 'border border-white/12 bg-white/5 px-4 text-slate-200 hover:-translate-y-0.5 hover:border-teal-300/40 hover:bg-teal-300/10',
-        action: 'border border-radar-500 bg-radar-500 px-4 text-ink-950 shadow-[0_10px_34px_rgba(24,242,168,0.24)] hover:-translate-y-0.5 hover:bg-radar-400',
-        ghost: 'border border-transparent bg-transparent px-3 text-slate-300 hover:bg-white/10 hover:text-slate-50',
-        danger: 'border border-rose-200 bg-rose-50 px-4 text-rose-700 hover:-translate-y-0.5 hover:bg-rose-100',
+        default: 'border-[var(--brand-600)] bg-[var(--brand-600)] text-[var(--ink-inverse)] hover:border-[var(--brand-500)] hover:bg-[var(--brand-500)]',
+        secondary: 'border-[var(--border-subtle)] bg-[var(--surface-1)] text-[var(--ink-primary)] hover:bg-[var(--surface-2)]',
+        action: 'border-[var(--brand-600)] bg-[var(--brand-600)] text-[var(--ink-inverse)] hover:border-[var(--brand-500)] hover:bg-[var(--brand-500)]',
+        ghost: 'border-transparent bg-transparent px-3 text-[var(--ink-secondary)] shadow-none hover:bg-[var(--surface-2)] hover:text-[var(--ink-primary)]',
+        danger: 'border-[var(--signal-danger)] bg-[var(--signal-danger)] text-[var(--ink-inverse)]',
       },
       size: {
-        sm: 'min-h-8 px-3 text-xs',
-        md: 'min-h-9 px-4',
-        lg: 'min-h-11 px-5 text-base',
+        sm: 'min-h-8 px-3 text-[length:var(--text-caption-size)] leading-[var(--text-caption-line)]',
+        md: 'min-h-10 px-4',
+        lg: 'min-h-14 px-5 text-[length:var(--text-h3-size)] leading-[var(--text-h3-line)]',
       },
     },
     defaultVariants: {

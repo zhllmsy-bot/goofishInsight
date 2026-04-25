@@ -85,10 +85,10 @@ export function CategoriesConfigPanel() {
           <p className="config-empty-state">暂无大类配置</p>
         ) : (
           <div className="config-list-scroll">
-            {categories.map((item) => (
+            {categories.map((item, index) => (
               <button
                 className={`config-list-card ${item.id === (selectedItem?.id ?? null) ? 'is-active' : ''}`}
-                key={item.id ?? item.code ?? Math.random()}
+                key={item.id ?? item.code ?? `category-${index}`}
                 type="button"
                 onClick={() => setSelectedId(item.id ?? null)}
               >

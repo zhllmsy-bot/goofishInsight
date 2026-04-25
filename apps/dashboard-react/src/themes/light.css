@@ -1,0 +1,41 @@
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --surface-0: #FAFAF9;
+  --surface-1: #FFFFFF;
+  --surface-2: #F4F4F2;
+  --surface-3: #EAEAE7;
+  --border-hair: #E5E5E2;
+
+  --ink-primary: #1A1A17;
+  --ink-secondary: #60605B;
+  --ink-tertiary: #9A9A92;
+  --ink-inverse: #FFFFFF;
+
+  --brand-600: #0066FF;
+  --brand-500: #0066FF;
+  --brand-50: var(--surface-2);
+  --brand-900: var(--ink-primary);
+  --brand-tint: var(--surface-2);
+  --brand-on-tint: var(--brand-600);
+
+  --signal-success: #0A7F3F;
+  --signal-warn: #C8342B;
+  --signal-danger: #C8342B;
+  --signal-info: #0066FF;
+
+  --decision-buy: #0A7F3F;
+  --decision-watch: #0066FF;
+  --decision-market: var(--ink-secondary);
+  --decision-high: #C8342B;
+  --decision-neutral: var(--ink-tertiary);
+
+  --price-p15: #0A7F3F;
+  --price-p35: #0066FF;
+  --price-p50: var(--ink-tertiary);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+}

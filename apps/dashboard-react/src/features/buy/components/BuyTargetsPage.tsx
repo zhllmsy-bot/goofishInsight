@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { formatCurrency, formatNumber } from '../../dashboard/lib/formatters';
 import { buildWorkspaceLocation, readInitialQuery } from '../../dashboard/lib/urlState';
@@ -23,10 +23,10 @@ export function BuyTargetsPage() {
   const opportunityTarget = useMemo(() => buildWorkspaceLocation('/buy/opportunities', query), [query]);
   const baselineTarget = useMemo(() => buildWorkspaceLocation('/buy/baselines', query), [query]);
   const dashboardTarget = useMemo(() => buildWorkspaceLocation('/', query), [query]);
-  const runtimeTarget = useMemo(() => buildWorkspaceLocation('/runtime', query), [query]);
+  const runtimeTarget = useMemo(() => buildWorkspaceLocation('/ops/runtime', query), [query]);
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack buy-workbench-page">
@@ -54,7 +54,7 @@ export function BuyTargetsPage() {
                 className="nav-pill"
                 type="button"
                 onClick={() => {
-                  navigate(runtimeTarget);
+                  void navigate(runtimeTarget);
                 }}
               >
                 打开运行后台
@@ -117,6 +117,6 @@ export function BuyTargetsPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }

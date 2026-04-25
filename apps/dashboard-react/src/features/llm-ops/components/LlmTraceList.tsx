@@ -1,5 +1,5 @@
 import { formatRelative } from '../../dashboard/lib/formatters';
-import { formatLatency, formatTokens } from './LlmOpsTraceBlocks';
+import { formatLatency, formatTokens } from '../lib/formatTrace';
 import type { LlmTraceSection } from '../types/llmOps';
 
 type LlmTraceListProps = {

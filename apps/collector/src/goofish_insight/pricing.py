@@ -48,6 +48,10 @@ from .application.services.pricing_eligibility import (
     spec_confidence_passes_pricing_gate,
     usable_spec_for_pricing,
 )
+from .application.services.spec_schema_snapshots import (
+    evaluate_pricing_record_schema,
+    load_active_spec_schema_for_pricing_with_session,
+)
 from .models import Item, ItemIngestRejection, ItemSpecEnrichment
 from .normalizers import normalize_market_price
 from .specs import extract_rule_specs, lens_title_is_non_target_body_listing
@@ -430,8 +434,20 @@ def _load_pricing_records_from_session(
         heartbeat_cutoff=heartbeat_cutoff,
     )
     records: list[dict[str, Any]] = []
+    schema_by_category_code: dict[str, dict[str, Any] | None] = {}
     for item, spec in rows:
-        record = resolve_pricing_record(item=item, spec=spec)
+        item_category_code = resolve_category_code(item.business_domain)
+        if item_category_code and item_category_code not in schema_by_category_code:
+            schema_by_category_code[item_category_code] = load_active_spec_schema_for_pricing_with_session(
+                session,
+                category_code=item_category_code,
+            )
+        spec_schema = schema_by_category_code.get(item_category_code) if item_category_code else None
+        record = resolve_pricing_record(
+            item=item,
+            spec=spec,
+            spec_schema=spec_schema,
+        )
         if record is not None:
             records.append(record)
     return records
@@ -479,7 +495,12 @@ def summarize_pricing_gate(
     }
 
 
-def resolve_pricing_record(item: Item, spec: ItemSpecEnrichment | None) -> dict[str, Any] | None:
+def resolve_pricing_record(
+    item: Item,
+    spec: ItemSpecEnrichment | None,
+    *,
+    spec_schema: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
     raw_spec = spec
     spec = usable_spec_for_pricing(spec)
     category_code = resolve_category_code(item.business_domain)
@@ -622,7 +643,7 @@ def resolve_pricing_record(item: Item, spec: ItemSpecEnrichment | None) -> dict[
         exact_spec_ready=exact_spec_ready,
     )
 
-    return {
+    record = {
         "item_id_ref": item.id,
         "item_id": item.item_id,
         "source_platform": item.source_platform,
@@ -669,6 +690,19 @@ def resolve_pricing_record(item: Item, spec: ItemSpecEnrichment | None) -> dict[
         "spec_source": dict(pricing_eligibility.get("specSource") or {}),
         "pricing_eligibility": pricing_eligibility,
     }
+    schema_completeness = evaluate_pricing_record_schema(record=record, schema=spec_schema)
+    record["schema_id"] = schema_completeness.get("schemaId")
+    record["schema"] = dict(spec_schema or {})
+    record["schema_completeness"] = schema_completeness
+    if schema_completeness.get("status") == "incomplete":
+        return None
+    if (
+        spec_schema
+        and schema_completeness.get("status") == "complete"
+        and schema_completeness.get("requiredAttrs")
+    ):
+        record["exact_spec_ready"] = True
+    return record
 
 
 def build_pricing_spec_contract_snapshot(
@@ -899,6 +933,9 @@ def summarize_pricing_group(
         "latest_seen_at": latest_seen_at.isoformat() if latest_seen_at else None,
         "sample_titles": sample_titles,
         "filter_summary": filter_meta,
+        "schema_id": group_records[0].get("schema_id"),
+        "schema": dict(group_records[0].get("schema") or {}),
+        "schema_completeness": dict(group_records[0].get("schema_completeness") or {}),
     }
     result.update(spec_dimension_payload(group_records[0]))
     return result

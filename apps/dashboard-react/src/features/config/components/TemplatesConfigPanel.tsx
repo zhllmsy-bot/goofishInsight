@@ -119,10 +119,10 @@ export function TemplatesConfigPanel() {
           <p className="config-empty-state">暂无模板配置</p>
         ) : (
           <div className="config-list-scroll">
-            {templates.map((item) => (
+            {templates.map((item, index) => (
               <button
                 className={`config-list-card ${item.id === (selectedItem?.id ?? null) ? 'is-active' : ''}`}
-                key={item.id ?? Math.random()}
+                key={item.id ?? `${item.categoryCode ?? 'template'}-${item.version ?? index}`}
                 type="button"
                 onClick={() => setSelectedId(item.id ?? null)}
               >

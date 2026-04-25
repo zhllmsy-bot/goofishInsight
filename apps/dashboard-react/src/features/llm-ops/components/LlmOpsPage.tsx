@@ -2,7 +2,7 @@ import { useDashboardUiStore } from '../../dashboard/store/dashboardUiStore';
 import { formatNumber } from '../../dashboard/lib/formatters';
 import { useLlmOpsState } from '../hooks/useLlmOpsData';
 import { PageHero } from '../../../shared/components/PageHero';
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { LlmTraceDetail } from './LlmTraceDetail';
 import { LlmTraceList } from './LlmTraceList';
 import { LlmUsageSummary } from './LlmUsageSummary';
@@ -23,7 +23,7 @@ export function LlmOpsPage() {
   const usageSummary = usageWorkers?.usage_summary;
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack llm-ops-page">
@@ -65,6 +65,6 @@ export function LlmOpsPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }

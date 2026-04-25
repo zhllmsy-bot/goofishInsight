@@ -7,8 +7,8 @@ import type { FocusCard } from '../types/dashboard';
 
 export function FocusPanel(props: { cards: FocusCard[]; variant?: 'compact' | 'default' }) {
   const query = useDashboardUiStore((state) => state.query);
-  const buyWorkbenchTarget = buildWorkspaceLocation('/buy/opportunities', query);
-  const runtimeTarget = buildWorkspaceLocation('/runtime', query);
+  const buyWorkbenchTarget = buildWorkspaceLocation('/', query);
+  const runtimeTarget = buildWorkspaceLocation('/ops/runtime', query);
   const visibleCards = props.cards.filter((card) => !card.empty);
   const isCompact = props.variant === 'compact';
 

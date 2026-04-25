@@ -17,6 +17,7 @@ class CatalogModelTests(unittest.TestCase):
                 "attribute_option",
                 "category_attr_template",
                 "category_attr_template_item",
+                "sku_spec_schema_snapshots",
                 "crawl_task_query",
                 "crawl_task_lexicon",
                 "xianyu_category_mapping",
@@ -182,8 +183,9 @@ class CatalogModelTests(unittest.TestCase):
         self.assertIn("fair_price", price_baseline.c)
         self.assertIn("buy_ceiling", price_baseline.c)
         self.assertIn("confidence", price_baseline.c)
+        self.assertIn("schema_id", price_baseline.c)
         self.assertIn(
-            ("category_id", "model_catalog_id", "baseline_key", "baseline_date"),
+            ("category_id", "model_catalog_id", "schema_id", "baseline_key", "baseline_date"),
             constraint_columns("buy_price_baseline"),
         )
 
@@ -207,6 +209,34 @@ class CatalogModelTests(unittest.TestCase):
         self.assertIn("deal_price", outreach.c)
         self.assertIn("closed_at", outreach.c)
         self.assertIn("operator_note", outreach.c)
+
+    def test_template_item_has_pricing_role_contract_columns(self) -> None:
+        template_item = Base.metadata.tables["category_attr_template_item"]
+
+        self.assertIn("role", template_item.c)
+        self.assertIn("weight", template_item.c)
+        self.assertIn("normalization", template_item.c)
+        self.assertIn("enum_values", template_item.c)
+
+    def test_spec_schema_snapshot_table_has_versioned_contract_columns(self) -> None:
+        schema_snapshot = Base.metadata.tables["sku_spec_schema_snapshots"]
+        constraint_columns = {
+            tuple(constraint.columns.keys())
+            for constraint in schema_snapshot.constraints
+            if getattr(constraint, "columns", None) is not None
+        }
+
+        self.assertIn("schema_id", schema_snapshot.c)
+        self.assertIn("category_code", schema_snapshot.c)
+        self.assertIn("template_version", schema_snapshot.c)
+        self.assertIn("locking_attrs", schema_snapshot.c)
+        self.assertIn("required_attrs", schema_snapshot.c)
+        self.assertIn("variant_attrs", schema_snapshot.c)
+        self.assertIn("condition_attrs", schema_snapshot.c)
+        self.assertIn("weights", schema_snapshot.c)
+        self.assertIn("valid_from", schema_snapshot.c)
+        self.assertIn("valid_to", schema_snapshot.c)
+        self.assertIn(("category_code", "template_version"), constraint_columns)
 
 
 if __name__ == "__main__":

@@ -50,7 +50,7 @@ export function DashboardSidebar(props: DashboardSidebarProps) {
         <button
           className={`sidebar-card sidebar-runtime-card ${hasRuntimeAttention ? 'is-warn' : 'is-ok'}`}
           type="button"
-          onClick={() => navigate(buildWorkspaceLocation('/runtime', props.query))}
+          onClick={() => void navigate(buildWorkspaceLocation('/ops/runtime', props.query))}
         >
           <div className="status-row">
             <span>常驻链路</span>

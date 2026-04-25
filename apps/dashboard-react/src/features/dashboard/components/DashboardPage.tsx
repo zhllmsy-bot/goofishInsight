@@ -8,7 +8,7 @@ import { OpportunityActionPanel } from './OpportunityActionPanel';
 import { PricingPanel } from './PricingPanel';
 import { ReferencePanel } from './ReferencePanel';
 import { SelectionPanel } from './SelectionPanel';
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { useDashboardDerivedState, useDashboardPrimaryState, useDashboardReferenceState, useDashboardUrlSync } from '../hooks/useDashboardData';
 import { useDashboardStateGuards } from '../hooks/useDashboardStateGuards';
 import { categoryLabel, formatNumber, formatRelative } from '../lib/formatters';
@@ -48,7 +48,7 @@ export function DashboardPage() {
   const hasSelectedCombination = Boolean(query.productLabel);
   const showPricingFirst = Boolean(pricingRow);
   const showCategoryFocus = !hasSelectedCombination && focusCount > 0;
-  const runtimeTarget = buildWorkspaceLocation('/runtime', query);
+  const runtimeTarget = buildWorkspaceLocation('/ops/runtime', query);
   const runtimeSummary = deriveRuntimeSummary(runtime);
   void runtimeSummary;
   const selectedScopeLabel = query.productLabel
@@ -56,6 +56,14 @@ export function DashboardPage() {
       ? `${query.productLabel} / ${query.specLabel}`
       : query.productLabel
     : '';
+  const pricingPoints = (primaryState.items?.items ?? [])
+    .slice(0, 80)
+    .map((item) => ({
+      price: item.price,
+      title: item.title,
+      sellerName: item.seller_name ?? undefined,
+      seenAt: item.last_seen_at ?? undefined,
+    }));
   const selectionTitle = selectedScopeLabel || categoryLabel(query.categoryCode);
   const selectionSubtitle = hasSelectedCombination
     ? query.specLabel
@@ -83,7 +91,7 @@ export function DashboardPage() {
   });
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <div className="app-shell">
         <DashboardSidebar
           availableCategories={primaryState.filters?.available_categories ?? []}
@@ -121,7 +129,7 @@ export function DashboardPage() {
               <button
                 className="runtime-health-banner"
                 type="button"
-                onClick={() => navigate(runtimeTarget)}
+                onClick={() => void navigate(runtimeTarget)}
               >
                 <span className="runtime-health-dot" />
                 {runtimeSummary.stoppedCount > 0
@@ -186,7 +194,7 @@ export function DashboardPage() {
                     {showPricingFirst ? (
                       <>
                         <PricingPanel
-                          itemPrices={primaryState.items?.items?.map((item) => item.price) ?? []}
+                          itemPrices={pricingPoints}
                           pricing={primaryState.pricing}
                           pricingRow={pricingRow}
                           pricingScope={query.pricingScope}
@@ -203,7 +211,7 @@ export function DashboardPage() {
                           pricing={primaryState.pricing}
                           pricingRow={pricingRow}
                           selectedProductLabel={selectedScopeLabel}
-                          onOpenRuntime={() => navigate(runtimeTarget)}
+                          onOpenRuntime={() => void navigate(runtimeTarget)}
                         />
                       </>
                     ) : (
@@ -214,10 +222,10 @@ export function DashboardPage() {
                           pricing={primaryState.pricing}
                           pricingRow={pricingRow}
                           selectedProductLabel={selectedScopeLabel}
-                          onOpenRuntime={() => navigate(runtimeTarget)}
+                          onOpenRuntime={() => void navigate(runtimeTarget)}
                         />
                         <PricingPanel
-                          itemPrices={primaryState.items?.items?.map((item) => item.price) ?? []}
+                          itemPrices={pricingPoints}
                           pricing={primaryState.pricing}
                           pricingRow={pricingRow}
                           pricingScope={query.pricingScope}
@@ -248,6 +256,6 @@ export function DashboardPage() {
           </div>
         </main>
       </div>
-    </TerminalScreen>
+    </AppFrame>
   );
 }

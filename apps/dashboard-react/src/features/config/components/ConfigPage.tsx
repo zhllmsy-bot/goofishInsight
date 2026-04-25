@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { buildWorkspaceLocation } from '../../dashboard/lib/urlState';
 import { useDashboardUiStore } from '../../dashboard/store/dashboardUiStore';
@@ -25,7 +25,7 @@ export function ConfigPage() {
   const location = useLocation();
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack config-page-shell">
@@ -83,6 +83,6 @@ export function ConfigPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }

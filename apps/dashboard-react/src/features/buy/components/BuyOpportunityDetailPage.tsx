@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { formatCurrency, formatNumber, formatPercent, formatRelative } from '../../dashboard/lib/formatters';
 import { buildWorkspaceLocation, readInitialQuery } from '../../dashboard/lib/urlState';
@@ -41,9 +41,9 @@ export function BuyOpportunityDetailPage() {
   const itemDetail = detail?.itemDetail ?? null;
   const outcomeProof = detail?.outcomeProof ?? null;
   const itemId = opportunity?.itemId ?? itemDetail?.item.item_id ?? null;
-  const queueTarget = buildWorkspaceLocation('/buy/opportunities', workspaceQuery);
-  const dashboardTarget = buildWorkspaceLocation('/', workspaceQuery);
-  const runtimeTarget = buildWorkspaceLocation('/runtime', workspaceQuery);
+  const queueTarget = buildWorkspaceLocation('/', workspaceQuery);
+  const marketTarget = buildWorkspaceLocation('/market', workspaceQuery);
+  const runtimeTarget = buildWorkspaceLocation('/ops/runtime', workspaceQuery);
   const itemTarget = itemId ? buildWorkspaceLocation(`/items/${itemId}`, workspaceQuery) : null;
   const matchedFields = Object.entries(opportunity?.matchedFieldValues ?? {});
 
@@ -93,7 +93,7 @@ export function BuyOpportunityDetailPage() {
   }
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack buy-workbench-page">
@@ -113,14 +113,14 @@ export function BuyOpportunityDetailPage() {
               <Link className="nav-pill" to={queueTarget}>
                 返回机会队列
               </Link>
-              <Link className="nav-pill" to={dashboardTarget}>
+              <Link className="nav-pill" to={marketTarget}>
                 返回看板
               </Link>
               <button
                 className="nav-pill"
                 type="button"
                 onClick={() => {
-                  navigate(runtimeTarget);
+                  void navigate(runtimeTarget);
                 }}
               >
                 打开运行后台
@@ -468,7 +468,7 @@ export function BuyOpportunityDetailPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }
 
@@ -493,5 +493,14 @@ function formatMaybeValue(value: unknown) {
   if (value === null || value === undefined || value === '') {
     return '-';
   }
-  return String(value);
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+  return '-';
 }

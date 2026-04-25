@@ -2,13 +2,13 @@ import type { PropsWithChildren } from 'react';
 
 import { DashboardHeader } from '../../features/dashboard/components/DashboardHeader';
 
-type TerminalScreenProps = PropsWithChildren<{
+type AppFrameProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export function TerminalScreen(props: TerminalScreenProps) {
+export function AppFrame(props: AppFrameProps) {
   return (
-    <div className={props.className ? `terminal-app ${props.className}` : 'terminal-app'}>
+    <div className={props.className ? `app-frame ${props.className}` : 'app-frame'}>
       <DashboardHeader />
       {props.children}
     </div>

@@ -90,6 +90,23 @@ class TemplateConfigEntrypointTests(unittest.TestCase):
             }
         )
 
+    def test_category_spec_schema_route_returns_active_schema(self) -> None:
+        client = TestClient(create_app())
+
+        with patch(
+            "goofish_insight.entrypoints.web.routers.config.get_category_spec_schema",
+            return_value={
+                "categoryCode": "apple_computer",
+                "templateVersion": 3,
+                "lockingAttrs": ["chip_family", "memory_gb"],
+            },
+        ) as schema_mock:
+            response = client.get("/api/categories/apple_computer/spec-schema")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["lockingAttrs"], ["chip_family", "memory_gb"])
+        schema_mock.assert_called_once_with(category_code="apple_computer")
+
 
 if __name__ == "__main__":
     unittest.main()

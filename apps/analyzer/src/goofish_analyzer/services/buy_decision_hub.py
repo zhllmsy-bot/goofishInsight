@@ -1136,11 +1136,13 @@ def serialize_buy_workbench_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
     return {
         "id": row.id,
         "baselineKey": row.baseline_key,
+        "schemaId": getattr(row, "schema_id", None),
         "sampleSize": row.sample_size,
         "fairPrice": _decimal_to_float(row.fair_price),
         "buyCeiling": _decimal_to_float(row.buy_ceiling),
         "confidence": _decimal_to_float(row.confidence),
         "baselineDate": row.baseline_date.isoformat() if row.baseline_date else None,
+        "schemaSummary": dict((row.payload or {}).get("schema", {}).get("schemaSummary") or {}),
         "explanation": explanation,
     }
 

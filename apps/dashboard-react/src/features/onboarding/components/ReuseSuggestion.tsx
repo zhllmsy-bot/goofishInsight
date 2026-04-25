@@ -8,6 +8,22 @@ type ReuseSuggestionProps = {
   onReuseToggle: (enabled: boolean) => void;
 };
 
+function readString(value: unknown): string {
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+  return '';
+}
+
 export function ReuseSuggestion({ reuseSuggestion, analysis, reuseEnabled, onReuseToggle }: ReuseSuggestionProps) {
   if (!reuseSuggestion) {
     return null;
@@ -17,10 +33,10 @@ export function ReuseSuggestion({ reuseSuggestion, analysis, reuseEnabled, onReu
   const coveredCodes = coverage?.coveredSuggestedAttributeCodes ?? [];
   const missingCodes = coverage?.missingSuggestedAttributeCodes ?? [];
   const extraCodes = coverage?.extraTemplateAttributeCodes ?? [];
-  const categoryCode = String((reuseSuggestion.category as Record<string, unknown>)?.code ?? '');
-  const categoryName = String((reuseSuggestion.category as Record<string, unknown>)?.name ?? '');
-  const templateVersion = String((reuseSuggestion.template as Record<string, unknown>)?.version ?? '');
-  const templateStatus = String((reuseSuggestion.template as Record<string, unknown>)?.status ?? '');
+  const categoryCode = readString((reuseSuggestion.category as Record<string, unknown>)?.code);
+  const categoryName = readString((reuseSuggestion.category as Record<string, unknown>)?.name);
+  const templateVersion = readString((reuseSuggestion.template as Record<string, unknown>)?.version);
+  const templateStatus = readString((reuseSuggestion.template as Record<string, unknown>)?.status);
 
   const observations = analysis?.attributeObservations ?? [];
   const resolveLabel = (code: string) => {

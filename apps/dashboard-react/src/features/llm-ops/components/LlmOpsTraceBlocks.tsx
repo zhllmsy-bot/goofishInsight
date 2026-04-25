@@ -1,21 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { formatNumber } from '../../dashboard/lib/formatters';
+import { formatLatency, type TokenUsage } from '../lib/formatTrace';
 import {
   LLM_TRACE_COPY_FEEDBACK_DURATION_MS,
   LLM_TRACE_LATENCY_BAR_MAX_MS,
   LLM_TRACE_LATENCY_MEDIUM_THRESHOLD_MS,
-  LLM_TRACE_LATENCY_SECONDS_THRESHOLD_MS,
   LLM_TRACE_LATENCY_SLOW_THRESHOLD_MS,
   LLM_TRACE_MESSAGE_ROLE_LABELS,
   LLM_TRACE_TOKEN_BAR_MAX_TOKENS,
 } from '../lib/constants';
-
-type TokenUsage = {
-  input_tokens?: number;
-  output_tokens?: number;
-  total_tokens?: number;
-};
 
 type MessageCardProps = {
   message: {
@@ -54,20 +48,6 @@ function useCopyFeedback(durationMs = LLM_TRACE_COPY_FEEDBACK_DURATION_MS) {
     isCopied,
     triggerCopyFeedback,
   };
-}
-
-export function formatLatency(ms: number | null | undefined): string {
-  if (ms === null || ms === undefined) return '-';
-  if (ms < LLM_TRACE_LATENCY_SECONDS_THRESHOLD_MS) return `${Math.round(ms)}ms`;
-  return `${(ms / 1000).toFixed(2)}s`;
-}
-
-export function formatTokens(usage: TokenUsage | null | undefined): string {
-  if (!usage) return '-';
-  const input = usage.input_tokens ?? 0;
-  const output = usage.output_tokens ?? 0;
-  if (input === 0 && output === 0) return '-';
-  return `${formatNumber(input)} -> ${formatNumber(output)}`;
 }
 
 export function TokenBar({

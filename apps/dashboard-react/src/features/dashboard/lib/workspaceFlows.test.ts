@@ -8,10 +8,10 @@ describe('workspace flow contracts', () => {
       '?category_code=apple_computer&product_label=MacBook+Pro+%2F+M5&spec_label=16G+%2F+512G&pricing_scope=all&pricing_freshness_days=30',
     );
 
-    const buyTarget = buildWorkspaceLocation('/buy/opportunities', query);
+    const buyTarget = buildWorkspaceLocation('/', query);
     const backToDashboard = buildWorkspacePath('/', query);
 
-    expect(buyTarget.pathname).toBe('/buy/opportunities');
+    expect(buyTarget.pathname).toBe('/');
     expect(buyTarget.search).toContain('category_code=apple_computer');
     expect(buyTarget.search).toContain('product_label=MacBook+Pro+%2F+M5');
     expect(buyTarget.search).toContain('spec_label=16G+%2F+512G');
@@ -27,14 +27,14 @@ describe('workspace flow contracts', () => {
     );
 
     const runtimeSearch = buildWorkspaceSearch(query);
-    const runtimeTarget = buildWorkspacePath('/runtime', query);
+    const runtimeTarget = buildWorkspacePath('/ops/runtime', query);
     const backToDashboard = buildWorkspaceLocation('/', query);
 
     expect(runtimeSearch).toBe(
       '?category_code=garmin_watch&product_label=Fenix+7+Pro&spec_label=47mm&pricing_scope=actionable&pricing_freshness_days=60',
     );
     expect(runtimeTarget).toBe(
-      '/runtime?category_code=garmin_watch&product_label=Fenix+7+Pro&spec_label=47mm&pricing_scope=actionable&pricing_freshness_days=60',
+      '/ops/runtime?category_code=garmin_watch&product_label=Fenix+7+Pro&spec_label=47mm&pricing_scope=actionable&pricing_freshness_days=60',
     );
     expect(backToDashboard).toEqual({
       pathname: '/',

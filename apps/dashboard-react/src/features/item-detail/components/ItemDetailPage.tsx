@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { formatCurrency, formatNumber, formatRelative } from '../../dashboard/lib/formatters';
 import { buildWorkspaceLocation, readInitialQuery } from '../../dashboard/lib/urlState';
@@ -18,10 +18,10 @@ export function ItemDetailPage() {
   const workspaceQuery = readInitialQuery(location.search);
   const { detail, isLoading, error } = useItemDetail(itemId);
   const dashboardTarget = buildWorkspaceLocation('/', workspaceQuery);
-  const runtimeTarget = buildWorkspaceLocation('/runtime', workspaceQuery);
+  const runtimeTarget = buildWorkspaceLocation('/ops/runtime', workspaceQuery);
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack progress-page">
@@ -44,7 +44,7 @@ export function ItemDetailPage() {
                 className="nav-pill"
                 type="button"
                 onClick={() => {
-                  navigate(runtimeTarget);
+                  void navigate(runtimeTarget);
                 }}
               >
                 打开运行控制
@@ -199,7 +199,7 @@ export function ItemDetailPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }
 
@@ -224,5 +224,14 @@ function formatMaybeValue(value: unknown) {
   if (value === null || value === undefined || value === '') {
     return '-';
   }
-  return String(value);
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+  return '-';
 }

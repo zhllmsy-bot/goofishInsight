@@ -1,7 +1,7 @@
 import { startTransition, useDeferredValue, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { categoryLabel, formatNumber, formatPercent, formatRelative } from '../../dashboard/lib/formatters';
 import { buildWorkspaceLocation } from '../../dashboard/lib/urlState';
@@ -29,12 +29,12 @@ export function ProgressPage() {
   const auditQueueRows = audits?.audit_queue_rows ?? [];
   const invalidReasonRows = audits?.invalid_reason_rows ?? [];
   const runtimeTarget = useMemo(
-    () => buildWorkspaceLocation('/runtime', query),
+    () => buildWorkspaceLocation('/ops/runtime', query),
     [query],
   );
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack progress-page">
@@ -77,7 +77,7 @@ export function ProgressPage() {
                 className="nav-pill"
                 type="button"
                 onClick={() => {
-                  navigate(runtimeTarget);
+                  void navigate(runtimeTarget);
                 }}
               >
                 打开运行控制
@@ -381,7 +381,7 @@ export function ProgressPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }
 

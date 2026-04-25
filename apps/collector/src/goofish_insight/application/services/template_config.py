@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import select
@@ -18,6 +19,12 @@ from ...models import (
 )
 from .attribute_binding_resolution import resolve_attribute_bindings
 from .category_runtime_profile import upsert_category_runtime_profile_with_session
+from .spec_schema_snapshots import (
+    SpecSchemaSnapshotError,
+    serialize_spec_schema_snapshot,
+    template_item_schema_payload_from_input,
+    upsert_active_schema_snapshot_with_session,
+)
 
 
 class TemplateConfigError(RuntimeError):
@@ -257,6 +264,18 @@ def upsert_template_config_with_session(
         )
         session.flush()
 
+    schema_snapshot = None
+    if row.status == TemplateStatus.PUBLISHED or bool(payload.get("activateOnPublish")) or bool(payload.get("bindAsActiveTemplate")):
+        try:
+            schema_snapshot = upsert_active_schema_snapshot_with_session(
+                session,
+                template=row,
+                created_by=normalized_operator_id,
+            )
+        except SpecSchemaSnapshotError as exc:
+            raise TemplateConfigError(str(exc)) from exc
+        session.flush()
+
     after_json = serialize_template_config(
         row,
         include_items=True,
@@ -277,6 +296,7 @@ def upsert_template_config_with_session(
         "dryRun": dry_run,
         "template": after_json,
         "runtimeProfile": runtime_result["profile"] if runtime_result is not None else None,
+        "schemaSnapshot": serialize_spec_schema_snapshot(schema_snapshot) if schema_snapshot is not None else None,
         "diffPreview": after_json.get("diffPreview"),
         "auditLogId": audit_log.id,
     }
@@ -380,6 +400,10 @@ def _normalize_template_items(value: Any) -> list[dict[str, Any]]:
         if attribute_code in seen_codes:
             raise TemplateConfigError(f"Duplicate attributeCode in template items: {attribute_code}")
         seen_codes.add(attribute_code)
+        try:
+            schema_payload = template_item_schema_payload_from_input(item)
+        except SpecSchemaSnapshotError as exc:
+            raise TemplateConfigError(str(exc)) from exc
         items.append(
             {
                 "attributeCode": attribute_code,
@@ -389,6 +413,10 @@ def _normalize_template_items(value: Any) -> list[dict[str, Any]]:
                 "isFilter": bool(item.get("isFilter", False)),
                 "isSearch": bool(item.get("isSearch", False)),
                 "isDisplay": bool(item.get("isDisplay", True)),
+                "role": schema_payload["role"],
+                "weight": schema_payload["weight"],
+                "normalization": schema_payload["normalization"],
+                "enumValues": schema_payload["enumValues"],
                 "sortNo": int(item.get("sortNo", (index + 1) * 10)),
             }
         )
@@ -411,6 +439,11 @@ def _serialize_template_items(items: list[CategoryAttrTemplateItem]) -> list[dic
             "isFilter": bool(item.is_filter),
             "isSearch": bool(item.is_search),
             "isDisplay": bool(item.is_display),
+            "role": item.role,
+            "required": bool(item.is_required),
+            "weight": _json_safe_value(item.weight),
+            "normalization": _json_safe_value(item.normalization),
+            "enumValues": _json_safe_value(item.enum_values),
             "sortNo": int(item.sort_no or 0),
             "options": [
                 {
@@ -459,6 +492,10 @@ def _sync_template_items(
                 is_filter=bool(item["isFilter"]),
                 is_search=bool(item["isSearch"]),
                 is_display=bool(item["isDisplay"]),
+                role=str(item["role"]),
+                weight=item["weight"],
+                normalization=item["normalization"],
+                enum_values=item["enumValues"],
                 sort_no=int(item["sortNo"]),
             )
             created.attribute = attribute_by_code[code]
@@ -473,6 +510,10 @@ def _sync_template_items(
         existing.is_filter = bool(item["isFilter"])
         existing.is_search = bool(item["isSearch"])
         existing.is_display = bool(item["isDisplay"])
+        existing.role = str(item["role"])
+        existing.weight = item["weight"]
+        existing.normalization = item["normalization"]
+        existing.enum_values = item["enumValues"]
         existing.sort_no = int(item["sortNo"])
         resolved_items.append(existing)
 
@@ -586,7 +627,18 @@ def _build_template_diff_preview(
         current = target_by_code[code]
         previous = baseline_by_code[code]
         field_changes = {}
-        for field in ("isRequired", "isSale", "isFilter", "isSearch", "isDisplay", "sortNo"):
+        for field in (
+            "isRequired",
+            "isSale",
+            "isFilter",
+            "isSearch",
+            "isDisplay",
+            "role",
+            "weight",
+            "normalization",
+            "enumValues",
+            "sortNo",
+        ):
             if current.get(field) != previous.get(field):
                 field_changes[field] = {
                     "from": previous.get(field),
@@ -658,6 +710,8 @@ def _normalize_optional_string(value: Any) -> str | None:
 def _json_safe_value(value: Any) -> Any:
     if value is None:
         return None
+    if isinstance(value, Decimal):
+        return float(value)
     if isinstance(value, dict):
         return {str(key): _json_safe_value(entry) for key, entry in value.items()}
     if isinstance(value, list):

@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderDashboardApp } from '../../../test/renderApp';
+import { requestUrl } from '../../../test/fetchMock';
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -20,7 +21,8 @@ describe('ItemDetailPage', () => {
 
   it('renders item detail inside React shell and keeps workspace query', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input));
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/dashboard/items/abc') {
         return jsonResponse({
@@ -88,7 +90,7 @@ describe('ItemDetailPage', () => {
               },
             },
           ],
-          raw_response_body: '{\"ok\": true}',
+          raw_response_body: '{"ok": true}',
         });
       }
 
@@ -103,10 +105,6 @@ describe('ItemDetailPage', () => {
       expect(screen.getByRole('heading', { name: 'Fenix 8 Sapphire' })).toBeInTheDocument();
     });
 
-    expect(screen.getByRole('link', { name: '前往证据看板' })).toHaveAttribute(
-      'href',
-      expect.stringContaining('category_code=garmin_watch'),
-    );
     expect(screen.getByRole('link', { name: '返回看板' })).toHaveAttribute(
       'href',
       expect.stringContaining('product_label=Fenix+7+Pro'),

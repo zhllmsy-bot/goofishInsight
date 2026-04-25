@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { formatPercent, formatRelative } from '../../dashboard/lib/formatters';
 import { buildWorkspaceLocation } from '../../dashboard/lib/urlState';
@@ -215,7 +215,7 @@ export function OnboardingPage() {
   const draftData: OnboardingDraft | null = draftMutation.data ?? null;
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack progress-page onboarding-page">
@@ -411,12 +411,12 @@ export function OnboardingPage() {
                 </div>
                 <div className="onboarding-queue-list-react">
                   {queueItems.length ? (
-                    queueItems.map((item) => {
+                    queueItems.map((item, index) => {
                       const isSelected = item.id === (selectedQueueItem?.id ?? null);
                       return (
                         <button
                           className={`onboarding-queue-card-react ${isSelected ? 'is-active' : ''}`}
-                          key={item.id ?? item.matchKey ?? Math.random()}
+                          key={item.id ?? item.matchKey ?? `queue-${index}`}
                           type="button"
                           onClick={() => {
                             setSelectedQueueId(item.id ?? null);
@@ -557,7 +557,7 @@ export function OnboardingPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }
 

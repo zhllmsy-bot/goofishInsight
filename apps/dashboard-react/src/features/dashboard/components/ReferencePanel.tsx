@@ -25,7 +25,7 @@ const AVAILABILITY_LABELS: Record<string, string> = {
 const REFERENCE_TAB_ORDER: ReferenceTab[] = ['trend', 'calibration'];
 
 export function ReferencePanel(props: ReferencePanelProps) {
-  const runtimeTarget = buildWorkspaceLocation('/runtime', props.query);
+  const runtimeTarget = buildWorkspaceLocation('/ops/runtime', props.query);
   const tabIdPrefix = useId();
   const tabRefs = useRef<Record<ReferenceTab, HTMLButtonElement | null>>({
     trend: null,

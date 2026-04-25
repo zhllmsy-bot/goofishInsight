@@ -10,6 +10,7 @@
     "typecheck": "npm run typecheck -w @goofish/dashboard-react && npm run typecheck -w @goofish/dashboard-nest",
     "test": "npm run test -w @goofish/dashboard-react && npm run test -w @goofish/dashboard-nest",
     "lint": "npm run lint -w @goofish/dashboard-react && npm run lint -w @goofish/dashboard-nest",
+    "design-system:audit": "npm run design-system:audit -w @goofish/dashboard-react",
     "verify-baseline": "bash scripts/verify-baseline.sh"
   },
   "workspaces": [

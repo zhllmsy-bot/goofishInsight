@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderDashboardApp } from '../../../test/renderApp';
+import { requestUrl } from '../../../test/fetchMock';
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -20,7 +21,8 @@ describe('ProgressPage', () => {
 
   it('keeps workspace query and renders progress data inside React shell', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input));
+      await Promise.resolve();
+      const url = requestUrl(input);
       expect(url.searchParams.get('category_code')).toBe('garmin_watch');
       expect(url.searchParams.get('product_label')).toBe('Fenix 7 Pro');
       expect(url.searchParams.get('spec_label')).toBe('47mm');
@@ -97,10 +99,7 @@ describe('ProgressPage', () => {
       '/progress?category_code=garmin_watch&product_label=Fenix+7+Pro&spec_label=47mm&pricing_scope=actionable&pricing_freshness_days=60',
     );
 
-    expect(screen.getByRole('link', { name: '前往证据看板' })).toHaveAttribute(
-      'href',
-      expect.stringContaining('category_code=garmin_watch'),
-    );
+    expect(screen.getByRole('button', { name: '打开运行控制' })).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('回刷进度工作台')).toBeInTheDocument();

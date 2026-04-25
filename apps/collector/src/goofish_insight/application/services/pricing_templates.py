@@ -10,6 +10,7 @@ from ...category_compat import resolve_category_code
 from ...models import Category, CategoryRuntimeProfile
 from .template_feature_flags import is_price_template_contract_enabled
 from .catalog_queries import build_catalog_template_detail
+from .spec_schema_snapshots import load_active_spec_schema_for_pricing_with_session
 
 
 SelectorRequirementResolver = Callable[[dict[str, Any], dict[str, list[dict[str, str]]]], tuple[str, ...]]
@@ -436,18 +437,29 @@ def build_pricing_record_template_snapshot(
     canonical_code = resolve_category_code(business_domain)
     default = CONTRACT_DEFAULTS.get(canonical_code)
     detail = template_detail
-    if detail is None and session is not None:
+    schema = dict(record.get("schema") or {})
+    if detail is None and session is not None and not schema:
         detail = load_active_template_detail(
             session,
             business_domain=business_domain,
             category_code=canonical_code,
+        )
+    if not schema and session is not None and canonical_code:
+        schema = dict(
+            load_active_spec_schema_for_pricing_with_session(
+                session,
+                category_code=canonical_code,
+            )
+            or {}
         )
     template_fields = {
         str(item.get("attributeCode"))
         for item in (detail or {}).get("items", [])
         if item.get("attributeCode")
     }
-    if default is None or default.record_value_resolver is None:
+    schema_pricing_key_fields = tuple(str(field) for field in list(schema.get("lockingAttrs") or []) if str(field).strip())
+    schema_required_fields = tuple(str(field) for field in list(schema.get("requiredAttrs") or []) if str(field).strip())
+    if default is None and not schema_pricing_key_fields:
         return {
             "categoryCode": canonical_code or business_domain,
             "templateKey": None,
@@ -457,21 +469,27 @@ def build_pricing_record_template_snapshot(
             "completenessStatus": "missing",
             "requiredPricingFields": [],
             "pricingKeyFields": [],
+            "schemaId": schema.get("schemaId"),
+            "schemaSummary": dict(schema.get("summary") or {}),
         }
 
-    resolved_field_values = default.record_value_resolver(record)
-    required_pricing_fields = tuple(default.required_pricing_fields)
+    resolved_field_values = default.record_value_resolver(record) if default and default.record_value_resolver else {}
+    pricing_key_fields = schema_pricing_key_fields or tuple(default.pricing_key_fields if default else ())
+    required_pricing_fields = schema_required_fields or tuple(default.required_pricing_fields if default else pricing_key_fields)
+    for field in pricing_key_fields:
+        if field not in resolved_field_values:
+            resolved_field_values[field] = _record_value(record, field)
     missing_fields = [
         field for field in required_pricing_fields if not _has_value(resolved_field_values.get(field))
     ]
     completeness_status = "complete"
     if missing_fields:
         completeness_status = "partial"
-    if not _has_value(resolved_field_values.get("model_name")):
+    if "model_name" in pricing_key_fields and not _has_value(resolved_field_values.get("model_name")):
         completeness_status = "missing"
 
     unsupported_pricing_fields = [
-        field for field in default.pricing_key_fields if field not in template_fields
+        field for field in pricing_key_fields if template_fields and field not in template_fields
     ]
 
     return {
@@ -479,7 +497,7 @@ def build_pricing_record_template_snapshot(
         "templateKey": (
             build_template_key(
                 category_code=canonical_code,
-                pricing_key_fields=default.pricing_key_fields,
+                pricing_key_fields=pricing_key_fields,
                 selected_values=resolved_field_values,
             )
             if completeness_status == "complete"
@@ -494,9 +512,11 @@ def build_pricing_record_template_snapshot(
         "missingFields": missing_fields,
         "completenessStatus": completeness_status,
         "requiredPricingFields": list(required_pricing_fields),
-        "pricingKeyFields": list(default.pricing_key_fields),
+        "pricingKeyFields": list(pricing_key_fields),
         "unsupportedPricingFields": unsupported_pricing_fields,
         "templateDetail": _template_descriptor(detail),
+        "schemaId": schema.get("schemaId"),
+        "schemaSummary": dict(schema.get("summary") or {}),
     }
 
 
@@ -533,6 +553,19 @@ def _selected_pricing_values(
     for pricing_field, selector_key in default.selector_aliases.items():
         values[pricing_field] = selected_filters.get(selector_key) if selector_key else None
     return values
+
+
+def _record_value(record: dict[str, Any], field: str) -> Any:
+    aliases = {
+        "brand_name": ("brand_name", "brand"),
+        "model_name": ("model_name", "product_label"),
+        "ram_gb": ("ram_gb", "memory_gb"),
+    }
+    for key in aliases.get(field, (field,)):
+        value = record.get(key)
+        if _has_value(value):
+            return value
+    return None
 
 
 def _merge_pricing_fields(primary: tuple[str, ...], fallback: tuple[str, ...]) -> tuple[str, ...]:

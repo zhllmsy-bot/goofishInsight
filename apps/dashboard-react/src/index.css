@@ -1,19 +1,34 @@
 @import "tailwindcss";
+@import "./themes/tokens.css";
+@import "./themes/light.css";
+@import "./themes/dark.css";
+@import "./shared/styles/app-ui.css";
 
-@theme {
-  --font-sans: "SF Pro Text", "Avenir Next", "Segoe UI", sans-serif;
-  --color-ink-950: #05070b;
-  --color-ink-900: #090d12;
-  --color-ink-800: #111827;
-  --color-radar-500: #18f2a8;
-  --color-radar-400: #5eead4;
+@theme inline {
+  --color-background: var(--surface-0);
+  --color-foreground: var(--ink-primary);
+  --color-card: var(--surface-1);
+  --color-card-foreground: var(--ink-primary);
+  --color-popover: var(--surface-3);
+  --color-popover-foreground: var(--ink-primary);
+  --color-primary: var(--brand-600);
+  --color-primary-foreground: var(--ink-inverse);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--ink-primary);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--ink-secondary);
+  --color-accent: var(--brand-50);
+  --color-accent-foreground: var(--brand-600);
+  --color-destructive: var(--signal-danger);
+  --color-border: var(--border-subtle);
+  --color-input: var(--border-subtle);
+  --color-ring: var(--brand-600);
 }
 
 html,
 body,
 #root {
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
 }
 
 html,
@@ -23,12 +38,11 @@ body {
 }
 
 body {
-  overflow: hidden;
-  font-family:
-    'SF Pro Text', 'Avenir Next', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    sans-serif;
-  background: #05070b;
-  color: #f8fafc;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  background: var(--surface-0);
+  color: var(--ink-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -47,5 +61,17 @@ button {
 }
 
 a {
+  color: inherit;
   text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-600);
+  outline-offset: 2px;
+}
+
+.num,
+[data-number] {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
 }

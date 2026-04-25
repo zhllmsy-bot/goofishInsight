@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderDashboardApp } from '../../../test/renderApp';
+import { requestBodyText, requestUrl } from '../../../test/fetchMock';
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -20,7 +21,8 @@ describe('BuyWorkbenchPage', () => {
 
   it('keeps workspace filters, writes feedback, and provides dashboard return path', async () => {
     fetchMock.mockImplementation(async (input, init) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/buy/opportunities') {
         return jsonResponse({
@@ -219,14 +221,13 @@ describe('BuyWorkbenchPage', () => {
     });
 
     renderDashboardApp(
-      '/buy/opportunities?category_code=apple_computer&product_label=MacBook+Pro+%2F+M5&spec_label=16G+%2F+512G&pricing_scope=all&pricing_freshness_days=30',
+      '/?category_code=apple_computer&product_label=MacBook+Pro+%2F+M5&spec_label=16G+%2F+512G&pricing_scope=all&pricing_freshness_days=30',
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: '人机协同买入工作台' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '今日机会台' })).toBeInTheDocument();
     });
-    expect(screen.getByRole('complementary', { name: 'AI 副驾驶' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '副驾驶在线' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /⌘K Search/ })).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: '数据资产利用率' })).toBeInTheDocument();
@@ -237,9 +238,9 @@ describe('BuyWorkbenchPage', () => {
     expect(screen.getByText(/把 OPEN 机会消化成反馈、联系、成交和 ROI 证据/)).toBeInTheDocument();
     expect(screen.getByText(/OPEN backlog 941 · 未入队 940/)).toBeInTheDocument();
 
-    expect(screen.getByRole('link', { name: '回到看板首页' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: '回到市场大盘' })).toHaveAttribute(
       'href',
-      '/?category_code=apple_computer&product_label=MacBook+Pro+%2F+M5&spec_label=16G+%2F+512G&pricing_scope=all&pricing_freshness_days=30',
+      '/market?category_code=apple_computer&product_label=MacBook+Pro+%2F+M5&spec_label=16G+%2F+512G&pricing_scope=all&pricing_freshness_days=30',
     );
 
     await waitFor(() => {
@@ -254,7 +255,7 @@ describe('BuyWorkbenchPage', () => {
 
     const postCall = fetchMock.mock.calls.find(([, callInit]) => callInit?.method === 'POST');
     expect(postCall).toBeDefined();
-    const payload = JSON.parse(String(postCall?.[1]?.body ?? '{}')) as Record<string, unknown>;
+    const payload = JSON.parse(requestBodyText(postCall?.[1]?.body)) as Record<string, unknown>;
     expect(payload.opportunityId).toBe('opp-1');
     expect(payload.feedbackLabel).toBe('contacted');
     expect(payload.linkToAlertCandidate).toBe(true);
@@ -262,7 +263,8 @@ describe('BuyWorkbenchPage', () => {
 
   it('records purchase outcome evidence from the workbench', async () => {
     fetchMock.mockImplementation(async (input, init) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/buy/opportunities') {
         return jsonResponse({
@@ -311,7 +313,7 @@ describe('BuyWorkbenchPage', () => {
       }
 
       if (url.pathname === '/api/buy/feedback' && init?.method === 'POST') {
-        const payload = JSON.parse(String(init.body ?? '{}')) as Record<string, unknown>;
+        const payload = JSON.parse(requestBodyText(init.body)) as Record<string, unknown>;
         expect(payload).toMatchObject({
           opportunityId: 'opp-1',
           feedbackLabel: 'purchased',
@@ -331,7 +333,7 @@ describe('BuyWorkbenchPage', () => {
       throw new Error(`Unexpected request: ${url.pathname}`);
     });
 
-    renderDashboardApp('/buy/opportunities?category_code=apple_computer');
+    renderDashboardApp('/?category_code=apple_computer');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: '已成交' })).toBeInTheDocument();
@@ -358,7 +360,8 @@ describe('BuyWorkbenchPage', () => {
 
   it('shows auto calibration controls in the workbench panel', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
       if (url.pathname === '/api/buy/opportunities') {
         return jsonResponse({
           categoryCode: 'apple_computer',
@@ -450,7 +453,7 @@ describe('BuyWorkbenchPage', () => {
       throw new Error(`Unexpected request: ${url.pathname}`);
     });
 
-    renderDashboardApp('/buy/opportunities?category_code=apple_computer');
+    renderDashboardApp('/?category_code=apple_computer');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: '应用所选校准' })).toBeInTheDocument();
@@ -469,7 +472,8 @@ describe('BuyWorkbenchPage', () => {
 
   it('applies only the selected calibration recommendations', async () => {
     fetchMock.mockImplementation(async (input, init) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
       if (url.pathname === '/api/buy/opportunities') {
         return jsonResponse({
           categoryCode: 'apple_computer',
@@ -521,7 +525,7 @@ describe('BuyWorkbenchPage', () => {
       }
 
       if (url.pathname === '/api/buy/feedback-calibration/apply' && init?.method === 'POST') {
-        const payload = JSON.parse(String(init.body ?? '{}')) as Record<string, unknown>;
+        const payload = JSON.parse(requestBodyText(init.body)) as Record<string, unknown>;
         expect(payload.categoryCode).toBe('apple_computer');
         expect(payload.recommendationIds).toEqual(['threshold_guidance_sample_count']);
         return jsonResponse({
@@ -537,7 +541,7 @@ describe('BuyWorkbenchPage', () => {
       throw new Error(`Unexpected request: ${url.pathname}`);
     });
 
-    renderDashboardApp('/buy/opportunities?category_code=apple_computer');
+    renderDashboardApp('/?category_code=apple_computer');
 
     await waitFor(() => {
       expect(screen.getByLabelText('选择建议 提高 guidance 样本门槛')).toBeInTheDocument();
@@ -553,5 +557,303 @@ describe('BuyWorkbenchPage', () => {
     await waitFor(() => {
       expect(screen.getByText(/已应用 1 条建议，重建 12 条基线，刷新 8 条机会。/)).toBeInTheDocument();
     });
+  });
+
+  it('supports keyboard shortcuts for daily opportunity pack actions', async () => {
+    fetchMock.mockImplementation(async (input, init) => {
+      await Promise.resolve();
+      const url = requestUrl(input);
+
+      if (url.pathname === '/api/buy/opportunities') {
+        return jsonResponse({
+          categoryCode: 'apple_computer',
+          summary: {
+            opportunityCount: 2,
+            baselineCount: 0,
+            watchTargetCount: 0,
+            feedbackCount: 0,
+            calibrationRecommendationCount: 0,
+          },
+          outcomeFunnel: {
+            alertedOpportunityCount: 2,
+            openedOpportunityCount: 0,
+            contactedOpportunityCount: 0,
+            purchasedOpportunityCount: 0,
+            roiEvidenceCount: 0,
+            alertToOpenRate: 0,
+            alertToContactRate: 0,
+            openToContactRate: 0,
+            contactToPurchaseRate: 0,
+          },
+          opportunities: [],
+          baselines: [],
+          watchTargets: [],
+          dailyOpportunityPack: {
+            generatedAt: '2026-04-24T15:30:00+00:00',
+            summary: {
+              targetProcessingCount: 2,
+              packOpportunityCount: 2,
+              openBacklogCount: 2,
+              ungroupedOpenCount: 0,
+              feedbackCount: 0,
+              contactedOpportunityCount: 0,
+              purchasedOpportunityCount: 0,
+              roiEvidenceCount: 0,
+              feedbackCoverageRate: 0,
+              operatingMode: 'opportunity_digest_first',
+              northStar: '按键操作验证',
+            },
+            groups: [
+              {
+                key: 'act_now',
+                label: '立即看',
+                recommendedAction: '先处理',
+                count: 1,
+                tasks: [
+                  {
+                    rank: 1,
+                    groupKey: 'act_now',
+                    groupLabel: '立即看',
+                    recommendedAction: '先处理',
+                    reason: '对比机会分',
+                    slaLabel: '快动作',
+                    riskFlags: [],
+                    valueSignals: [],
+                    opportunity: {
+                      id: 'opp-1',
+                      title: 'MacBook M1',
+                      status: 'OPEN',
+                      decision: null,
+                      currentPrice: 6800,
+                      fairPrice: 7400,
+                      buyCeiling: 7100,
+                      opportunityScore: 80,
+                      riskScore: 5,
+                      explanation: {
+                        readinessSummary: '可行动',
+                        reviewGateSummary: '通过',
+                        specGateSummary: '通过',
+                      },
+                      specContract: { status: 'complete' },
+                    },
+                  },
+                ],
+              },
+              {
+                key: 'negotiate',
+                label: '可砍价',
+                recommendedAction: '再确认',
+                count: 1,
+                tasks: [
+                  {
+                    rank: 2,
+                    groupKey: 'negotiate',
+                    groupLabel: '可砍价',
+                    recommendedAction: '再确认',
+                    reason: '有议价空间',
+                    slaLabel: '下一步',
+                    riskFlags: [],
+                    valueSignals: [],
+                    opportunity: {
+                      id: 'opp-2',
+                      title: 'MacBook M2',
+                      status: 'OPEN',
+                      decision: null,
+                      currentPrice: 6500,
+                      fairPrice: 7200,
+                      buyCeiling: 7000,
+                      opportunityScore: 77,
+                      riskScore: 10,
+                      explanation: {
+                        readinessSummary: '可行动',
+                        reviewGateSummary: '通过',
+                        specGateSummary: '通过',
+                      },
+                      specContract: { status: 'complete' },
+                    },
+                  },
+                ],
+              },
+            ],
+            marketIntel: [],
+          },
+        });
+      }
+
+      if (url.pathname === '/api/buy/feedback' && init?.method === 'POST') {
+        const payload = JSON.parse(requestBodyText(init.body)) as Record<string, unknown>;
+        return jsonResponse({
+          ...payload,
+          feedbackType: 'decision',
+          status: payload.feedbackLabel === 'contacted' ? 'CONTACTED' : 'REJECTED',
+          decision: payload.feedbackLabel,
+        });
+      }
+
+      throw new Error(`Unexpected request: ${url.pathname}`);
+    });
+
+    renderDashboardApp('/?category_code=apple_computer');
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: '今日机会任务包' })).toBeInTheDocument();
+    });
+
+    fireEvent.keyDown(window, { key: 'j' });
+    fireEvent.keyDown(window, { key: 'a' });
+
+    await waitFor(() => {
+      const posted = fetchMock.mock.calls.find(([, callInit]) => callInit?.method === 'POST');
+      const payload = JSON.parse(requestBodyText(posted?.[1]?.body)) as Record<string, unknown>;
+      expect(payload.opportunityId).toBe('opp-2');
+      expect(payload.feedbackLabel).toBe('contacted');
+    });
+
+    fireEvent.keyDown(window, { key: 'd' });
+    await waitFor(() => {
+      const postedCalls = fetchMock.mock.calls.filter(([, callInit]) => callInit?.method === 'POST');
+      expect(postedCalls).toHaveLength(2);
+      const secondPayload = JSON.parse(requestBodyText(postedCalls[1]?.[1]?.body)) as Record<string, unknown>;
+      expect(secondPayload.opportunityId).toBe('opp-2');
+      expect(secondPayload.feedbackLabel).toBe('not_worth_it');
+    });
+  });
+
+  it('supports Enter key to open selected opportunity detail sheet', async () => {
+    fetchMock.mockImplementation(async (input, init) => {
+      await Promise.resolve();
+      const url = requestUrl(input);
+
+      if (url.pathname === '/api/buy/opportunities') {
+        return jsonResponse({
+          categoryCode: 'apple_computer',
+          summary: {
+            opportunityCount: 1,
+            baselineCount: 0,
+            watchTargetCount: 0,
+            feedbackCount: 0,
+            calibrationRecommendationCount: 0,
+          },
+          outcomeFunnel: {
+            alertedOpportunityCount: 1,
+            openedOpportunityCount: 0,
+            contactedOpportunityCount: 0,
+            purchasedOpportunityCount: 0,
+            roiEvidenceCount: 0,
+            alertToOpenRate: 0,
+            alertToContactRate: 0,
+            openToContactRate: 0,
+            contactToPurchaseRate: 0,
+          },
+          opportunities: [],
+          baselines: [],
+          watchTargets: [],
+          dailyOpportunityPack: {
+            generatedAt: '2026-04-24T15:30:00+00:00',
+            summary: {
+              targetProcessingCount: 1,
+              packOpportunityCount: 1,
+              openBacklogCount: 1,
+              ungroupedOpenCount: 0,
+              feedbackCount: 0,
+              contactedOpportunityCount: 0,
+              purchasedOpportunityCount: 0,
+              roiEvidenceCount: 0,
+              feedbackCoverageRate: 0,
+              operatingMode: 'opportunity_digest_first',
+              northStar: '按回车打开详情',
+            },
+            groups: [
+              {
+                key: 'act_now',
+                label: '立即看',
+                recommendedAction: '先处理',
+                count: 1,
+                tasks: [
+                  {
+                    rank: 1,
+                    groupKey: 'act_now',
+                    groupLabel: '立即看',
+                    recommendedAction: '先处理',
+                    reason: '对比机会分',
+                    slaLabel: '快动作',
+                    riskFlags: [],
+                    valueSignals: [],
+                    opportunity: {
+                      id: 'opp-enter',
+                      itemIdRef: 'item-enter',
+                      title: 'MacBook M1',
+                      status: 'OPEN',
+                      decision: null,
+                      currentPrice: 6800,
+                      fairPrice: 7400,
+                      buyCeiling: 7100,
+                      opportunityScore: 80,
+                      riskScore: 5,
+                      explanation: {
+                        readinessSummary: '可行动',
+                        reviewGateSummary: '通过',
+                        specGateSummary: '通过',
+                      },
+                      specContract: { status: 'complete' },
+                    },
+                  },
+                ],
+              },
+            ],
+            marketIntel: [],
+          },
+        });
+      }
+
+      if (url.pathname === '/api/buy/opportunities/opp-enter') {
+        return jsonResponse({
+          categoryCode: 'apple_computer',
+          opportunity: {
+            id: 'opp-enter',
+            itemIdRef: 'item-enter',
+            title: 'MacBook M1',
+            status: 'OPEN',
+            decision: null,
+            currentPrice: 6800,
+            fairPrice: 7400,
+            buyCeiling: 7100,
+            opportunityScore: 80,
+            riskScore: 5,
+            explanation: {
+              readinessSummary: '可行动',
+              reviewGateSummary: '通过',
+              specGateSummary: '通过',
+            },
+            specContract: { status: 'complete' },
+          },
+        });
+      }
+
+      if (url.pathname === '/api/buy/feedback' && init?.method === 'POST') {
+        const payload = JSON.parse(requestBodyText(init.body)) as Record<string, unknown>;
+        return jsonResponse({
+          ...payload,
+          feedbackType: 'decision',
+          status: payload.feedbackLabel === 'contacted' ? 'CONTACTED' : 'REJECTED',
+          decision: payload.feedbackLabel,
+        });
+      }
+
+      throw new Error(`Unexpected request: ${url.pathname}`);
+    });
+
+    renderDashboardApp('/?category_code=apple_computer');
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: '今日机会任务包' })).toBeInTheDocument();
+    });
+
+    fireEvent.keyDown(window, { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: '机会详情' })).toBeInTheDocument();
+    });
+    expect(window.location.pathname).toBe('/');
   });
 });

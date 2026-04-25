@@ -16,6 +16,11 @@ from ...models import (
     TemplateStatus,
 )
 from .attribute_binding_resolution import resolve_attribute_bindings
+from .spec_schema_snapshots import (
+    SpecSchemaSnapshotError,
+    template_item_schema_payload_from_input,
+    upsert_active_schema_snapshot_with_session,
+)
 
 
 class CatalogTemplateVersionError(RuntimeError):
@@ -100,20 +105,44 @@ def persist_catalog_template_version_payload_with_session(
     session.add(template)
     session.flush()
 
+    created_items: list[CategoryAttrTemplateItem] = []
     for item_payload in template_items:
         attribute = attribute_map[str(item_payload["attributeCode"])]
-        session.add(
-            CategoryAttrTemplateItem(
-                template_id=template.id,
-                attribute_id=attribute.id,
-                is_required=bool(item_payload.get("isRequired", False)),
-                is_sale=bool(item_payload.get("isSale", False)),
-                is_filter=bool(item_payload.get("isFilter", False)),
-                is_search=bool(item_payload.get("isSearch", False)),
-                is_display=bool(item_payload.get("isDisplay", True)),
-                sort_no=int(item_payload.get("sortNo", 0)),
-            )
+        try:
+            schema_payload = template_item_schema_payload_from_input(item_payload)
+        except SpecSchemaSnapshotError as exc:
+            raise CatalogTemplateVersionError(str(exc)) from exc
+        item = CategoryAttrTemplateItem(
+            template_id=template.id,
+            attribute_id=attribute.id,
+            is_required=bool(item_payload.get("isRequired", False)),
+            is_sale=bool(item_payload.get("isSale", False)),
+            is_filter=bool(item_payload.get("isFilter", False)),
+            is_search=bool(item_payload.get("isSearch", False)),
+            is_display=bool(item_payload.get("isDisplay", True)),
+            role=schema_payload["role"],
+            weight=schema_payload["weight"],
+            normalization=schema_payload["normalization"],
+            enum_values=schema_payload["enumValues"],
+            sort_no=int(item_payload.get("sortNo", 0)),
         )
+        item.attribute = attribute
+        item.template = template
+        session.add(item)
+        created_items.append(item)
+    template.items = created_items
+
+    schema_snapshot = None
+    if template.status == TemplateStatus.PUBLISHED:
+        try:
+            schema_snapshot = upsert_active_schema_snapshot_with_session(
+                session,
+                template=template,
+                created_by=operator_id,
+            )
+        except SpecSchemaSnapshotError as exc:
+            raise CatalogTemplateVersionError(str(exc)) from exc
+        session.flush()
 
     audit_log = ProductAttrAuditLog(
         operator_id=operator_id,
@@ -139,6 +168,7 @@ def persist_catalog_template_version_payload_with_session(
         "templateId": template.id,
         "templateVersion": template.version,
         "templateItemCount": len(template_items),
+        "schemaId": getattr(schema_snapshot, "schema_id", None),
         "auditLogId": audit_log.id,
     }
 

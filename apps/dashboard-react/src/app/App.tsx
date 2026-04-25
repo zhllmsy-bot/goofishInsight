@@ -4,13 +4,13 @@ import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 import { AppErrorBoundary } from '../shared/components/AppErrorBoundary';
 import { RouteErrorState } from '../shared/components/RouteErrorState';
-import { BuyBaselinesPage } from '../features/buy/components/BuyBaselinesPage';
-import { BuyTargetsPage } from '../features/buy/components/BuyTargetsPage';
 import { BuyOpportunityDetailPage } from '../features/buy/components/BuyOpportunityDetailPage';
 import { BuyWorkbenchPage } from '../features/buy/components/BuyWorkbenchPage';
 import { DashboardPage } from '../features/dashboard/components/DashboardPage';
+import { OpsWorkbenchPage } from '../features/ops/components/OpsWorkbenchPage';
 import { buildWorkspaceLocation, readInitialQuery } from '../features/dashboard/lib/urlState';
 import { AgentHarnessPage } from '../features/agent-harness/components/AgentHarnessPage';
+import { WatchWorkbenchPage } from '../features/buy/components/WatchWorkbenchPage';
 import { CategoriesConfigPanel } from '../features/config/components/CategoriesConfigPanel';
 import { ConfigPage } from '../features/config/components/ConfigPage';
 import { TasksConfigPanel } from '../features/config/components/TasksConfigPanel';
@@ -23,15 +23,22 @@ import { ProgressPage } from '../features/progress/components/ProgressPage';
 import { RuntimePage } from '../features/runtime/components/RuntimePage';
 
 const ROUTE_LABELS: Record<string, string> = {
-  '/': '证据看板',
+  '/': '今日机会',
+  '/market': '市场大盘',
+  '/watch': '关注与基线',
+  '/ops': '运维后台',
+  '/ops/runtime': '运维后台',
+  '/ops/llm-devops': '运维后台',
+  '/ops/progress': '运维后台',
   '/llm-devops': 'LLM DevOps',
-  '/llm-ops': 'LLM DevOps',
-  '/runtime': '运行后台',
+  '/llm-ops': '运维后台',
+  '/runtime': '运维后台',
+  '/progress': '回刷进度',
   '/agent-harness': 'Agent Harness',
   '/buy/opportunities': '机会队列',
+  '/opportunity/': '机会详情',
   '/buy/targets': '买入目标',
   '/buy/baselines': '价格基线',
-  '/progress': '回刷进度',
   '/items': '商品详情',
   '/onboarding/xianyu': '品类开通',
   '/mobile-overlay': '移动端校准',
@@ -46,8 +53,15 @@ const ROUTE_LABELS: Record<string, string> = {
 const DYNAMIC_ROUTE_LABELS = [
   ['/items/', '商品详情'],
   ['/buy/opportunities/', '机会详情'],
+  ['/opportunity/', '机会详情'],
   ['/buy/targets/', '目标列表'],
   ['/buy/baselines/', '基线列表'],
+  ['/market/', '市场大盘'],
+  ['/watch/', '关注与基线'],
+  ['/ops/', '运维后台'],
+  ['/ops/runtime', '运行时任务'],
+  ['/ops/llm-devops', 'LLM DevOps'],
+  ['/ops/progress', '回刷进度'],
 ] as const;
 
 export default function App() {
@@ -55,19 +69,28 @@ export default function App() {
     <BrowserRouter>
       <RouteRecoveryBoundary>
         <Routes>
-          <Route element={<DashboardPage />} path="/" />
-          <Route element={<RouteRedirect pathname="/llm-devops" />} path="/llm-ops" />
-          <Route element={<LlmOpsPage />} path="/llm-devops" />
-          <Route element={<RuntimePage />} path="/runtime" />
+          <Route element={<BuyWorkbenchPage />} path="/" />
+          <Route element={<DashboardPage />} path="/market" />
+          <Route element={<WatchWorkbenchPage />} path="/watch" />
+          <Route element={<RouteRedirect pathname="/ops/llm-devops" />} path="/llm-ops" />
+          <Route element={<RouteRedirect pathname="/ops/runtime" />} path="/runtime" />
+          <Route element={<RouteRedirect pathname="/ops/llm-devops" />} path="/llm-devops" />
+          <Route element={<RouteRedirect pathname="/ops/progress" />} path="/progress" />
           <Route element={<AgentHarnessPage />} path="/agent-harness" />
-          <Route element={<BuyWorkbenchPage />} path="/buy/opportunities" />
+          <Route element={<RouteRedirect pathname="/" />} path="/buy/opportunities" />
+          <Route element={<BuyOpportunityDetailPage />} path="/opportunity/:opportunityId" />
           <Route element={<BuyOpportunityDetailPage />} path="/buy/opportunities/:opportunityId" />
-          <Route element={<BuyTargetsPage />} path="/buy/targets" />
-          <Route element={<BuyBaselinesPage />} path="/buy/baselines" />
-          <Route element={<ProgressPage />} path="/progress" />
+          <Route element={<WatchWorkbenchPage />} path="/buy/targets" />
+          <Route element={<WatchWorkbenchPage />} path="/buy/baselines" />
           <Route element={<ItemDetailPage />} path="/items/:itemId" />
           <Route element={<OnboardingPage />} path="/onboarding/xianyu" />
           <Route element={<MobileOverlayPage />} path="/mobile-overlay" />
+          <Route element={<OpsWorkbenchPage />} path="/ops">
+            <Route element={<RouteRedirect pathname="/ops/runtime" />} index />
+            <Route element={<RuntimePage />} path="runtime" />
+            <Route element={<LlmOpsPage />} path="llm-devops" />
+            <Route element={<ProgressPage />} path="progress" />
+          </Route>
           <Route element={<ConfigPage />} path="/config">
             <Route element={<RouteRedirect pathname="/config/categories" />} index />
             <Route element={<CategoriesConfigPanel />} path="categories" />
@@ -102,7 +125,7 @@ function RouteRecoveryBoundary(props: PropsWithChildren) {
     [preservedQuery],
   );
   const runtimeTarget = useMemo(
-    () => buildWorkspaceLocation('/runtime', preservedQuery),
+    () => buildWorkspaceLocation('/ops/runtime', preservedQuery),
     [preservedQuery],
   );
 
@@ -123,7 +146,7 @@ function RouteRecoveryBoundary(props: PropsWithChildren) {
           onGoHome={() => {
             reset();
             resetBoundary();
-            navigate(dashboardTarget, { replace: true });
+            void navigate(dashboardTarget, { replace: true });
           }}
           onReload={() => {
             window.location.reload();
@@ -135,7 +158,7 @@ function RouteRecoveryBoundary(props: PropsWithChildren) {
           onViewRuntime={() => {
             reset();
             resetBoundary();
-            navigate(runtimeTarget, { replace: true });
+            void navigate(runtimeTarget, { replace: true });
           }}
         />
       )}

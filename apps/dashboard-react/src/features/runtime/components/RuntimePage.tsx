@@ -10,7 +10,7 @@ import { useRuntimeControlState } from '../hooks/useRuntimeData';
 import { RuntimeActionCenter } from './RuntimeActionCenter';
 import { RuntimeActivityFeed } from './RuntimeActivityFeed';
 import { RuntimeControlGrid } from './RuntimeControlGrid';
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 
 import '../../dashboard/styles/dashboard.css';
@@ -116,7 +116,7 @@ export function RuntimePage() {
   };
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack">
@@ -124,7 +124,7 @@ export function RuntimePage() {
               <button
                 className="runtime-breadcrumb-link"
                 type="button"
-                onClick={() => navigate(dashboardTarget)}
+                onClick={() => void navigate(dashboardTarget)}
               >
                 ← 回到交易工作台
               </button>
@@ -199,7 +199,7 @@ export function RuntimePage() {
                   <button
                     className="runtime-button runtime-button-primary"
                     type="button"
-                    onClick={() => navigate(dashboardTarget)}
+                    onClick={() => void navigate(dashboardTarget)}
                   >
                     回到交易工作台
                   </button>
@@ -228,6 +228,6 @@ export function RuntimePage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }

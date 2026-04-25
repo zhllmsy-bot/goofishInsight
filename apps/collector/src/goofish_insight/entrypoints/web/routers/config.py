@@ -34,6 +34,10 @@ from ....application.services.template_config import (
     preview_template_config_diff,
     upsert_template_config,
 )
+from ....application.services.spec_schema_snapshots import (
+    SpecSchemaSnapshotError,
+    get_category_spec_schema,
+)
 from ....application.services.model_config import (
     ModelConfigError,
     export_model_configs,
@@ -230,6 +234,17 @@ def template_config_detail(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     if detail is None:
         raise HTTPException(status_code=404, detail="Template not found.")
+    return JSONResponse(jsonable_encoder(detail))
+
+
+@router.get("/api/categories/{category_code}/spec-schema", response_class=JSONResponse)
+def category_spec_schema_detail(category_code: str) -> JSONResponse:
+    try:
+        detail = get_category_spec_schema(category_code=category_code)
+    except SpecSchemaSnapshotError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if detail is None:
+        raise HTTPException(status_code=404, detail=f"Spec schema not found for category: {category_code}")
     return JSONResponse(jsonable_encoder(detail))
 
 

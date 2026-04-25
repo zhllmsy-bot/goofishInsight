@@ -1,0 +1,83 @@
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --surface-0: #0E0E0C;
+    --surface-1: #161613;
+    --surface-2: #1E1E1B;
+    --surface-3: #28282A;
+    --border-hair: #2E2E2B;
+
+    --ink-primary: #EDEDE8;
+    --ink-secondary: #A5A59E;
+    --ink-tertiary: #6C6C66;
+    --ink-inverse: #0E0E0C;
+
+    --brand-600: #3B8AFF;
+    --brand-500: #3B8AFF;
+    --brand-50: var(--surface-2);
+    --brand-900: var(--ink-primary);
+    --brand-tint: var(--surface-2);
+    --brand-on-tint: var(--brand-600);
+
+    --signal-success: #3FBF6A;
+    --signal-warn: #EA5B52;
+    --signal-danger: #EA5B52;
+    --signal-info: #3B8AFF;
+
+    --decision-buy: #3FBF6A;
+    --decision-watch: #3B8AFF;
+    --decision-market: var(--ink-secondary);
+    --decision-high: #EA5B52;
+    --decision-neutral: var(--ink-tertiary);
+
+    --price-p15: #3FBF6A;
+    --price-p35: #3B8AFF;
+    --price-p50: var(--ink-tertiary);
+
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface-0: #0E0E0C;
+  --surface-1: #161613;
+  --surface-2: #1E1E1B;
+  --surface-3: #28282A;
+  --border-hair: #2E2E2B;
+
+  --ink-primary: #EDEDE8;
+  --ink-secondary: #A5A59E;
+  --ink-tertiary: #6C6C66;
+  --ink-inverse: #0E0E0C;
+
+  --brand-600: #3B8AFF;
+  --brand-500: #3B8AFF;
+  --brand-50: var(--surface-2);
+  --brand-900: var(--ink-primary);
+  --brand-tint: var(--surface-2);
+  --brand-on-tint: var(--brand-600);
+
+  --signal-success: #3FBF6A;
+  --signal-warn: #EA5B52;
+  --signal-danger: #EA5B52;
+  --signal-info: #3B8AFF;
+
+  --decision-buy: #3FBF6A;
+  --decision-watch: #3B8AFF;
+  --decision-market: var(--ink-secondary);
+  --decision-high: #EA5B52;
+  --decision-neutral: var(--ink-tertiary);
+
+  --price-p15: #3FBF6A;
+  --price-p35: #3B8AFF;
+  --price-p50: var(--ink-tertiary);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+}

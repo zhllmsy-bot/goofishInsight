@@ -102,7 +102,19 @@ export function sanitizeFilterOptions(options: FilterOption[]): FilterOption[] {
 }
 
 function normalizeOptionText(value: unknown): string {
-  return String(value ?? '').trim();
+  if (value === null || value === undefined) {
+    return '';
+  }
+  if (typeof value === 'object') {
+    return JSON.stringify(value).trim();
+  }
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value).trim();
+  }
+  return '';
 }
 
 export function buildListingGroups(items: Item[], pricingRow: PricingRow | null): ListingGroup[] {

@@ -155,6 +155,12 @@ def upsert_buy_price_baseline_from_pricing_row(
 ) -> BuyPriceBaseline:
     baseline_key = build_baseline_key(pricing_row=pricing_row, view=view)
     model_catalog_id = _normalize_optional_string(pricing_row.get("model_catalog_id"))
+    pricing_template = build_pricing_record_template_snapshot(
+        business_domain=category.code,
+        record=pricing_row,
+        session=session,
+    )
+    schema_id = _optional_int(pricing_template.get("schemaId") or pricing_row.get("schema_id"))
     existing_stmt = (
         select(BuyPriceBaseline)
         .where(BuyPriceBaseline.category_id == str(category.id))
@@ -165,22 +171,22 @@ def upsert_buy_price_baseline_from_pricing_row(
         existing_stmt = existing_stmt.where(BuyPriceBaseline.model_catalog_id == model_catalog_id)
     else:
         existing_stmt = existing_stmt.where(BuyPriceBaseline.model_catalog_id.is_(None))
+    if schema_id is not None:
+        existing_stmt = existing_stmt.where(BuyPriceBaseline.schema_id == schema_id)
+    else:
+        existing_stmt = existing_stmt.where(BuyPriceBaseline.schema_id.is_(None))
 
     row = session.execute(existing_stmt).scalar_one_or_none()
     if row is None:
         row = BuyPriceBaseline(
             category_id=str(category.id),
             model_catalog_id=model_catalog_id,
+            schema_id=schema_id,
             baseline_key=baseline_key,
             baseline_date=baseline_date,
         )
         session.add(row)
 
-    pricing_template = build_pricing_record_template_snapshot(
-        business_domain=category.code,
-        record=pricing_row,
-        session=session,
-    )
     template_availability = evaluate_pricing_availability(
         template_complete=pricing_template.get("completenessStatus") == "complete",
         seller_sample_count=pricing_row.get("seller_sample_count"),
@@ -192,6 +198,7 @@ def upsert_buy_price_baseline_from_pricing_row(
         guidance_ready_thresholds=dict((pricing_thresholds or {}).get("guidanceReady") or {}),
     )
 
+    row.schema_id = schema_id
     row.memory_gb = _optional_int(pricing_row.get("memory_gb")) if view == "spec" else None
     row.storage_gb = _optional_int(pricing_row.get("storage_gb")) if view == "spec" else None
     row.region = _normalize_optional_string(pricing_row.get("region"))
@@ -215,6 +222,10 @@ def upsert_buy_price_baseline_from_pricing_row(
                 else None
             ),
             "availability": template_availability,
+        },
+        "schema": {
+            "schemaId": schema_id,
+            "schemaSummary": dict(pricing_template.get("schemaSummary") or {}),
         },
     }
     return row
@@ -264,6 +275,7 @@ def serialize_buy_price_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
         "id": row.id,
         "categoryId": row.category_id,
         "modelCatalogId": row.model_catalog_id,
+        "schemaId": row.schema_id,
         "baselineKey": row.baseline_key,
         "memoryGb": row.memory_gb,
         "storageGb": row.storage_gb,
@@ -276,6 +288,7 @@ def serialize_buy_price_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
         "buyCeiling": _decimal_to_float(row.buy_ceiling),
         "confidence": _decimal_to_float(row.confidence),
         "baselineDate": row.baseline_date.isoformat() if row.baseline_date else None,
+        "schemaSummary": dict((row.payload or {}).get("schema", {}).get("schemaSummary") or {}),
         "explanation": build_buy_price_baseline_explanation(row),
         "payload": dict(row.payload or {}),
     }

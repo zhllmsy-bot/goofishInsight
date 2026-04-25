@@ -76,7 +76,7 @@ class AppErrorBoundaryImpl extends Component<AppErrorBoundaryProps, AppErrorBoun
           window.location.reload();
         }}
         onViewRuntime={() => {
-          window.location.assign('/runtime');
+          window.location.assign('/ops/runtime');
         }}
         onRetry={this.reset}
       />

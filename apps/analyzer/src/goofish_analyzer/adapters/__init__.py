@@ -29,6 +29,7 @@ from goofish_schema import (
     ItemIngestRejection,
     ItemSpecEnrichment,
     ModelScore,
+    SkuSpecSchemaSnapshot,
 )
 
 from goofish_insight.domain.pricing.contracts import (
@@ -103,6 +104,7 @@ __all__ = [
     "ItemIngestRejection",
     "ItemSpecEnrichment",
     "ModelScore",
+    "SkuSpecSchemaSnapshot",
     "AVAILABILITY_TIERS",
     "normalize_availability_tier",
     "normalize_opportunity_status",

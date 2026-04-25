@@ -2,7 +2,7 @@ import { Fragment, useMemo } from 'react';
 
 import type { AgentHarnessEvent, AgentHarnessTask } from '../types/agentHarness';
 import { useAgentHarnessState } from '../hooks/useAgentHarnessData';
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 
 import '../../dashboard/styles/dashboard.css';
@@ -123,7 +123,7 @@ export function AgentHarnessPage() {
   const taskPartitions = useMemo(() => partitionTasks(snapshot?.tasks ?? []), [snapshot?.tasks]);
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack agent-harness-page">
@@ -303,6 +303,6 @@ export function AgentHarnessPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }

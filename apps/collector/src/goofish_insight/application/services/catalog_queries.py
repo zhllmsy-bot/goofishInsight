@@ -93,6 +93,11 @@ def build_catalog_template_detail(session, template_id: str) -> dict[str, Any] |
                 "isFilter": item.is_filter,
                 "isSearch": item.is_search,
                 "isDisplay": item.is_display,
+                "role": item.role,
+                "required": item.is_required,
+                "weight": float(item.weight) if item.weight is not None else None,
+                "normalization": item.normalization,
+                "enumValues": item.enum_values,
                 "sortNo": item.sort_no,
                 "options": [
                     {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { PriceGauge } from './PriceGauge';
+import { PriceGauge } from '../../../shared/components/business';
 import { formatCurrency, formatNumber, formatPercent } from '../lib/formatters';
 import { buildWorkspaceLocation } from '../lib/urlState';
 import { useDashboardUiStore } from '../store/dashboardUiStore';
@@ -20,7 +20,7 @@ function PriceCard(props: { hint: string; label: string; tone: 'safe' | 'watch' 
 }
 
 type PricingPanelProps = {
-  itemPrices?: number[];
+  itemPrices?: (number | { price: number; title?: string; sellerName?: string; seenAt?: string })[];
   pricing: PricingData | null;
   pricingRow: PricingRow | null;
   pricingScope: 'actionable' | 'all';
@@ -103,7 +103,7 @@ function buildEmptyPricingCopy(pricing: PricingData | null) {
 
 export function PricingPanel(props: PricingPanelProps) {
   const query = useDashboardUiStore((state) => state.query);
-  const runtimeTarget = buildWorkspaceLocation('/runtime', query);
+  const runtimeTarget = buildWorkspaceLocation('/ops/runtime', query);
 
   if (!props.pricingRow) {
     const copy = buildEmptyPricingCopy(props.pricing);

@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderDashboardApp } from '../../../test/renderApp';
+import { requestUrl } from '../../../test/fetchMock';
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -20,7 +21,8 @@ describe('OnboardingPage', () => {
 
   it('renders onboarding workspace inside React shell and keeps workspace query', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input));
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/onboarding/xianyu/coverage') {
         return jsonResponse({
@@ -77,10 +79,6 @@ describe('OnboardingPage', () => {
       expect(screen.getAllByText('Garmin Fenix 8 Sapphire').length).toBeGreaterThan(0);
     });
 
-    expect(screen.getByRole('link', { name: '前往证据看板' })).toHaveAttribute(
-      'href',
-      expect.stringContaining('category_code=garmin_watch'),
-    );
     expect(screen.getByRole('link', { name: '返回看板' })).toHaveAttribute(
       'href',
       expect.stringContaining('product_label=Fenix+7+Pro'),
@@ -91,7 +89,8 @@ describe('OnboardingPage', () => {
 
   it('renders queue items with status and detail panel', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input));
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/onboarding/xianyu/coverage') {
         return jsonResponse({
@@ -154,7 +153,8 @@ describe('OnboardingPage', () => {
 
   it('renders draft editor after generating draft from queue item', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input));
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/onboarding/xianyu/coverage') {
         return jsonResponse({
@@ -235,7 +235,8 @@ describe('OnboardingPage', () => {
 
   it('renders coverage metrics from API response', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input));
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/onboarding/xianyu/coverage') {
         return jsonResponse({

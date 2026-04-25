@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderDashboardApp } from '../../../test/renderApp';
+import { requestBodyText, requestUrl } from '../../../test/fetchMock';
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -20,7 +21,8 @@ describe('RuntimePage', () => {
 
   it('preserves workspace filters and returns from runtime to dashboard', async () => {
     fetchMock.mockImplementation(async (input) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/dashboard/runtime/status') {
         expect(url.searchParams.get('category_code')).toBe('garmin_watch');
@@ -70,7 +72,8 @@ describe('RuntimePage', () => {
 
   it('submits runtime buy jobs actions with the current category scope', async () => {
     fetchMock.mockImplementation(async (input, init) => {
-      const url = new URL(String(input), 'http://localhost');
+      await Promise.resolve();
+      const url = requestUrl(input);
 
       if (url.pathname === '/api/dashboard/runtime/status') {
         return jsonResponse({
@@ -90,7 +93,7 @@ describe('RuntimePage', () => {
       }
 
       if (url.pathname === '/api/dashboard/runtime/actions') {
-        const body = JSON.parse(String(init?.body ?? '{}')) as {
+        const body = JSON.parse(requestBodyText(init?.body)) as {
           target?: string;
           action?: string;
           categoryCode?: string;

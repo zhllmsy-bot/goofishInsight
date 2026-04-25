@@ -15,7 +15,17 @@ function displaySampleValue(value: unknown): string {
   if (typeof value === 'object') {
     return JSON.stringify(value);
   }
-  return String(value);
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+  return '-';
+}
+
+function safeString(value: unknown): string {
+  return displaySampleValue(value);
 }
 
 export function DraftAttributeRowEditor({ row, index, onChange }: DraftAttributeRowProps) {
@@ -23,15 +33,15 @@ export function DraftAttributeRowEditor({ row, index, onChange }: DraftAttribute
     (field: keyof DraftAttributeRow, value: unknown) => {
       const update: Partial<DraftAttributeRow> = { [field]: value };
       if (field === 'name') {
-        const newName = String(value || '');
+        const newName = safeString(value === '' ? '' : value);
         update.suggestedCode = suggestAttributeCode(newName, row.code);
       }
       if (field === 'dataType') {
-        const newType = String(value || '').toUpperCase();
+        const newType = safeString(value === '' ? '' : value).toUpperCase();
         if (newType === 'ENUM' && !row.optionsText.trim()) {
           const sourceOptions = row.options.length ? row.options : (row.sampleValues.map((v, i) => ({
-            optionCode: String(v).trim().toLowerCase().replaceAll(/[^a-z0-9]+/g, '_').slice(0, 48) || `option_${i + 1}`,
-            optionName: String(v),
+            optionCode: safeString(v).trim().toLowerCase().replaceAll(/[^a-z0-9]+/g, '_').slice(0, 48) || `option_${i + 1}`,
+            optionName: safeString(v),
             sortNo: (i + 1) * 10,
             status: 'ACTIVE',
           })));
@@ -49,8 +59,8 @@ export function DraftAttributeRowEditor({ row, index, onChange }: DraftAttribute
 
   const handleFillEnumFromSamples = useCallback(() => {
     const sourceOptions = row.options.length ? row.options : (row.sampleValues.map((v, i) => ({
-      optionCode: String(v).trim().toLowerCase().replaceAll(/[^a-z0-9]+/g, '_').slice(0, 48) || `option_${i + 1}`,
-      optionName: String(v),
+      optionCode: safeString(v).trim().toLowerCase().replaceAll(/[^a-z0-9]+/g, '_').slice(0, 48) || `option_${i + 1}`,
+      optionName: safeString(v),
       sortNo: (i + 1) * 10,
       status: 'ACTIVE',
     })));

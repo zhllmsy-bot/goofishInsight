@@ -12,6 +12,9 @@ echo "[dashboard-checks] react typecheck"
 echo "[dashboard-checks] react test"
 "$NPM_BIN" run test -w @goofish/dashboard-react
 
+echo "[dashboard-checks] react design-system audit"
+"$NPM_BIN" run design-system:audit -w @goofish/dashboard-react
+
 echo "[dashboard-checks] nest typecheck"
 "$NPM_BIN" run typecheck -w @goofish/dashboard-nest
 

@@ -20,6 +20,11 @@ from ...models import (
     ProductAttrAuditLog,
     TemplateStatus,
 )
+from .spec_schema_snapshots import (
+    SpecSchemaSnapshotError,
+    template_item_schema_payload_from_input,
+    upsert_active_schema_snapshot_with_session,
+)
 
 
 class CatalogTemplatePersistenceError(RuntimeError):
@@ -193,6 +198,7 @@ def persist_catalog_template_payload_with_session(
 
     template_item_count = 0
     seen_template_attributes: set[str] = set()
+    created_template_items: list[CategoryAttrTemplateItem] = []
     for item_payload in list(template_payload.get("items") or []):
         attribute_code = str(item_payload["attributeCode"])
         attribute = attribute_map.get(attribute_code)
@@ -205,19 +211,42 @@ def persist_catalog_template_payload_with_session(
                 f"Duplicate template attribute code in payload: {attribute_code}"
             )
         seen_template_attributes.add(attribute_code)
-        session.add(
-            CategoryAttrTemplateItem(
-                template_id=template.id,
-                attribute_id=attribute.id,
-                is_required=bool(item_payload.get("isRequired", False)),
-                is_sale=bool(item_payload.get("isSale", False)),
-                is_filter=bool(item_payload.get("isFilter", False)),
-                is_search=bool(item_payload.get("isSearch", False)),
-                is_display=bool(item_payload.get("isDisplay", True)),
-                sort_no=int(item_payload.get("sortNo", 0)),
-            )
+        try:
+            schema_payload = template_item_schema_payload_from_input(item_payload)
+        except SpecSchemaSnapshotError as exc:
+            raise CatalogTemplatePersistenceError(str(exc)) from exc
+        item = CategoryAttrTemplateItem(
+            template_id=template.id,
+            attribute_id=attribute.id,
+            is_required=bool(item_payload.get("isRequired", False)),
+            is_sale=bool(item_payload.get("isSale", False)),
+            is_filter=bool(item_payload.get("isFilter", False)),
+            is_search=bool(item_payload.get("isSearch", False)),
+            is_display=bool(item_payload.get("isDisplay", True)),
+            role=schema_payload["role"],
+            weight=schema_payload["weight"],
+            normalization=schema_payload["normalization"],
+            enum_values=schema_payload["enumValues"],
+            sort_no=int(item_payload.get("sortNo", 0)),
         )
+        item.attribute = attribute
+        item.template = template
+        session.add(item)
+        created_template_items.append(item)
         template_item_count += 1
+    template.items = created_template_items
+
+    schema_snapshot = None
+    if template.status == TemplateStatus.PUBLISHED:
+        try:
+            schema_snapshot = upsert_active_schema_snapshot_with_session(
+                session,
+                template=template,
+                created_by=operator_id,
+            )
+        except SpecSchemaSnapshotError as exc:
+            raise CatalogTemplatePersistenceError(str(exc)) from exc
+        session.flush()
 
     audit_log = ProductAttrAuditLog(
         operator_id=operator_id,
@@ -244,6 +273,7 @@ def persist_catalog_template_payload_with_session(
         "attributeCount": len(attribute_map),
         "optionCount": option_count,
         "templateItemCount": template_item_count,
+        "schemaId": getattr(schema_snapshot, "schema_id", None),
         "auditLogId": audit_log.id,
     }
 

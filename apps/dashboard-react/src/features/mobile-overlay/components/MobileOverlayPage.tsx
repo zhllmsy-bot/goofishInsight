@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { TerminalScreen } from '../../../shared/components/TerminalScreen';
+import { AppFrame } from '../../../shared/components/AppFrame';
 import { PageHero } from '../../../shared/components/PageHero';
 import { formatCurrency, formatNumber, formatPercent } from '../../dashboard/lib/formatters';
 import { buildWorkspaceLocation, readInitialQuery } from '../../dashboard/lib/urlState';
@@ -47,7 +47,7 @@ export function MobileOverlayPage() {
     [workspaceQuery],
   );
   const runtimeTarget = useMemo(
-    () => buildWorkspaceLocation('/runtime', workspaceQuery),
+    () => buildWorkspaceLocation('/ops/runtime', workspaceQuery),
     [workspaceQuery],
   );
 
@@ -81,7 +81,7 @@ export function MobileOverlayPage() {
   const alternatives = analysis?.alternatives ?? [];
 
   return (
-    <TerminalScreen>
+    <AppFrame>
       <main className="workspace">
         <div className="workspace-scroll">
           <div className="page-stack">
@@ -255,7 +255,7 @@ export function MobileOverlayPage() {
                     {ocrSummary.text_excerpt ? (
                       <div>
                         <p className="eyebrow">文本摘要</p>
-                        <p style={{ fontSize: 13, color: '#334155', lineHeight: 1.7, margin: 0 }}>
+                        <p className="overlay-text-excerpt">
                           {ocrSummary.text_excerpt}
                         </p>
                       </div>
@@ -274,7 +274,7 @@ export function MobileOverlayPage() {
                         ))}
                       </div>
                     ) : null}
-                    <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                    <div className="chip-row overlay-decision-meta">
                       <span className="soft-pill">
                         快速收货 {decision.quick_flip_ok ? '可行' : '不可行'}
                       </span>
@@ -350,10 +350,10 @@ export function MobileOverlayPage() {
                 ) : null}
 
                 {analysis?.vlm_summary?.error ? (
-                  <article className="overlay-side-panel" style={{ borderColor: '#fecaca', background: '#fef2f2' }}>
+                  <article className="overlay-side-panel danger-banner">
                     <p className="eyebrow">VLM Error</p>
                     <h3>VLM 分析失败</h3>
-                    <p style={{ fontSize: 12, color: '#b91c1c', margin: 0 }}>{analysis.vlm_summary.error}</p>
+                    <p className="overlay-error-text">{analysis.vlm_summary.error}</p>
                   </article>
                 ) : null}
               </aside>
@@ -361,7 +361,7 @@ export function MobileOverlayPage() {
           </div>
         </div>
       </main>
-    </TerminalScreen>
+    </AppFrame>
   );
 }
 

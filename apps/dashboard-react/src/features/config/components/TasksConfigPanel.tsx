@@ -102,10 +102,10 @@ export function TasksConfigPanel() {
           <p className="config-empty-state">暂无任务配置</p>
         ) : (
           <div className="config-list-scroll">
-            {tasks.map((item) => (
+            {tasks.map((item, index) => (
               <button
                 className={`config-list-card ${item.id === (selectedItem?.id ?? null) ? 'is-active' : ''}`}
-                key={item.id ?? item.taskKey ?? Math.random()}
+                key={item.id ?? item.taskKey ?? `task-${index}`}
                 type="button"
                 onClick={() => setSelectedId(item.id ?? null)}
               >

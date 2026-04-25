@@ -20,8 +20,9 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     func,
+    text,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -672,6 +673,7 @@ class BuyPriceBaseline(TimestampMixin, Base):
         UniqueConstraint(
             "category_id",
             "model_catalog_id",
+            "schema_id",
             "baseline_key",
             "baseline_date",
             name="uq_buy_price_baseline_key_date",
@@ -681,6 +683,7 @@ class BuyPriceBaseline(TimestampMixin, Base):
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
     category_id: Mapped[str] = mapped_column(ForeignKey("category.id"), nullable=False)
     model_catalog_id: Mapped[str | None] = mapped_column(ForeignKey("category_model_catalog.id"))
+    schema_id: Mapped[int | None] = mapped_column(ForeignKey("sku_spec_schema_snapshots.schema_id"))
     baseline_key: Mapped[str] = mapped_column(String(255), nullable=False)
     memory_gb: Mapped[int | None] = mapped_column(Integer)
     storage_gb: Mapped[int | None] = mapped_column(Integer)
@@ -694,6 +697,10 @@ class BuyPriceBaseline(TimestampMixin, Base):
     confidence: Mapped[Decimal | None] = mapped_column(Numeric(5, 4))
     baseline_date: Mapped[date] = mapped_column(Date, nullable=False)
     payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+
+    schema_snapshot: Mapped["SkuSpecSchemaSnapshot | None"] = relationship(
+        back_populates="buy_price_baselines"
+    )
 
 
 class BuyOpportunity(TimestampMixin, Base):
@@ -828,6 +835,7 @@ class Category(TimestampMixin, Base):
     )
     children: Mapped[list["Category"]] = relationship("Category", back_populates="parent")
     templates: Mapped[list["CategoryAttrTemplate"]] = relationship(back_populates="category")
+    spec_schema_snapshots: Mapped[list["SkuSpecSchemaSnapshot"]] = relationship(back_populates="category")
     runtime_profile: Mapped["CategoryRuntimeProfile | None"] = relationship(
         back_populates="category",
         uselist=False,
@@ -915,6 +923,7 @@ class CategoryAttrTemplate(TimestampMixin, Base):
 
     category: Mapped["Category"] = relationship(back_populates="templates")
     items: Mapped[list["CategoryAttrTemplateItem"]] = relationship(back_populates="template")
+    spec_schema_snapshots: Mapped[list["SkuSpecSchemaSnapshot"]] = relationship(back_populates="template")
     active_runtime_profiles: Mapped[list["CategoryRuntimeProfile"]] = relationship(
         back_populates="active_template",
         foreign_keys="CategoryRuntimeProfile.active_template_id",
@@ -1101,10 +1110,52 @@ class CategoryAttrTemplateItem(TimestampMixin, Base):
     is_filter: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_search: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_display: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    role: Mapped[str] = mapped_column(String(32), nullable=False, default="descriptive")
+    weight: Mapped[Decimal | None] = mapped_column(Numeric(4, 2), default=Decimal("0"))
+    normalization: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    enum_values: Mapped[list[Any] | dict[str, Any] | None] = mapped_column(JSONB)
     sort_no: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     template: Mapped["CategoryAttrTemplate"] = relationship(back_populates="items")
     attribute: Mapped["AttributeDefinition"] = relationship(back_populates="template_items")
+
+
+class SkuSpecSchemaSnapshot(TimestampMixin, Base):
+    __tablename__ = "sku_spec_schema_snapshots"
+    __table_args__ = (
+        UniqueConstraint(
+            "category_code",
+            "template_version",
+            name="uq_sku_spec_schema_snapshot_category_version",
+        ),
+        Index(
+            "ix_sku_spec_schema_snapshot_active",
+            "category_code",
+            postgresql_where=text("valid_to IS NULL"),
+        ),
+    )
+
+    schema_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    category_id: Mapped[str | None] = mapped_column(ForeignKey("category.id"))
+    category_code: Mapped[str] = mapped_column(Text, nullable=False)
+    template_id: Mapped[str | None] = mapped_column(ForeignKey("category_attr_template.id"))
+    template_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    locking_attrs: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    required_attrs: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    variant_attrs: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    condition_attrs: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    weights: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+    normalization: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    enum_values: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    valid_from: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    valid_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[str | None] = mapped_column(Text)
+
+    category: Mapped["Category | None"] = relationship(back_populates="spec_schema_snapshots")
+    template: Mapped["CategoryAttrTemplate | None"] = relationship(back_populates="spec_schema_snapshots")
+    buy_price_baselines: Mapped[list["BuyPriceBaseline"]] = relationship(back_populates="schema_snapshot")
 
 
 class ProductSpu(TimestampMixin, Base):

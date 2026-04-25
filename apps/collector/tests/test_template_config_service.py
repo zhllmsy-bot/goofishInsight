@@ -38,6 +38,9 @@ class _FakeExecuteResult:
     def scalars(self):
         return _FakeScalarRows(self._rows)
 
+    def scalar_one_or_none(self):
+        return self._rows[0] if self._rows else None
+
 
 class _FakeSession:
     def __init__(self, *, execute_results=None, categories=None, templates=None) -> None:
@@ -216,8 +219,22 @@ class TemplateConfigServiceTests(unittest.TestCase):
                 "version": 1,
                 "status": "DRAFT",
                 "items": [
-                    {"attributeCode": "chip_family", "isRequired": True, "sortNo": 10},
-                    {"attributeCode": "memory_gb", "isSale": True, "sortNo": 20},
+                    {
+                        "attributeCode": "chip_family",
+                        "isRequired": True,
+                        "role": "locking",
+                        "weight": 0.25,
+                        "enumValues": ["M1", "M2", "M3", "M4"],
+                        "sortNo": 10,
+                    },
+                    {
+                        "attributeCode": "memory_gb",
+                        "isSale": True,
+                        "role": "locking",
+                        "weight": 0.15,
+                        "normalization": {"unit": "GB"},
+                        "sortNo": 20,
+                    },
                 ],
             },
             operator_id="ops-bot",
@@ -226,6 +243,12 @@ class TemplateConfigServiceTests(unittest.TestCase):
 
         self.assertEqual(result["template"]["categoryCode"], "apple_computer")
         self.assertEqual(result["template"]["itemCount"], 2)
+        first_item = result["template"]["items"][0]
+        self.assertEqual(first_item["role"], "locking")
+        self.assertEqual(first_item["weight"], 0.25)
+        self.assertEqual(first_item["enumValues"], ["M1", "M2", "M3", "M4"])
+        second_item = result["template"]["items"][1]
+        self.assertEqual(second_item["normalization"], {"unit": "GB"})
         self.assertTrue(any(isinstance(obj, ProductAttrAuditLog) for obj in session.added))
 
     def test_upsert_template_config_can_bind_active_runtime_profile(self) -> None:

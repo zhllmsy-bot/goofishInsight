@@ -96,7 +96,7 @@ describe('OpportunityActionPanel', () => {
     expect(screen.getByRole('heading', { name: '先处理今天最值得看的机会' })).toBeInTheDocument();
     expect(screen.getByText('低于买入线，可以先联系再核对成色。')).toBeInTheDocument();
     expect(screen.getByText('4')).toBeInTheDocument();
-    expect(buyUrl.pathname).toBe('/buy/opportunities');
+    expect(buyUrl.pathname).toBe('/');
     expect(evidenceUrl.pathname).toBe('/items/item-1');
 
     [buyUrl, evidenceUrl].forEach((url) => {
