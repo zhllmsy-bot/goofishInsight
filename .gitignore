@@ -1,0 +1,144 @@
+# Node.js
+node_modules/
+.npm
+.npmrc
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+develop-eggs/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+
+# Cache
+.cache/
+.turbo/
+.mypy_cache/
+.pytest_cache/
+.pytype/
+.nox/
+.tox/
+.hypothesis/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.stackdump
+[Dd]esktop.ini
+
+# Project specific directories
+data/
+tmp/
+artifacts/
+reports/
+output/
+backups/
+playwright-report/
+test-results/
+run_logs/
+mock/
+.playwright-cli/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+.env.production
+.env.development
+*.pem
+*.key
+*.dump
+*.sql.gz
+*.bak
+*credentials*
+*secret*
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+ENV/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE and editors
+.vscode/
+.idea/
+.codex/
+.trae/
+.learnings/
+skills/
+.claude/
+.codex-bin/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*~
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+
+# Logs
+*.log
+logs/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Temporary files
+*.bak
+*.tmp
+*.temp
+*.bak[0-9]
+*.orig
+
+# Database specific
+database/source/*.json
+database/review/*.json
+apps/android-overlay/.gradle/
+apps/android-overlay/.kotlin/sessions/
+# Windows absolute path residues accidentally created on POSIX
+C:*/

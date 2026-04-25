@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "goofish-insight"
+version = "0.1.0"
+description = "Goofish Insight collector and analytics foundation"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "alembic>=1.14.1",
+  "fastapi>=0.116.1",
+  "httpx>=0.28.1",
+  "jinja2>=3.1.6",
+  "playwright>=1.58.0",
+  "psycopg[binary]>=3.2.6",
+  "pydantic>=2.11.3",
+  "pydantic-settings>=2.8.1",
+  "sqlalchemy>=2.0.40",
+  "typer>=0.15.2",
+  "uvicorn>=0.35.0"
+]
+
+[project.scripts]
+goofish-collector = "goofish_insight.cli:app"
+
+[tool.setuptools.package-dir]
+"" = "apps/collector/src"
+
+[tool.setuptools.packages.find]
+where = ["apps/collector/src"]

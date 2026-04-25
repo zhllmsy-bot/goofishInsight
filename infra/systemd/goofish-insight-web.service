@@ -1,0 +1,19 @@
+[Unit]
+Description=Goofish Insight Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=zh
+WorkingDirectory=/home/zh/goofish-insight
+EnvironmentFile=/home/zh/goofish-insight/.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/home/zh/goofish-insight/apps/collector/src
+Restart=always
+RestartSec=3
+StandardOutput=append:/home/zh/goofish-insight/run_logs/serve-web.log
+StandardError=append:/home/zh/goofish-insight/run_logs/serve-web.log
+ExecStart=/home/zh/goofish-insight/.venv-web/bin/python -m goofish_insight.cli serve-web --host :: --port 3003
+
+[Install]
+WantedBy=multi-user.target

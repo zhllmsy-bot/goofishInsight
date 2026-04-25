@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.admin.goofish-qwen25-vl-72b-8020</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>__LOCAL_QWEN_PYTHON_BIN__</string>
+      <string>__GOOFISH_ROOT_DIR__/scripts/serve_qwen25_vl_72b.py</string>
+      <string>--model</string>
+      <string>__QWEN25_VL_MODEL_PATH__</string>
+      <string>--host</string>
+      <string>127.0.0.1</string>
+      <string>--port</string>
+      <string>8020</string>
+      <string>--prefill-step-size</string>
+      <string>256</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>__GOOFISH_ROOT_DIR__</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>__GOOFISH_LOG_DIR__/goofish-qwen25-vl-72b-8020.log</string>
+    <key>StandardErrorPath</key>
+    <string>__GOOFISH_LOG_DIR__/goofish-qwen25-vl-72b-8020.err.log</string>
+  </dict>
+</plist>

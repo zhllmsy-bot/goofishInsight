@@ -1,0 +1,32 @@
+{
+  "categoryCode": "garmin_watch",
+  "allowedModelCodes": [
+    "garmin_watch_epix_pro",
+    "garmin_watch_fenix_7",
+    "garmin_watch_fenix_7_pro",
+    "garmin_watch_fenix_7s",
+    "garmin_watch_fenix_7x",
+    "garmin_watch_fenix_7x_pro",
+    "garmin_watch_fenix_8",
+    "garmin_watch_fenix_8_47mm",
+    "garmin_watch_fenix_8_51mm",
+    "garmin_watch_fenix_8_amoled",
+    "garmin_watch_forerunner_255",
+    "garmin_watch_forerunner_265",
+    "garmin_watch_forerunner_265s",
+    "garmin_watch_forerunner_955",
+    "garmin_watch_forerunner_965",
+    "garmin_watch_instinct_2x",
+    "garmin_watch_instinct_2x_solar",
+    "garmin_watch_tactix_7",
+    "garmin_watch_tactix_7_amoled",
+    "garmin_watch_tactix_8",
+    "garmin_watch_tactix_8_amoled"
+  ],
+  "disabledAliasTexts": [
+    "Fenix",
+    "Forerunner",
+    "Instinct",
+    "Tactix"
+  ]
+}

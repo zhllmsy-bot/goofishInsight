@@ -1,0 +1,58 @@
+{
+  "requestId": "req-product-replace-001",
+  "spu": {
+    "id": "8ba511b5-77db-4431-a905-4a4098ce09e8",
+    "categoryId": "11111111-1111-1111-1111-111111111101",
+    "templateId": "11111111-1111-1111-1111-111111111401",
+    "merchantId": "merchant-demo",
+    "brandId": "brand-demo",
+    "title": "小米 15 Pro",
+    "status": "ACTIVE"
+  },
+  "spuAttributes": [
+    {
+      "attributeCode": "screen_size",
+      "numberValue": 6.73,
+      "normalizedNumberValue": 6.73,
+      "unit": "inch"
+    }
+  ],
+  "skus": [
+    {
+      "skuCode": "MI15P-BLK-12G",
+      "price": 4999,
+      "stock": 50,
+      "barcode": "690000000011",
+      "status": "ACTIVE",
+      "saleAttributes": [
+        {
+          "attributeCode": "color",
+          "optionCode": "black"
+        },
+        {
+          "attributeCode": "memory_size",
+          "optionCode": "12"
+        }
+      ],
+      "attributes": []
+    },
+    {
+      "skuCode": "MI15P-WHT-16G",
+      "price": 5499,
+      "stock": 30,
+      "barcode": "690000000012",
+      "status": "ACTIVE",
+      "saleAttributes": [
+        {
+          "attributeCode": "color",
+          "optionCode": "white"
+        },
+        {
+          "attributeCode": "memory_size",
+          "optionCode": "16"
+        }
+      ],
+      "attributes": []
+    }
+  ]
+}

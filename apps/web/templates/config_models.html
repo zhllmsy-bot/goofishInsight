@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="config-page" data-model-config-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">具体品类 / 型号库配置</p>
+      <h2>Model Catalog Config</h2>
+      <p class="hero-text">
+        这里维护大类下的具体品类、标准型号、别名和导入导出。保存后会自动同步 batch collect 所需的 query 和 lexicon，specs、看板和标准化也会一起消费这一层型号库。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">Model Catalog + Aliases</span>
+    </div>
+  </section>
+
+  <div class="config-studio-shell">
+    <aside class="config-studio-sidebar">
+      <article class="panel config-list-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Models</p>
+            <h3>型号库</h3>
+          </div>
+          <span class="status-pill" data-model-config-total>加载中</span>
+        </div>
+        <div class="config-list" data-model-config-list>
+          <article class="async-skeleton panel compact-panel">
+            <p class="eyebrow">加载中</p>
+            <h3>正在载入型号配置...</h3>
+          </article>
+        </div>
+      </article>
+
+      <section class="panel onboarding-control-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Model Desk</p>
+            <h3>型号列表与筛选</h3>
+          </div>
+        </div>
+        <form class="onboarding-controls" data-model-config-controls>
+          <label class="filter-field">
+            <span>Operator</span>
+            <input type="text" name="operatorId" value="admin" />
+          </label>
+          <label class="filter-field">
+            <span>Status</span>
+            <select name="status">
+              <option value="">全部</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="DISABLED">DISABLED</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Category</span>
+            <select name="categoryCodeFilter" data-model-config-category-filter>
+              <option value="">全部大类</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Brand Name</span>
+            <input type="text" name="brandNameFilter" placeholder="例如：Nikon" />
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="primary-button" data-model-config-action="new">新建型号</button>
+            <button type="button" class="secondary-button" data-model-config-action="refresh">刷新列表</button>
+            <button type="button" class="secondary-button" data-model-config-action="export-json">导出 JSON</button>
+            <button type="button" class="secondary-button" data-model-config-action="import-json">导入 JSON</button>
+          </div>
+          <p class="runtime-feedback onboarding-feedback" data-model-config-feedback></p>
+        </form>
+      </section>
+
+      {% include "_config_subnav.html" %}
+    </aside>
+
+    <div class="config-studio-main">
+      <section class="panel config-context-banner">
+        <div>
+          <p class="eyebrow">Current Context</p>
+          <h3 data-model-context-title>型号库工作台</h3>
+          <p class="runtime-panel-text" data-model-context-description>
+            型号库是“大类下的具体品类”表达层。标准型号、别名、品牌和系列会直接影响 specs 标准化与 batch collect 的 query 同步。
+          </p>
+        </div>
+        <div class="config-context-tabs">
+          <a class="config-context-tab" href="/config/categories" data-model-context-link="categories">大类详情</a>
+          <a class="config-context-tab" href="/config/attributes">全局属性池</a>
+          <a class="config-context-tab" href="/config/templates" data-model-context-link="templates">模板编排</a>
+          <a class="config-context-tab is-active" href="#" aria-current="page">型号库</a>
+        </div>
+      </section>
+
+      <article class="panel config-detail-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Editor Summary</p>
+            <h3>当前型号摘要</h3>
+          </div>
+          <button type="button" class="primary-button" data-model-config-action="open-editor">打开型号抽屉</button>
+        </div>
+        <div class="config-inline-meta" data-model-config-summary>
+          <p class="runtime-panel-text">选择左侧型号后，这里会显示所属大类、品牌和 alias 数量。</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="config-modal" data-model-config-modal hidden>
+    <div class="config-modal-backdrop" data-model-config-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="model-config-modal-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Model Drawer</p>
+          <h3 id="model-config-modal-title">型号定义与 Alias</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-model-config-modal-close aria-label="关闭抽屉">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-model-config-form>
+          <input type="hidden" name="modelId" />
+          <input type="hidden" name="categoryId" />
+          <input type="hidden" name="categoryCode" />
+          <label class="filter-field wide-field">
+            <span>Bound Category</span>
+            <select name="categoryBinding" data-model-config-category-binding>
+              <option value="">请选择大类</option>
+            </select>
+          </label>
+          <div class="config-inline-meta">
+            <div class="runtime-stat">
+              <span>当前大类</span>
+              <strong data-model-config-category-label>未选择</strong>
+            </div>
+            <p class="runtime-panel-text" data-model-config-category-hint>
+              建议总是从大类上下文进入型号页。保存型号时会自动把当前大类同步到 batch collect、specs 标准化和看板聚合链路。
+            </p>
+          </div>
+          <div class="config-form-grid">
+            <label class="filter-field">
+              <span>Brand Name</span>
+              <input type="text" name="brandName" placeholder="例如：Apple / Nikon" />
+            </label>
+            <label class="filter-field">
+              <span>Series Name</span>
+              <input type="text" name="seriesName" placeholder="例如：MacBook Pro / Z" />
+            </label>
+            <label class="filter-field">
+              <span>Model Code</span>
+              <input type="text" name="modelCode" placeholder="例如：mbp_14_m4_pro" />
+            </label>
+            <label class="filter-field">
+              <span>Model Name</span>
+              <input type="text" name="modelName" placeholder="例如：MacBook Pro 14 M4 Pro" />
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select name="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="DISABLED">DISABLED</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="filter-field wide-field">
+            <span>Aliases (每行 `aliasText|aliasType`)</span>
+            <textarea name="aliasesText" rows="10" spellcheck="false"></textarea>
+          </label>
+
+          <details class="ai-advanced-details">
+            <summary>高级设置 / 导入导出</summary>
+            <label class="filter-field wide-field">
+              <span>Import / Export JSON</span>
+              <textarea name="exchangeJson" rows="12" spellcheck="false"></textarea>
+            </label>
+          </details>
+        </form>
+        <div class="onboarding-action-row">
+          <button type="button" class="secondary-button" data-model-config-action="save-dry-run">预演保存</button>
+          <button type="button" class="primary-button" data-model-config-action="save-apply">正式保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='config-models.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

@@ -1,0 +1,392 @@
+{
+  "categories": [
+    {
+      "code": "camera_body",
+      "name": "相机机身",
+      "path": "camera/body",
+      "level": 2,
+      "status": "ACTIVE",
+      "runtime": {
+        "promptProfile": "camera_body_extract_v1",
+        "extractorProfile": "default",
+        "runtimeStatus": "ACTIVE"
+      },
+      "template": {
+        "status": "PUBLISHED",
+        "bindAsActiveTemplate": true,
+        "activateOnPublish": true,
+        "items": [
+          { "attributeCode": "brand_name", "isRequired": true, "isFilter": true, "isSearch": true, "isDisplay": true, "sortNo": 10 },
+          { "attributeCode": "model_name", "isRequired": true, "isFilter": true, "isSearch": true, "isDisplay": true, "sortNo": 20 },
+          { "attributeCode": "mount_system", "isRequired": true, "isFilter": true, "isSearch": false, "isDisplay": true, "sortNo": 30 },
+          { "attributeCode": "sensor_format", "isRequired": true, "isFilter": true, "isSearch": false, "isDisplay": true, "sortNo": 40 },
+          { "attributeCode": "pixel_resolution", "isRequired": false, "isFilter": true, "isSearch": false, "isDisplay": true, "sortNo": 50 },
+          { "attributeCode": "camera_type", "isRequired": false, "isFilter": true, "isSearch": false, "isDisplay": true, "sortNo": 60 },
+          { "attributeCode": "generation", "isRequired": false, "isFilter": false, "isSearch": false, "isDisplay": true, "sortNo": 70 }
+        ]
+      }
+    }
+  ],
+  "models": [
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7_iv",
+      "modelName": "Sony A7 IV",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A7 IV", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7_iii",
+      "modelName": "Sony A7 III",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A7 III", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7c_ii",
+      "modelName": "Sony A7C II",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A7C II", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7c_r",
+      "modelName": "Sony A7C R",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A7CR", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7r_v",
+      "modelName": "Sony A7R V",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A7R V", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a6700",
+      "modelName": "Sony A6700",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A6700", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a6400",
+      "modelName": "Sony A6400",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "索尼 A6400", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r6_mark_ii",
+      "modelName": "Canon EOS R6 Mark II",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "佳能 R6二代", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r5",
+      "modelName": "Canon EOS R5",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "佳能 R5", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r8",
+      "modelName": "Canon EOS R8",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "佳能 R8", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r7",
+      "modelName": "Canon EOS R7",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "佳能 R7", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r50",
+      "modelName": "Canon EOS R50",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "佳能 R50", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_zf",
+      "modelName": "Nikon Zf",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Zf", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z6_iii",
+      "modelName": "Nikon Z6 III",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z6III", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z6_ii",
+      "modelName": "Nikon Z6 II",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z6II", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z8",
+      "modelName": "Nikon Z8",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z8", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z5",
+      "modelName": "Nikon Z5",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z5", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_t5",
+      "modelName": "Fujifilm X-T5",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "富士 X-T5", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_s20",
+      "modelName": "Fujifilm X-S20",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "富士 X-S20", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_t50",
+      "modelName": "Fujifilm X-T50",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "富士 X-T50", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_14_24_f28_s",
+      "modelName": "NIKKOR Z 14-24mm f/2.8 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 14-24 2.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_17_28_f28",
+      "modelName": "NIKKOR Z 17-28mm f/2.8",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 17-28 2.8", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_20_f18_s",
+      "modelName": "NIKKOR Z 20mm f/1.8 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 20 1.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_24_70_f28_s",
+      "modelName": "NIKKOR Z 24-70mm f/2.8 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 24-70 2.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_24_70_f4_s",
+      "modelName": "NIKKOR Z 24-70mm f/4 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 24-70 F4 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_24_120_f4_s",
+      "modelName": "NIKKOR Z 24-120mm f/4 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 24-120 F4 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_24_200_f4_63_vr",
+      "modelName": "NIKKOR Z 24-200mm f/4-6.3 VR",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 24-200", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_28_75_f28",
+      "modelName": "NIKKOR Z 28-75mm f/2.8",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 28-75 2.8", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_28_400_f4_8_vr",
+      "modelName": "NIKKOR Z 28-400mm f/4-8 VR",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 28-400", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_35_f18_s",
+      "modelName": "NIKKOR Z 35mm f/1.8 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 35 1.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_40_f2",
+      "modelName": "NIKKOR Z 40mm f/2",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 40 2", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_50_f18_s",
+      "modelName": "NIKKOR Z 50mm f/1.8 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 50 1.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_50_f12_s",
+      "modelName": "NIKKOR Z 50mm f/1.2 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 50 1.2 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_85_f18_s",
+      "modelName": "NIKKOR Z 85mm f/1.8 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 85 1.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_85_f12_s",
+      "modelName": "NIKKOR Z 85mm f/1.2 S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 85 1.2 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_mc_105_f28_vr_s",
+      "modelName": "NIKKOR Z MC 105mm f/2.8 VR S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 105 2.8 微距", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_70_200_f28_vr_s",
+      "modelName": "NIKKOR Z 70-200mm f/2.8 VR S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 70-200 2.8 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_100_400_f45_56_vr_s",
+      "modelName": "NIKKOR Z 100-400mm f/4.5-5.6 VR S",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 100-400 S", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_135_f18_s_plena",
+      "modelName": "NIKKOR Z 135mm f/1.8 S Plena",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 135 1.8 Plena", "aliasType": "TITLE", "status": "ACTIVE" }]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Nikon",
+      "seriesName": "NIKKOR Z",
+      "modelCode": "nikon_z_180_600_f56_63_vr",
+      "modelName": "NIKKOR Z 180-600mm f/5.6-6.3 VR",
+      "status": "ACTIVE",
+      "aliases": [{ "aliasText": "尼康 Z 180-600", "aliasType": "TITLE", "status": "ACTIVE" }]
+    }
+  ]
+}

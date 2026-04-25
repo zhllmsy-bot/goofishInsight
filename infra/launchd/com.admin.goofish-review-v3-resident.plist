@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.admin.goofish-review-v3-resident</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>__GOOFISH_RUNTIME_HOME__/start-review-v3-resident.sh</string>
+	</array>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>GOOFISH_ROOT_DIR</key>
+		<string>__GOOFISH_ROOT_DIR__</string>
+		<key>WORKER_LABEL</key>
+		<string>resident-v3-worker</string>
+		<key>LIMIT</key>
+		<string>50</string>
+		<key>AI_TIMEOUT_SEC</key>
+		<string>90</string>
+		<key>IDLE_POLL_SECONDS</key>
+		<string>45</string>
+		<key>ERROR_POLL_SECONDS</key>
+		<string>20</string>
+	</dict>
+	<key>WorkingDirectory</key>
+	<string>__GOOFISH_RUNTIME_HOME__</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>StandardOutPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-review-v3-resident.log</string>
+	<key>StandardErrorPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-review-v3-resident.err.log</string>
+</dict>
+</plist>

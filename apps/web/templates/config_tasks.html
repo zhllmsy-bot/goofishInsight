@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="config-page" data-task-config-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">任务配置</p>
+      <h2>Batch Task Config</h2>
+      <p class="hero-text">
+        这里维护采集任务、大类归属、query 列表和 lexicon。resident batch collect 会逐步优先消费这里的数据库配置，而不是继续依赖静态 JSON。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">Tasks + Queries + Lexicons</span>
+    </div>
+  </section>
+
+  {% include "_config_subnav.html" %}
+
+  <section class="panel onboarding-control-panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="eyebrow">操作入口</p>
+        <h3>任务列表与保存</h3>
+      </div>
+    </div>
+    <form class="onboarding-controls" data-task-config-controls>
+      <label class="filter-field">
+        <span>Operator</span>
+        <input type="text" name="operatorId" value="admin" />
+      </label>
+      <label class="filter-field">
+        <span>Status</span>
+        <select name="status">
+          <option value="">全部</option>
+          <option value="active">active</option>
+          <option value="paused">paused</option>
+          <option value="disabled">disabled</option>
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Category</span>
+        <select name="categoryCodeFilter" data-task-config-category-filter>
+          <option value="">全部大类</option>
+        </select>
+      </label>
+      <div class="onboarding-action-row">
+        <button type="button" class="secondary-button" data-task-config-action="new">新建任务</button>
+        <button type="button" class="secondary-button" data-task-config-action="refresh">刷新列表</button>
+        <button type="button" class="secondary-button" data-task-config-action="save-dry-run">预演保存</button>
+        <button type="button" class="primary-button" data-task-config-action="save-apply">正式保存</button>
+      </div>
+      <p class="runtime-feedback onboarding-feedback" data-task-config-feedback></p>
+    </form>
+  </section>
+
+  <section class="config-layout">
+    <article class="panel config-list-panel">
+      <div class="panel-header tight">
+        <div>
+          <p class="eyebrow">Tasks</p>
+          <h3>采集任务</h3>
+        </div>
+        <span class="status-pill" data-task-config-total>加载中</span>
+      </div>
+      <div class="config-list" data-task-config-list>
+        <article class="async-skeleton panel compact-panel">
+          <p class="eyebrow">加载中</p>
+          <h3>正在载入任务配置...</h3>
+        </article>
+      </div>
+    </article>
+
+    <article class="panel config-detail-panel">
+      <div class="panel-header tight">
+        <div>
+          <p class="eyebrow">Editor</p>
+          <h3>任务、大类、Query、Lexicon</h3>
+        </div>
+      </div>
+      <form class="config-form" data-task-config-form>
+        <input type="hidden" name="categoryId" />
+        <input type="hidden" name="categoryCode" />
+        <label class="filter-field wide-field">
+          <span>Bound Category</span>
+          <select name="categoryBinding" data-task-config-category-binding>
+            <option value="">不绑定大类</option>
+          </select>
+        </label>
+        <div class="config-inline-meta">
+          <div class="runtime-stat">
+            <span>当前大类</span>
+            <strong data-task-config-category-label>未绑定</strong>
+          </div>
+          <div class="runtime-stat">
+            <span>当前 Domain</span>
+            <strong data-task-config-domain-label>未设置</strong>
+          </div>
+          <p class="runtime-panel-text" data-task-config-category-hint>
+            生产任务建议始终绑定到单一大类。绑定后 business domain 会自动镜像为该大类的 canonical code。
+          </p>
+        </div>
+        <div class="config-form-grid">
+          <label class="filter-field">
+            <span>Task Key</span>
+            <input type="text" name="taskKey" placeholder="例如：apple-computer-core" />
+          </label>
+          <label class="filter-field">
+            <span>Display Name</span>
+            <input type="text" name="displayName" placeholder="例如：Apple电脑核心任务" />
+          </label>
+          <label class="filter-field">
+            <span>Task Type</span>
+            <select name="taskType">
+              <option value="PRODUCTION">PRODUCTION</option>
+              <option value="DISCOVERY">DISCOVERY</option>
+              <option value="SMOKE">SMOKE</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Profile Key</span>
+            <input type="text" name="profileKey" value="chrome-attached" />
+          </label>
+          <label class="filter-field narrow-field">
+            <span>Parallel Tabs</span>
+            <input type="number" name="parallelTabs" min="1" max="16" value="1" />
+          </label>
+          <label class="filter-field narrow-field">
+            <span>Paging Limit</span>
+            <input type="number" name="pagingLimit" min="1" max="50" value="5" />
+          </label>
+          <label class="filter-field">
+            <span>Status</span>
+            <select name="status">
+              <option value="active">active</option>
+              <option value="paused">paused</option>
+              <option value="disabled">disabled</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="config-inline-meta" data-task-config-summary>
+          <p class="runtime-panel-text">选择左侧任务后，这里会显示 category 绑定、query 数量和 lexicon 数量。</p>
+        </div>
+
+        <details class="ai-advanced-details">
+          <summary>高级设置 / 非绑定大类任务</summary>
+          <label class="filter-field wide-field">
+            <span>Business Domain</span>
+            <input type="text" name="businessDomain" placeholder="仅在不绑定大类的系统任务中手填，例如：xianyu_onboarding" />
+          </label>
+        </details>
+
+        <label class="filter-field wide-field">
+          <span>Queries (每行 `query|pages|priority`)</span>
+          <textarea name="queriesText" rows="8" spellcheck="false"></textarea>
+        </label>
+        <label class="filter-field wide-field">
+          <span>Brand Lexicon (每行一个 term)</span>
+          <textarea name="brandLexiconText" rows="4" spellcheck="false"></textarea>
+        </label>
+        <label class="filter-field wide-field">
+          <span>Model Lexicon (每行一个 term)</span>
+          <textarea name="modelLexiconText" rows="4" spellcheck="false"></textarea>
+        </label>
+        <label class="filter-field wide-field">
+          <span>Config Lexicon (每行一个 term)</span>
+          <textarea name="configLexiconText" rows="4" spellcheck="false"></textarea>
+        </label>
+      </form>
+    </article>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='config-tasks.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

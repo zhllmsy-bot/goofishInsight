@@ -1,0 +1,21 @@
+# W5 MVP manual fallback ranges. Historical calibration can overwrite these later.
+apple_computer:
+  min_price: 500
+  max_price: 60000
+  source: manual_mvp
+garmin_watch:
+  min_price: 300
+  max_price: 30000
+  source: manual_mvp
+camera_body:
+  min_price: 300
+  max_price: 80000
+  source: manual_mvp
+camera_interchangeable_lens:
+  min_price: 100
+  max_price: 80000
+  source: manual_mvp
+default:
+  min_price: 100
+  max_price: 100000
+  source: manual_mvp

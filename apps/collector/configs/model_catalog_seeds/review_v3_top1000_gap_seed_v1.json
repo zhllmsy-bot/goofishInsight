@@ -1,0 +1,185 @@
+{
+  "items": [
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7_iii",
+      "modelName": "Sony A7 III",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Sony A7M3", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "索尼A7M3", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "A7M3", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7r_iii",
+      "modelName": "Sony A7R III",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Sony A7R3", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "索尼A7R3", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "A7R3", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7r_iv",
+      "modelName": "Sony A7R IV",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Sony A7R4", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "索尼A7R4", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "A7R4", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_13_m5_16g_512g",
+      "modelName": "MacBook Air 13 M5 16G 512G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "MacBook Air M5 16+512", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 13寸 M5 16G 512G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "13寸 MacBook Air M5 16+512", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_15_m5_16g_512g",
+      "modelName": "MacBook Air 15 M5 16G 512G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "15寸 MacBook Air M5 16+512", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 15寸 M5 16G 512G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBookAirm5 16+512", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_15_m5_16g_1024g",
+      "modelName": "MacBook Air 15 M5 16G 1024G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "15寸 MacBook Air M5 16+1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 15寸 M5 16G 1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBookAirm5 16+1t", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Pro",
+      "modelCode": "apple_computer_macbook_pro_16_m1_max_32g_1024g",
+      "modelName": "MacBook Pro 16 M1 Max 32G 1024G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "MacBook Pro 16寸 M1 Max 32G 1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "2021 MacBook Pro 16 M1 Max 32G 1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBookpro 16寸 32g +1t M1 Max", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Pro",
+      "modelCode": "apple_computer_macbook_pro_13_intel_8g_256g",
+      "modelName": "MacBook Pro 13 Intel 8G 256G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "MacBook Pro MF840CH/A 13寸 8G 256G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Pro 13寸 Intel 8G 256G", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "Mac Studio",
+      "modelCode": "apple_computer_mac_studio_m2_max_32g_512g",
+      "modelName": "Mac Studio M2 Max 32G 512G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Mac Studio M2 Max 32GB 512G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "苹果Mac Studio M2 Max 32G 512G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Mac Studio M2max 32GB 500GB", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Venu",
+      "modelCode": "garmin_watch_venu_2",
+      "modelName": "Venu 2",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Garmin Venu 2", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "佳明Venu 2", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Venu2", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Venu",
+      "modelCode": "garmin_watch_venu_2_plus",
+      "modelName": "Venu 2 Plus",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Garmin Venu 2 Plus", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "佳明Venu 2 Plus", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Venu2Plus", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Forerunner",
+      "modelCode": "garmin_watch_forerunner_955",
+      "modelName": "Forerunner 955",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Garmin Forerunner 955", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "佳明 Forerunner955", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Forrunner955", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Fenix",
+      "modelCode": "garmin_watch_fenix_3_hr",
+      "modelName": "Fenix 3 HR",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v1" },
+      "aliases": [
+        { "aliasText": "Garmin Fenix 3 HR", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "佳明Fenix 3 HR", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Fenix3HR", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    }
+  ]
+}

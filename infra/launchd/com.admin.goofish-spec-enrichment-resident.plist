@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.admin.goofish-spec-enrichment-resident</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>__GOOFISH_ROOT_DIR__/.venv/bin/python</string>
+		<string>__GOOFISH_ROOT_DIR__/scripts/run_spec_enrichment_worker.py</string>
+		<string>--business-domain</string>
+		<string>camera_interchangeable_lens</string>
+		<string>--batch-size</string>
+		<string>4</string>
+		<string>--worker-concurrency</string>
+		<string>8</string>
+		<string>--max-cycles</string>
+		<string>0</string>
+		<string>--log-path</string>
+		<string>__GOOFISH_ROOT_DIR__/reports/spec-enrichment-worker-resident-spec-enrichment-worker-current.jsonl</string>
+	</array>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>AI_PROVIDER</key>
+		<string>openai_compatible</string>
+		<key>AI_BASE_URL</key>
+		<string>https://ark.cn-beijing.volces.com/api/coding/v3</string>
+		<key>AI_MODEL</key>
+		<string>doubao-seed-2.0-pro</string>
+		<key>AI_TIMEOUT_SEC</key>
+		<string>120</string>
+		<key>AI_ENABLE_THINKING</key>
+		<string>false</string>
+		<key>PYTHONPATH</key>
+		<string>__GOOFISH_ROOT_DIR__/apps/collector/src</string>
+	</dict>
+	<key>WorkingDirectory</key>
+	<string>__GOOFISH_ROOT_DIR__</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>StandardOutPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-spec-enrichment-resident.log</string>
+	<key>StandardErrorPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-spec-enrichment-resident.err.log</string>
+</dict>
+</plist>

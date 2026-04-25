@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="config-page" data-template-config-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">模板配置</p>
+      <h2>Template Composer</h2>
+      <p class="hero-text">
+        这里维护大类模板版本、属性编排、差异预览，以及模板发布后是否直接绑定为 runtime 生效模板。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">Templates + Diff + Publish</span>
+    </div>
+  </section>
+
+  <div class="config-studio-shell">
+    <aside class="config-studio-sidebar">
+      <article class="panel config-list-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Templates</p>
+            <h3>模板版本列表</h3>
+          </div>
+          <span class="status-pill" data-template-config-total>加载中</span>
+        </div>
+        <div class="config-list" data-template-config-list>
+          <article class="async-skeleton panel compact-panel">
+            <p class="eyebrow">加载中</p>
+            <h3>正在载入模板配置...</h3>
+          </article>
+        </div>
+      </article>
+
+      <section class="panel onboarding-control-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Template Desk</p>
+            <h3>模板列表与筛选</h3>
+          </div>
+        </div>
+        <form class="onboarding-controls" data-template-config-controls>
+          <label class="filter-field">
+            <span>Operator</span>
+            <input type="text" name="operatorId" value="admin" />
+          </label>
+          <label class="filter-field">
+            <span>Status</span>
+            <select name="status">
+              <option value="">全部</option>
+              <option value="PUBLISHED">PUBLISHED</option>
+              <option value="DRAFT">DRAFT</option>
+              <option value="RETIRED">RETIRED</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Category</span>
+            <select name="categoryCodeFilter" data-template-config-category-filter>
+              <option value="">全部大类</option>
+            </select>
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="primary-button" data-template-config-action="new">新建模板</button>
+            <button type="button" class="secondary-button" data-template-config-action="refresh">刷新列表</button>
+          </div>
+          <p class="runtime-feedback onboarding-feedback" data-template-config-feedback></p>
+        </form>
+      </section>
+
+      {% include "_config_subnav.html" %}
+    </aside>
+
+    <div class="config-studio-main">
+      <section class="panel config-context-banner">
+        <div>
+          <p class="eyebrow">Current Context</p>
+          <h3 data-template-context-title>模板编排工作台</h3>
+          <p class="runtime-panel-text" data-template-context-description>
+            建议始终带着当前大类进入模板页。这样模板发布、差异预览和 runtime 绑定都会围绕同一个大类上下文展开。
+          </p>
+        </div>
+        <div class="config-context-tabs">
+          <a class="config-context-tab" href="/config/categories" data-template-context-link="categories">大类详情</a>
+          <a class="config-context-tab" href="/config/attributes">全局属性池</a>
+          <a class="config-context-tab is-active" href="#" aria-current="page">模板编排</a>
+          <a class="config-context-tab" href="/config/models" data-template-context-link="models">型号库</a>
+        </div>
+      </section>
+
+      <article class="panel config-detail-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Editor Summary</p>
+            <h3>当前模板摘要</h3>
+          </div>
+          <button type="button" class="primary-button" data-template-config-action="open-editor">打开模板抽屉</button>
+        </div>
+        <div class="config-inline-meta" data-template-config-summary>
+          <p class="runtime-panel-text">选择左侧模板后，这里会显示所属大类、是否生效，以及与 active/latest 的差异。</p>
+        </div>
+        <div class="config-inline-meta" data-template-config-diff>
+          <p class="runtime-panel-text">点击“预览差异”后，这里会显示模板变化摘要。</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="config-modal" data-template-config-modal hidden>
+    <div class="config-modal-backdrop" data-template-config-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="template-config-modal-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Template Drawer</p>
+          <h3 id="template-config-modal-title">模板编排与发布</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-template-config-modal-close aria-label="关闭抽屉">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-template-config-form>
+          <input type="hidden" name="templateId" />
+          <input type="hidden" name="categoryId" />
+          <input type="hidden" name="categoryCode" />
+          <label class="filter-field wide-field">
+            <span>Bound Category</span>
+            <select name="categoryBinding" data-template-config-category-binding>
+              <option value="">请选择大类</option>
+            </select>
+          </label>
+          <div class="config-inline-meta">
+            <div class="runtime-stat">
+              <span>当前大类</span>
+              <strong data-template-config-category-label>未选择</strong>
+            </div>
+            <p class="runtime-panel-text" data-template-config-category-hint>
+              模板始终建议绑定到单一大类。发布、差异预览和 runtime active template 绑定都会围绕这个大类上下文展开。
+            </p>
+          </div>
+          <div class="config-form-grid">
+            <label class="filter-field narrow-field">
+              <span>Version</span>
+              <input type="number" name="version" min="1" value="1" />
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select name="status">
+                <option value="DRAFT">DRAFT</option>
+                <option value="PUBLISHED">PUBLISHED</option>
+                <option value="RETIRED">RETIRED</option>
+              </select>
+            </label>
+            <label class="filter-field onboarding-checkbox-field">
+              <span>Bind As Active Template</span>
+              <input type="checkbox" name="bindAsActiveTemplate" />
+            </label>
+          </div>
+
+          <details class="ai-advanced-details">
+            <summary>高级设置</summary>
+            <div class="config-form-grid">
+              <label class="filter-field">
+                <span>Effective At</span>
+                <input type="datetime-local" name="effectiveAt" />
+              </label>
+              <label class="filter-field">
+                <span>Published By</span>
+                <input type="text" name="publishedBy" placeholder="留空则默认 operator" />
+              </label>
+              <label class="filter-field">
+                <span>Compare To Template</span>
+                <input type="text" name="compareToTemplateId" placeholder="留空则对比 active/latest" />
+              </label>
+              <label class="filter-field">
+                <span>Prompt Profile</span>
+                <input type="text" name="promptProfile" placeholder="绑定 runtime 时使用" />
+              </label>
+            </div>
+          </details>
+
+          <label class="filter-field wide-field">
+            <span>Template Items (每行 `attributeCode|required|sale|filter|search|display|sortNo`)</span>
+            <textarea name="itemsText" rows="12" spellcheck="false"></textarea>
+          </label>
+        </form>
+        <div class="onboarding-action-row">
+          <button type="button" class="secondary-button" data-template-config-action="preview-diff">预览差异</button>
+          <button type="button" class="secondary-button" data-template-config-action="save-dry-run">预演保存</button>
+          <button type="button" class="primary-button" data-template-config-action="save-apply">正式保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='config-templates.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="async-page" data-async-page>
+  <div data-async-section="/api/progress/sections/header" data-async-priority="high" data-async-renderer="progress-header" data-async-skeleton-height="252">
+    <article class="hero-panel async-skeleton">
+      <div>
+        <p class="eyebrow">加载中</p>
+        <h2>正在准备回刷进度...</h2>
+      </div>
+    </article>
+  </div>
+  <div data-async-section="/api/progress/sections/overview" data-async-priority="high" data-async-renderer="progress-overview" data-async-skeleton-height="400">
+    <article class="panel async-skeleton">
+      <p class="eyebrow">进度总览</p>
+      <h3>正在载入回刷统计...</h3>
+    </article>
+  </div>
+  <div data-async-section="/api/progress/sections/usage-workers" data-async-renderer="progress-usage-workers" data-async-skeleton-height="580">
+    <article class="panel async-skeleton">
+      <p class="eyebrow">模型消耗</p>
+      <h3>正在载入 usage 和 worker...</h3>
+    </article>
+  </div>
+  <div data-async-section="/api/progress/sections/audits" data-async-renderer="progress-audits" data-async-skeleton-height="460">
+    <article class="panel async-skeleton">
+      <p class="eyebrow">待审与剔除</p>
+      <h3>正在载入待审分歧...</h3>
+    </article>
+  </div>
+</div>
+{% endblock %}

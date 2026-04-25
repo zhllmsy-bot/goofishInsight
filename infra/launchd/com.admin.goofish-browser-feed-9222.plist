@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.admin.goofish-browser-feed-9222</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>__GOOFISH_RUNTIME_HOME__/ensure-attached-browser-resident.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>GOOFISH_ROOT_DIR</key>
+    <string>__GOOFISH_ROOT_DIR__</string>
+    <key>PROFILE_KEY</key>
+    <string>chrome-attached-mac</string>
+    <key>PORT</key>
+    <string>9222</string>
+    <key>START_URL</key>
+    <string>https://www.goofish.com/</string>
+    <key>CHECK_INTERVAL_SECONDS</key>
+    <string>15</string>
+    <key>START_WAIT_SECONDS</key>
+    <string>20</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>__GOOFISH_RUNTIME_HOME__</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-browser-feed-9222.log</string>
+  <key>StandardErrorPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-browser-feed-9222.err.log</string>
+</dict>
+</plist>

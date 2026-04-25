@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="onboarding-page" data-xianyu-onboarding-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">品类开通</p>
+      <h2>Xianyu Raw Cate Onboarding</h2>
+      <p class="hero-text">
+        这个页面负责把未映射的 raw cate 变成可执行待办，并在页面内完成属性草稿确认、
+        模板预演和正式创建，减少新品类 onboarding 对 CLI 的依赖。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">Queue + Draft + Persist</span>
+    </div>
+  </section>
+
+  <section class="panel onboarding-control-panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="eyebrow">操作入口</p>
+        <h3>同步与筛选</h3>
+      </div>
+    </div>
+    <form class="onboarding-controls" data-onboarding-controls>
+      <label class="filter-field">
+        <span>Operator</span>
+        <input type="text" name="operatorId" value="admin" />
+      </label>
+      <label class="filter-field wide-field">
+        <span>关键词</span>
+        <input type="text" name="sourceKeyword" placeholder="例如：macbookpro14寸m1max" />
+      </label>
+      <label class="filter-field">
+        <span>Task Key</span>
+        <input type="text" name="taskKey" value="xianyu-onboarding-discovery" />
+      </label>
+      <label class="filter-field">
+        <span>业务域</span>
+        <input type="text" name="businessDomain" placeholder="例如：apple_m_series" />
+      </label>
+      <label class="filter-field">
+        <span>Profile</span>
+        <input type="text" name="profileKey" value="chrome-attached" />
+      </label>
+      <label class="filter-field narrow-field">
+        <span>Discovery Pages</span>
+        <input type="number" name="discoveryPages" min="1" max="5" value="1" />
+      </label>
+      <label class="filter-field">
+        <span>队列状态</span>
+        <select name="status">
+          <option value="">待办中</option>
+          <option value="PENDING">PENDING</option>
+          <option value="IN_PROGRESS">IN_PROGRESS</option>
+          <option value="RESOLVED">RESOLVED</option>
+          <option value="IGNORED">IGNORED</option>
+        </select>
+      </label>
+      <label class="filter-field narrow-field">
+        <span>Item Scan Limit</span>
+        <input type="number" name="itemScanLimit" min="1" max="5000" value="2000" />
+      </label>
+      <label class="filter-field narrow-field onboarding-checkbox-field">
+        <span>包含已关闭</span>
+        <input type="checkbox" name="includeClosed" />
+      </label>
+      <div class="onboarding-action-row">
+        <button type="button" class="secondary-button" data-onboarding-action="discovery">开始发现</button>
+        <button type="button" class="primary-button" data-onboarding-action="sync">同步队列</button>
+        <button type="button" class="secondary-button" data-onboarding-action="refresh">刷新视图</button>
+      </div>
+      <p class="runtime-feedback onboarding-feedback" data-onboarding-feedback></p>
+    </form>
+  </section>
+
+  <section class="dashboard-grid onboarding-summary-grid" data-onboarding-coverage-grid>
+    <article class="stat-card async-skeleton">
+      <p class="eyebrow">覆盖率</p>
+      <h3>正在加载 coverage...</h3>
+    </article>
+  </section>
+
+  <section class="onboarding-layout">
+    <article class="panel onboarding-queue-panel">
+      <div class="panel-header tight">
+        <div>
+          <p class="eyebrow">Queue</p>
+          <h3>待开通 raw cate</h3>
+        </div>
+        <span class="status-pill" data-onboarding-queue-total>加载中</span>
+      </div>
+      <div class="onboarding-queue-list" data-onboarding-queue-list>
+        <article class="async-skeleton panel compact-panel">
+          <p class="eyebrow">加载中</p>
+          <h3>正在载入 queue...</h3>
+        </article>
+      </div>
+    </article>
+
+    <article class="panel onboarding-detail-panel">
+      <div class="panel-header tight">
+        <div>
+          <p class="eyebrow">详情</p>
+          <h3>Queue Detail</h3>
+        </div>
+      </div>
+      <div data-onboarding-detail>
+        <p class="runtime-panel-text">选择左侧 queue 项后，这里会展示 raw cate、样本标题、状态和候选 match keys。</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="panel onboarding-draft-panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="eyebrow">Draft Editor</p>
+        <h3>属性草稿与模板确认</h3>
+      </div>
+      <div class="panel-pills">
+        <button type="button" class="secondary-button" data-onboarding-draft-action="generate">生成草稿</button>
+        <button type="button" class="secondary-button" data-onboarding-draft-action="preview-persist">预演创建</button>
+        <button type="button" class="primary-button" data-onboarding-draft-action="apply-persist">正式创建</button>
+      </div>
+    </div>
+    <div data-onboarding-draft>
+      <p class="runtime-panel-text">先从左侧选择一个 queue 项，再点击“生成草稿”。页面会展示候选属性、命中率与模板配置，确认后即可正式落库。</p>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='onboarding-shell.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

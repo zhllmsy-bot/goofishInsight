@@ -1,0 +1,39 @@
+{
+  "requestId": "req-product-minimal-001",
+  "spu": {
+    "categoryId": "11111111-1111-1111-1111-111111111101",
+    "templateId": "11111111-1111-1111-1111-111111111401",
+    "merchantId": "merchant-demo",
+    "brandId": "brand-demo",
+    "title": "小米 15",
+    "status": "ACTIVE"
+  },
+  "spuAttributes": [
+    {
+      "attributeCode": "screen_size",
+      "numberValue": 6.36,
+      "normalizedNumberValue": 6.36,
+      "unit": "inch"
+    }
+  ],
+  "skus": [
+    {
+      "skuCode": "MI15-BLK-12G",
+      "price": 4599,
+      "stock": 100,
+      "barcode": "690000000001",
+      "status": "ACTIVE",
+      "saleAttributes": [
+        {
+          "attributeCode": "color",
+          "optionCode": "black"
+        },
+        {
+          "attributeCode": "memory_size",
+          "optionCode": "12"
+        }
+      ],
+      "attributes": []
+    }
+  ]
+}

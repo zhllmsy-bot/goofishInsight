@@ -1,0 +1,56 @@
+[
+  {
+    "category_code": "garmin_watch",
+    "field": "model_family",
+    "value": "Fenix",
+    "aliases": ["fenix", "飞耐时", "飞耐士"]
+  },
+  {
+    "category_code": "garmin_watch",
+    "field": "model_family",
+    "value": "Forerunner",
+    "aliases": ["forerunner", "领跑者", "fr965", "fr265", "佳明965", "佳明265"]
+  },
+  {
+    "category_code": "garmin_watch",
+    "field": "model_family",
+    "value": "Instinct",
+    "aliases": ["instinct", "本能"]
+  },
+  {
+    "category_code": "garmin_watch",
+    "field": "model_family",
+    "value": "MARQ",
+    "aliases": ["marq", "马克"]
+  },
+  {
+    "category_code": "apple_computer",
+    "field": "model_family",
+    "value": "MacBook Pro",
+    "aliases": ["macbook pro", "mbp", "苹果pro", "mac pro 笔记本"]
+  },
+  {
+    "category_code": "apple_computer",
+    "field": "model_family",
+    "value": "MacBook Air",
+    "aliases": ["macbook air", "mba", "苹果air"]
+  },
+  {
+    "category_code": "apple_computer",
+    "field": "model_family",
+    "value": "Mac mini",
+    "aliases": ["mac mini", "macmini", "迷你主机"]
+  },
+  {
+    "category_code": "apple_computer",
+    "field": "model_family",
+    "value": "Mac Studio",
+    "aliases": ["mac studio", "macstudio"]
+  },
+  {
+    "category_code": "apple_computer",
+    "field": "model_family",
+    "value": "iMac",
+    "aliases": ["imac", "一体机"]
+  }
+]

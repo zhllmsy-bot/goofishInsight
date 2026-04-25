@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.admin.goofish-qwen3-api-8000</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>__LOCAL_QWEN_PYTHON_BIN__</string>
+		<string>-m</string>
+		<string>mlx_lm</string>
+		<string>server</string>
+		<string>--model</string>
+		<string>__QWEN3_MODEL_PATH__</string>
+		<string>--host</string>
+		<string>127.0.0.1</string>
+		<string>--port</string>
+		<string>8000</string>
+		<string>--use-default-chat-template</string>
+		<string>--temp</string>
+		<string>0.0</string>
+		<string>--max-tokens</string>
+		<string>1024</string>
+		<string>--chat-template-args</string>
+		<string>{"enable_thinking":false}</string>
+	</array>
+	<key>WorkingDirectory</key>
+	<string>__LOCAL_QWEN_WORKDIR__</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>StandardOutPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-qwen3-8000.log</string>
+	<key>StandardErrorPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-qwen3-8000.err.log</string>
+</dict>
+</plist>

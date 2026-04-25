@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="config-page" data-attribute-config-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">属性配置</p>
+      <h2>Attribute Dictionary Config</h2>
+      <p class="hero-text">
+        这里维护平台属性字典、数据类型和枚举值。模板编排页后续会直接复用这份属性池，不再为每个大类重复造字段。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">Attributes + Options</span>
+    </div>
+  </section>
+
+  <div class="config-studio-shell">
+    <aside class="config-studio-sidebar">
+      <article class="panel config-list-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Attributes</p>
+            <h3>属性字典</h3>
+          </div>
+          <span class="status-pill" data-attribute-config-total>加载中</span>
+        </div>
+        <div class="config-list" data-attribute-config-list>
+          <article class="async-skeleton panel compact-panel">
+            <p class="eyebrow">加载中</p>
+            <h3>正在载入属性配置...</h3>
+          </article>
+        </div>
+      </article>
+
+      <section class="panel onboarding-control-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Attribute Desk</p>
+            <h3>属性列表与筛选</h3>
+          </div>
+        </div>
+        <form class="onboarding-controls" data-attribute-config-controls>
+          <label class="filter-field">
+            <span>Operator</span>
+            <input type="text" name="operatorId" value="admin" />
+          </label>
+          <label class="filter-field">
+            <span>Status</span>
+            <select name="status">
+              <option value="">全部</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="DRAFT">DRAFT</option>
+              <option value="DISABLED">DISABLED</option>
+              <option value="DEPRECATED">DEPRECATED</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Scope Type</span>
+            <select name="scopeType">
+              <option value="">全部</option>
+              <option value="PLATFORM">PLATFORM</option>
+              <option value="MERCHANT">MERCHANT</option>
+              <option value="CHANNEL">CHANNEL</option>
+            </select>
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="primary-button" data-attribute-config-action="new">新建属性</button>
+            <button type="button" class="secondary-button" data-attribute-config-action="refresh">刷新列表</button>
+          </div>
+          <p class="runtime-feedback onboarding-feedback" data-attribute-config-feedback></p>
+        </form>
+      </section>
+
+      {% include "_config_subnav.html" %}
+    </aside>
+
+    <div class="config-studio-main">
+      <section class="panel config-context-banner">
+        <div>
+          <p class="eyebrow">Global Context</p>
+          <h3>全局属性池</h3>
+          <p class="runtime-panel-text">
+            这里维护所有大类共用的属性能力。模板页会直接消费这份字典，而标记为“通用属性”的字段会自动注入到各个大类的 prompt/template 体系。
+          </p>
+        </div>
+        <div class="config-context-tabs">
+          <a class="config-context-tab" href="/config/categories">大类详情</a>
+          <a class="config-context-tab is-active" href="#" aria-current="page">全局属性池</a>
+          <a class="config-context-tab" href="/config/templates">模板编排</a>
+          <a class="config-context-tab" href="/config/models">型号库</a>
+        </div>
+      </section>
+
+      <article class="panel config-detail-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Editor Summary</p>
+            <h3>当前属性摘要</h3>
+          </div>
+          <button type="button" class="primary-button" data-attribute-config-action="open-editor">打开属性抽屉</button>
+        </div>
+        <div class="config-inline-meta" data-attribute-config-summary>
+          <p class="runtime-panel-text">选择左侧属性后，这里会显示它被多少模板引用，以及当前枚举值数量。</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="config-modal" data-attribute-config-modal hidden>
+    <div class="config-modal-backdrop" data-attribute-config-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="attribute-config-modal-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Attribute Drawer</p>
+          <h3 id="attribute-config-modal-title">属性定义与枚举值</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-attribute-config-modal-close aria-label="关闭抽屉">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-attribute-config-form>
+          <input type="hidden" name="attributeId" />
+          <div class="config-form-grid">
+            <label class="filter-field">
+              <span>Code</span>
+              <input type="text" name="code" placeholder="例如：memory_gb" />
+            </label>
+            <label class="filter-field">
+              <span>Name</span>
+              <input type="text" name="name" placeholder="例如：内存" />
+            </label>
+            <label class="filter-field">
+              <span>Data Type</span>
+              <select name="dataType">
+                <option value="TEXT">TEXT</option>
+                <option value="NUMBER">NUMBER</option>
+                <option value="BOOLEAN">BOOLEAN</option>
+                <option value="ENUM">ENUM</option>
+                <option value="JSON">JSON</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Value Scope</span>
+              <select name="valueScope">
+                <option value="SPU">SPU</option>
+                <option value="SKU">SKU</option>
+                <option value="SALE">SALE</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Unit</span>
+              <input type="text" name="unit" placeholder="例如：GB / mm / inch" />
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select name="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="DRAFT">DRAFT</option>
+                <option value="DISABLED">DISABLED</option>
+                <option value="DEPRECATED">DEPRECATED</option>
+              </select>
+            </label>
+            <label class="filter-field onboarding-checkbox-field">
+              <span>Is Multi</span>
+              <input type="checkbox" name="isMulti" />
+            </label>
+            <label class="filter-field onboarding-checkbox-field">
+              <span>通用属性（全类目自动注入）</span>
+              <input type="checkbox" name="isCommon" />
+            </label>
+          </div>
+
+          <details class="ai-advanced-details">
+            <summary>高级设置</summary>
+            <div class="config-form-grid">
+              <label class="filter-field">
+                <span>Scope Type</span>
+                <select name="scopeType">
+                  <option value="PLATFORM">PLATFORM</option>
+                  <option value="MERCHANT">MERCHANT</option>
+                  <option value="CHANNEL">CHANNEL</option>
+                </select>
+              </label>
+              <label class="filter-field">
+                <span>Scope Id</span>
+                <input type="text" name="scopeId" value="platform" />
+              </label>
+            </div>
+          </details>
+
+          <label class="filter-field wide-field">
+            <span>Enum Options (每行 `code|name`)</span>
+            <textarea name="optionsText" rows="8" spellcheck="false"></textarea>
+          </label>
+        </form>
+        <div class="onboarding-action-row">
+          <button type="button" class="secondary-button" data-attribute-config-action="save-dry-run">预演保存</button>
+          <button type="button" class="primary-button" data-attribute-config-action="save-apply">正式保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='config-attributes.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

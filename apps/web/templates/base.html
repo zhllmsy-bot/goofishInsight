@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='dashboard.css') }}?v={{ request.app.state.asset_version }}" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <a class="brand-mark" href="/">GF</a>
+          <div>
+            <p class="eyebrow">实时市场看板</p>
+            <h1 class="brand-title">Goofish Insight</h1>
+          </div>
+        </div>
+        <nav class="topnav">
+          <a href="/" class="topnav-link {% if request.url.path == '/' %}is-active{% endif %}">看板首页</a>
+          <a href="/buy/opportunities" class="topnav-link {% if request.url.path.startswith('/buy') %}is-active{% endif %}">买入机会</a>
+          <a href="/config/categories" class="topnav-link {% if request.url.path.startswith('/config') %}is-active{% endif %}">配置中心</a>
+          <a href="/onboarding/xianyu" class="topnav-link {% if request.url.path == '/onboarding/xianyu' %}is-active{% endif %}">品类开通</a>
+          <a href="/progress" class="topnav-link {% if request.url.path == '/progress' %}is-active{% endif %}">回刷进度</a>
+          <a href="/runtime" class="topnav-link {% if request.url.path == '/runtime' %}is-active{% endif %}">运行控制</a>
+        </nav>
+      </header>
+      <main class="main-content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    <script src="{{ request.url_for('static', path='dashboard-shell.js') }}?v={{ request.app.state.asset_version }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

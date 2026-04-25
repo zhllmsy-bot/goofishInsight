@@ -1,0 +1,115 @@
+{
+  "requestId": "req-template-minimal-001",
+  "category": {
+    "id": "11111111-1111-1111-1111-111111111101",
+    "code": "phone",
+    "name": "手机",
+    "path": "electronics/phone",
+    "level": 2,
+    "status": "ACTIVE"
+  },
+  "attributes": [
+    {
+      "id": "11111111-1111-1111-1111-111111111201",
+      "scopeType": "PLATFORM",
+      "scopeId": "platform",
+      "code": "color",
+      "name": "颜色",
+      "dataType": "ENUM",
+      "valueScope": "SKU",
+      "isMulti": false,
+      "status": "ACTIVE",
+      "options": [
+        {
+          "id": "11111111-1111-1111-1111-111111111301",
+          "optionCode": "black",
+          "optionName": "黑色",
+          "sortNo": 10,
+          "status": "ACTIVE"
+        },
+        {
+          "id": "11111111-1111-1111-1111-111111111302",
+          "optionCode": "white",
+          "optionName": "白色",
+          "sortNo": 20,
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "11111111-1111-1111-1111-111111111202",
+      "scopeType": "PLATFORM",
+      "scopeId": "platform",
+      "code": "memory_size",
+      "name": "内存",
+      "dataType": "ENUM",
+      "valueScope": "SKU",
+      "isMulti": false,
+      "status": "ACTIVE",
+      "options": [
+        {
+          "id": "11111111-1111-1111-1111-111111111303",
+          "optionCode": "12",
+          "optionName": "12GB",
+          "sortNo": 10,
+          "status": "ACTIVE"
+        },
+        {
+          "id": "11111111-1111-1111-1111-111111111304",
+          "optionCode": "16",
+          "optionName": "16GB",
+          "sortNo": 20,
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "11111111-1111-1111-1111-111111111203",
+      "scopeType": "PLATFORM",
+      "scopeId": "platform",
+      "code": "screen_size",
+      "name": "屏幕尺寸",
+      "dataType": "NUMBER",
+      "valueScope": "SPU",
+      "isMulti": false,
+      "unit": "inch",
+      "status": "ACTIVE",
+      "options": []
+    }
+  ],
+  "template": {
+    "id": "11111111-1111-1111-1111-111111111401",
+    "version": 1,
+    "status": "PUBLISHED",
+    "publishedBy": "ops-bot",
+    "items": [
+      {
+        "attributeCode": "color",
+        "isRequired": true,
+        "isSale": true,
+        "isFilter": true,
+        "isSearch": true,
+        "isDisplay": true,
+        "sortNo": 10
+      },
+      {
+        "attributeCode": "memory_size",
+        "isRequired": true,
+        "isSale": true,
+        "isFilter": true,
+        "isSearch": true,
+        "isDisplay": true,
+        "sortNo": 20
+      },
+      {
+        "attributeCode": "screen_size",
+        "isRequired": false,
+        "isSale": false,
+        "isFilter": true,
+        "isSearch": false,
+        "isDisplay": true,
+        "sortNo": 30
+      }
+    ]
+  }
+}

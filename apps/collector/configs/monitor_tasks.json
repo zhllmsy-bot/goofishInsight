@@ -1,0 +1,2223 @@
+{
+  "profiles": {
+    "default": {
+      "channel": "chrome",
+      "headless": false,
+      "pages": 1
+    },
+    "chrome-collector": {
+      "channel": "chrome",
+      "headless": false,
+      "pages": 1
+    },
+    "chrome-attached": {
+      "channel": "chrome",
+      "headless": false,
+      "pages": 1,
+      "parallel_tabs": 4,
+      "cdp_url": "http://127.0.0.1:9223"
+    },
+    "chrome-attached-mac": {
+      "channel": "chrome",
+      "headless": false,
+      "pages": 1,
+      "parallel_tabs": 4,
+      "cdp_url": "http://127.0.0.1:9222"
+    }
+  },
+  "tasks": [
+    {
+      "task_key": "garmin-fenix",
+      "source_platform": "xianyu",
+      "category_id": "22222222-2222-2222-2222-222222222101",
+      "business_domain": "garmin_watch",
+      "task_type": "PRODUCTION",
+      "display_name": "Garmin Hot and Premium Discovery",
+      "keywords": [
+        "佳明",
+        "garmin",
+        "forerunner 265",
+        "forerunner 965",
+        "fenix 7 pro",
+        "fenix 8",
+        "epix pro",
+        "instinct 3",
+        "marq 2",
+        "tactix 8",
+        "泰铁时8"
+      ],
+      "brand_lexicon": [
+        "佳明",
+        "garmin"
+      ],
+      "model_lexicon": [
+        "forerunner 265",
+        "forerunner 965",
+        "fenix 7 pro",
+        "fenix 8",
+        "epix pro",
+        "instinct 3",
+        "marq 2",
+        "tactix 8",
+        "泰铁时8",
+        "fenix",
+        "epix",
+        "instinct",
+        "forerunner",
+        "marq",
+        "tactix"
+      ],
+      "config_lexicon": [
+        "42mm",
+        "43mm",
+        "45mm",
+        "47mm",
+        "50mm",
+        "51mm",
+        "solar",
+        "sapphire",
+        "amoled",
+        "太阳能",
+        "蓝宝石",
+        "钛"
+      ],
+      "paging_limit": 8,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "佳明",
+          "pages": 8,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "garmin",
+          "pages": 8,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 265",
+          "pages": 8,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 965",
+          "pages": 8,
+          "priority": 40,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "fenix 7 pro",
+          "pages": 8,
+          "priority": 50,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "fenix 8",
+          "pages": 8,
+          "priority": 60,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "epix pro",
+          "pages": 8,
+          "priority": 70,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "instinct 3",
+          "pages": 8,
+          "priority": 80,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "marq 2",
+          "pages": 8,
+          "priority": 90,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "tactix 8",
+          "pages": 8,
+          "priority": 100,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "泰铁时8",
+          "pages": 8,
+          "priority": 110,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "apple-m-series",
+      "source_platform": "xianyu",
+      "category_id": "33333333-3333-3333-3333-333333333101",
+      "business_domain": "apple_computer",
+      "task_type": "PRODUCTION",
+      "display_name": "Apple M-Series Hot and Premium Discovery",
+      "keywords": [
+        "苹果",
+        "macbook air m1",
+        "macbook air m2",
+        "macbook air m3",
+        "macbook pro 14",
+        "mac mini m4",
+        "mac studio m2 max",
+        "mac studio m4 max",
+        "mac studio m2 ultra",
+        "mac studio m3 ultra",
+        "mac m2 max 96g",
+        "mac m2max 96g",
+        "mac m3 max 128g",
+        "mac m3max 128g",
+        "mac m4 max 128g",
+        "mac m4max 128g",
+        "mac m3 ultra 128g",
+        "mac m3ultra 128g",
+        "mac m5",
+        "mac m5 pro",
+        "mac m5 max",
+        "mac m5 16g",
+        "mac m5 24g",
+        "mac m5 36g",
+        "mac m5 64g",
+        "mac m5 128g",
+        "mac m5 pro 16g",
+        "mac m5 pro 24g",
+        "mac m5 pro 36g",
+        "mac m5 pro 64g",
+        "mac m5 pro 128g",
+        "mac m5 max 16g",
+        "mac m5 max 24g",
+        "mac m5 max 36g",
+        "mac m5 max 64g",
+        "mac m5 max 128g",
+        "mac m5pro 16g",
+        "mac m5pro 24g",
+        "mac m5pro 36g",
+        "mac m5pro 64g",
+        "mac m5pro 128g",
+        "mac m5max 16g",
+        "mac m5max 24g",
+        "mac m5max 36g",
+        "mac m5max 64g",
+        "mac m5max 128g"
+      ],
+      "brand_lexicon": [
+        "苹果",
+        "apple"
+      ],
+      "model_lexicon": [
+        "macbook air",
+        "macbook pro 14",
+        "macbook pro 16",
+        "mac mini",
+        "mac studio",
+        "imac"
+      ],
+      "config_lexicon": [
+        "8g",
+        "16g",
+        "18g",
+        "24g",
+        "32g",
+        "36g",
+        "48g",
+        "64g",
+        "96g",
+        "128g",
+        "192g",
+        "256g",
+        "512g",
+        "1tb",
+        "2tb",
+        "4tb",
+        "8tb",
+        "14寸",
+        "15寸",
+        "16寸"
+      ],
+      "paging_limit": 8,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "苹果",
+          "pages": 8,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook air m1",
+          "pages": 8,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook air m2",
+          "pages": 8,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook air m3",
+          "pages": 8,
+          "priority": 40,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook pro 14",
+          "pages": 8,
+          "priority": 50,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac mini m4",
+          "pages": 8,
+          "priority": 60,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m2 max",
+          "pages": 8,
+          "priority": 70,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m4 max",
+          "pages": 8,
+          "priority": 80,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m2 ultra",
+          "pages": 8,
+          "priority": 90,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m3 ultra",
+          "pages": 8,
+          "priority": 100,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m2 max 96g",
+          "pages": 8,
+          "priority": 110,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m2max 96g",
+          "pages": 8,
+          "priority": 120,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m3 max 128g",
+          "pages": 8,
+          "priority": 130,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m3max 128g",
+          "pages": 8,
+          "priority": 140,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m4 max 128g",
+          "pages": 8,
+          "priority": 150,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m4max 128g",
+          "pages": 8,
+          "priority": 160,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m3 ultra 128g",
+          "pages": 8,
+          "priority": 170,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m3ultra 128g",
+          "pages": 8,
+          "priority": 180,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5",
+          "pages": 8,
+          "priority": 190,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 pro",
+          "pages": 8,
+          "priority": 200,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 max",
+          "pages": 8,
+          "priority": 210,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 16g",
+          "pages": 8,
+          "priority": 220,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 24g",
+          "pages": 8,
+          "priority": 230,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 36g",
+          "pages": 8,
+          "priority": 240,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 64g",
+          "pages": 8,
+          "priority": 250,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 128g",
+          "pages": 8,
+          "priority": 260,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 pro 16g",
+          "pages": 8,
+          "priority": 270,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 pro 24g",
+          "pages": 8,
+          "priority": 280,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 pro 36g",
+          "pages": 8,
+          "priority": 290,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 pro 64g",
+          "pages": 8,
+          "priority": 300,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 pro 128g",
+          "pages": 8,
+          "priority": 310,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 max 16g",
+          "pages": 8,
+          "priority": 320,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 max 24g",
+          "pages": 8,
+          "priority": 330,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 max 36g",
+          "pages": 8,
+          "priority": 340,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 max 64g",
+          "pages": 8,
+          "priority": 350,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5 max 128g",
+          "pages": 8,
+          "priority": 360,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5pro 16g",
+          "pages": 8,
+          "priority": 370,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5pro 24g",
+          "pages": 8,
+          "priority": 380,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5pro 36g",
+          "pages": 8,
+          "priority": 390,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5pro 64g",
+          "pages": 8,
+          "priority": 400,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5pro 128g",
+          "pages": 8,
+          "priority": 410,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5max 16g",
+          "pages": 8,
+          "priority": 420,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5max 24g",
+          "pages": 8,
+          "priority": 430,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5max 36g",
+          "pages": 8,
+          "priority": 440,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5max 64g",
+          "pages": 8,
+          "priority": 450,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac m5max 128g",
+          "pages": 8,
+          "priority": 460,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "garmin-zhuanzhuan",
+      "source_platform": "zhuanzhuan",
+      "category_id": "22222222-2222-2222-2222-222222222101",
+      "business_domain": "garmin_watch",
+      "task_type": "PRODUCTION",
+      "display_name": "Zhuanzhuan Garmin Hot and Premium Discovery",
+      "keywords": [
+        "佳明",
+        "garmin",
+        "forerunner 265",
+        "forerunner 965",
+        "fenix 7 pro",
+        "fenix 8",
+        "epix pro",
+        "instinct 3",
+        "marq 2",
+        "tactix 8",
+        "泰铁时8"
+      ],
+      "brand_lexicon": [
+        "佳明",
+        "garmin"
+      ],
+      "model_lexicon": [
+        "forerunner 265",
+        "forerunner 965",
+        "fenix 7 pro",
+        "fenix 8",
+        "epix pro",
+        "instinct 3",
+        "marq 2",
+        "tactix 8",
+        "泰铁时8",
+        "fenix",
+        "epix",
+        "instinct",
+        "forerunner",
+        "marq",
+        "tactix"
+      ],
+      "config_lexicon": [
+        "42mm",
+        "43mm",
+        "45mm",
+        "47mm",
+        "50mm",
+        "51mm",
+        "solar",
+        "sapphire",
+        "amoled",
+        "太阳能",
+        "蓝宝石",
+        "钛"
+      ],
+      "paging_limit": 8,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "佳明",
+          "pages": 8,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "garmin",
+          "pages": 8,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 265",
+          "pages": 8,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 965",
+          "pages": 8,
+          "priority": 40,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "fenix 7 pro",
+          "pages": 8,
+          "priority": 50,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "fenix 8",
+          "pages": 8,
+          "priority": 60,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "epix pro",
+          "pages": 8,
+          "priority": 70,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "instinct 3",
+          "pages": 8,
+          "priority": 80,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "marq 2",
+          "pages": 8,
+          "priority": 90,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "tactix 8",
+          "pages": 8,
+          "priority": 100,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "泰铁时8",
+          "pages": 8,
+          "priority": 110,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "apple-m-series-zhuanzhuan",
+      "source_platform": "zhuanzhuan",
+      "category_id": "33333333-3333-3333-3333-333333333101",
+      "business_domain": "apple_computer",
+      "task_type": "PRODUCTION",
+      "display_name": "Zhuanzhuan Apple M-Series Hot and Premium Discovery",
+      "keywords": [
+        "苹果",
+        "macbook air m1",
+        "macbook air m2",
+        "macbook air m3",
+        "macbook pro 14",
+        "mac mini m4",
+        "mac studio m2 max",
+        "mac studio m4 max",
+        "mac studio m2 ultra",
+        "mac studio m3 ultra"
+      ],
+      "brand_lexicon": [
+        "苹果",
+        "apple"
+      ],
+      "model_lexicon": [
+        "macbook air",
+        "macbook pro 14",
+        "macbook pro 16",
+        "mac mini",
+        "mac studio",
+        "imac"
+      ],
+      "config_lexicon": [
+        "8g",
+        "16g",
+        "18g",
+        "24g",
+        "32g",
+        "36g",
+        "48g",
+        "64g",
+        "96g",
+        "128g",
+        "192g",
+        "256g",
+        "512g",
+        "1tb",
+        "2tb",
+        "4tb",
+        "8tb",
+        "14寸",
+        "15寸",
+        "16寸"
+      ],
+      "paging_limit": 8,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "苹果",
+          "pages": 8,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook air m1",
+          "pages": 8,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook air m2",
+          "pages": 8,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook air m3",
+          "pages": 8,
+          "priority": 40,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "macbook pro 14",
+          "pages": 8,
+          "priority": 50,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac mini m4",
+          "pages": 8,
+          "priority": 60,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m2 max",
+          "pages": 8,
+          "priority": 70,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m4 max",
+          "pages": 8,
+          "priority": 80,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m2 ultra",
+          "pages": 8,
+          "priority": 90,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "mac studio m3 ultra",
+          "pages": 8,
+          "priority": 100,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "smoke-batch-apple-one",
+      "source_platform": "xianyu",
+      "category_id": "33333333-3333-3333-3333-333333333101",
+      "business_domain": "apple_computer",
+      "task_type": "PRODUCTION",
+      "display_name": "Smoke Batch Apple One",
+      "keywords": [],
+      "brand_lexicon": [
+        "Apple"
+      ],
+      "model_lexicon": [
+        "MacBook Pro"
+      ],
+      "config_lexicon": [],
+      "paging_limit": 1,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": []
+    },
+    {
+      "task_key": "smoke-batch-zero-pages",
+      "source_platform": "xianyu",
+      "category_id": "22222222-2222-2222-2222-222222222101",
+      "business_domain": "garmin_watch",
+      "task_type": "PRODUCTION",
+      "display_name": "Smoke Batch Zero Pages",
+      "keywords": [
+        "佳明",
+        "garmin",
+        "forerunner 265"
+      ],
+      "brand_lexicon": [
+        "佳明",
+        "garmin"
+      ],
+      "model_lexicon": [
+        "forerunner 265",
+        "forerunner"
+      ],
+      "config_lexicon": [
+        "42mm",
+        "46mm",
+        "music"
+      ],
+      "paging_limit": 1,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "佳明",
+          "pages": 1,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "garmin",
+          "pages": 1,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 265",
+          "pages": 1,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "smoke-batch-garmin-parallel",
+      "source_platform": "xianyu",
+      "category_id": "22222222-2222-2222-2222-222222222101",
+      "business_domain": "garmin_watch",
+      "task_type": "PRODUCTION",
+      "display_name": "Smoke Batch Garmin Parallel",
+      "keywords": [
+        "佳明",
+        "garmin",
+        "forerunner 265",
+        "forerunner 965",
+        "fenix 7 pro",
+        "fenix 8"
+      ],
+      "brand_lexicon": [
+        "佳明",
+        "garmin"
+      ],
+      "model_lexicon": [
+        "forerunner 265",
+        "forerunner 965",
+        "fenix 7 pro",
+        "fenix 8",
+        "forerunner",
+        "fenix"
+      ],
+      "config_lexicon": [
+        "42mm",
+        "47mm",
+        "51mm",
+        "solar",
+        "sapphire",
+        "amoled"
+      ],
+      "paging_limit": 1,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "佳明",
+          "pages": 1,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "garmin",
+          "pages": 1,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 265",
+          "pages": 1,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 965",
+          "pages": 1,
+          "priority": 40,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "fenix 7 pro",
+          "pages": 1,
+          "priority": 50,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "fenix 8",
+          "pages": 1,
+          "priority": 60,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "smoke-batch-page-flush",
+      "source_platform": "xianyu",
+      "category_id": "22222222-2222-2222-2222-222222222101",
+      "business_domain": "garmin_watch",
+      "task_type": "PRODUCTION",
+      "display_name": "Smoke Batch Page Flush",
+      "keywords": [
+        "佳明",
+        "garmin",
+        "forerunner 265"
+      ],
+      "brand_lexicon": [
+        "佳明",
+        "garmin"
+      ],
+      "model_lexicon": [
+        "forerunner 265",
+        "forerunner"
+      ],
+      "config_lexicon": [
+        "42mm",
+        "46mm",
+        "music"
+      ],
+      "paging_limit": 8,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": [
+        {
+          "id": null,
+          "query": "佳明",
+          "pages": 8,
+          "priority": 10,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "garmin",
+          "pages": 8,
+          "priority": 20,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        },
+        {
+          "id": null,
+          "query": "forerunner 265",
+          "pages": 8,
+          "priority": 30,
+          "status": "LEGACY",
+          "metadata": {
+            "source": "legacy_keywords"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "xianyu-onboarding-discovery",
+      "source_platform": "xianyu",
+      "category_id": null,
+      "business_domain": "xianyu_onboarding",
+      "task_type": "PRODUCTION",
+      "display_name": "Xianyu Category Onboarding Discovery",
+      "keywords": [],
+      "brand_lexicon": [],
+      "model_lexicon": [],
+      "config_lexicon": [],
+      "paging_limit": 1,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {},
+      "queries": []
+    },
+    {
+      "task_key": "camera-interchangeable-lens-catalog-auto",
+      "source_platform": "xianyu",
+      "category_id": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+      "business_domain": "camera_interchangeable_lens",
+      "task_type": "PRODUCTION",
+      "display_name": "可换镜头 自动采集任务",
+      "keywords": [
+        "尼康 Z 100-400",
+        "尼康 Z 135 1.8",
+        "尼康 Z 14-24 2.8",
+        "尼康 Z 17-28 2.8",
+        "尼康 Z 180-600",
+        "尼康 Z 20 1.8",
+        "尼康 Z 24-120 4",
+        "尼康 Z 24-200",
+        "尼康 Z 24-70 2.8",
+        "尼康 Z 24-70 4",
+        "尼康 Z 28-400",
+        "尼康 Z 28-75 2.8",
+        "尼康 Z 35 1.8",
+        "尼康 Z 40 2",
+        "尼康 Z 50 1.2",
+        "尼康 Z 50 1.8",
+        "尼康 Z 70-200 2.8",
+        "尼康 Z 85 1.2",
+        "尼康 Z 85 1.8",
+        "尼康 Z 105 2.8",
+        "尼康 z135 1.8s",
+        "尼康 z 85 1.2s",
+        "尼康 z24 70s"
+      ],
+      "brand_lexicon": [
+        "Nikon"
+      ],
+      "model_lexicon": [
+        "NIKKOR Z 100-400mm f/4.5-5.6 VR S",
+        "尼康 Z 100-400 S",
+        "NIKKOR Z 135mm f/1.8 S Plena",
+        "尼康 Z 135 1.8 Plena",
+        "NIKKOR Z 14-24mm f/2.8 S",
+        "尼康 Z 14-24 2.8 S",
+        "NIKKOR Z 17-28mm f/2.8",
+        "尼康 Z 17-28 2.8",
+        "NIKKOR Z 180-600mm f/5.6-6.3 VR",
+        "尼康 Z 180-600",
+        "NIKKOR Z 20mm f/1.8 S",
+        "尼康 Z 20 1.8 S",
+        "NIKKOR Z 24-120mm f/4 S",
+        "尼康 Z 24-120 F4 S",
+        "NIKKOR Z 24-200mm f/4-6.3 VR",
+        "尼康 Z 24-200",
+        "NIKKOR Z 24-70mm f/2.8 S",
+        "尼康 Z 24-70 2.8 S",
+        "NIKKOR Z 24-70mm f/4 S",
+        "尼康 Z 24-70 F4 S",
+        "NIKKOR Z 28-400mm f/4-8 VR",
+        "尼康 Z 28-400",
+        "NIKKOR Z 28-75mm f/2.8",
+        "尼康 Z 28-75 2.8",
+        "NIKKOR Z 35mm f/1.8 S",
+        "尼康 Z 35 1.8 S",
+        "NIKKOR Z 40mm f/2",
+        "尼康 Z 40 2",
+        "NIKKOR Z 50mm f/1.2 S",
+        "尼康 Z 50 1.2 S",
+        "NIKKOR Z 50mm f/1.8 S",
+        "尼康 Z 50 1.8 S",
+        "NIKKOR Z 70-200mm f/2.8 VR S",
+        "尼康 Z 70-200 2.8 S",
+        "NIKKOR Z 85mm f/1.2 S",
+        "尼康 Z 85 1.2 S",
+        "NIKKOR Z 85mm f/1.8 S",
+        "尼康 Z 85 1.8 S",
+        "NIKKOR Z MC 105mm f/2.8 VR S",
+        "尼康 Z 105 2.8 微距"
+      ],
+      "config_lexicon": [],
+      "paging_limit": 5,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {
+        "source": "category_model_catalog",
+        "managedBy": "model_catalog_sync",
+        "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+        "categoryCode": "camera_interchangeable_lens",
+        "syncModelCatalog": true
+      },
+      "queries": [
+        {
+          "id": 313,
+          "query": "尼康 Z 100-400",
+          "pages": 5,
+          "priority": 10,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "a00d4a56-791e-46d3-ae24-87120e9c4789"
+          }
+        },
+        {
+          "id": 314,
+          "query": "尼康 Z 135 1.8",
+          "pages": 5,
+          "priority": 20,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "ff384ff0-e3da-452d-9b53-31c47787f61c"
+          }
+        },
+        {
+          "id": 315,
+          "query": "尼康 Z 14-24 2.8",
+          "pages": 5,
+          "priority": 30,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "571df15f-8b38-4bfe-9585-b88e2a0e4366"
+          }
+        },
+        {
+          "id": 124,
+          "query": "尼康 Z 17-28 2.8",
+          "pages": 5,
+          "priority": 40,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "81be7ee4-2ff2-4eab-ac91-a3f1ff3f3c14"
+          }
+        },
+        {
+          "id": 127,
+          "query": "尼康 Z 180-600",
+          "pages": 5,
+          "priority": 50,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "3818e454-4ae3-45cd-bbb9-443074d5b6eb"
+          }
+        },
+        {
+          "id": 316,
+          "query": "尼康 Z 20 1.8",
+          "pages": 5,
+          "priority": 60,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "a11417b0-6e29-4620-98a4-3309812cf11e"
+          }
+        },
+        {
+          "id": 317,
+          "query": "尼康 Z 24-120 4",
+          "pages": 5,
+          "priority": 70,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "1e162786-fd64-4431-992f-c6f087e9b66e"
+          }
+        },
+        {
+          "id": 136,
+          "query": "尼康 Z 24-200",
+          "pages": 5,
+          "priority": 80,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "d634143f-34f6-4613-90fa-e7620eff5b05"
+          }
+        },
+        {
+          "id": 318,
+          "query": "尼康 Z 24-70 2.8",
+          "pages": 5,
+          "priority": 90,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "f3e3bdbb-8bed-459e-8c9b-d0d85059a3d6"
+          }
+        },
+        {
+          "id": 319,
+          "query": "尼康 Z 24-70 4",
+          "pages": 5,
+          "priority": 100,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "18e92d87-04ea-481c-a108-8841a28aec0c"
+          }
+        },
+        {
+          "id": 145,
+          "query": "尼康 Z 28-400",
+          "pages": 5,
+          "priority": 110,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "15ebb08f-b1a1-42d7-af12-5a5cd0a8b22d"
+          }
+        },
+        {
+          "id": 148,
+          "query": "尼康 Z 28-75 2.8",
+          "pages": 5,
+          "priority": 120,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "8cc707ad-c3e0-4bc8-b91a-c930764b4bae"
+          }
+        },
+        {
+          "id": 320,
+          "query": "尼康 Z 35 1.8",
+          "pages": 5,
+          "priority": 130,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "858a5eb8-2f5e-4f82-b73b-e2266426c5d9"
+          }
+        },
+        {
+          "id": 154,
+          "query": "尼康 Z 40 2",
+          "pages": 5,
+          "priority": 140,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "007ecf83-02ba-495d-baf5-7bcf4a449d31"
+          }
+        },
+        {
+          "id": 321,
+          "query": "尼康 Z 50 1.2",
+          "pages": 5,
+          "priority": 150,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "04d9e6df-eb82-4399-9527-1de0f0076c1c"
+          }
+        },
+        {
+          "id": 322,
+          "query": "尼康 Z 50 1.8",
+          "pages": 5,
+          "priority": 160,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "a0500f07-6cfb-4d7f-a448-cbcf8d62f675"
+          }
+        },
+        {
+          "id": 323,
+          "query": "尼康 Z 70-200 2.8",
+          "pages": 5,
+          "priority": 170,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "538ad409-1806-4167-9ee9-25906d78823e"
+          }
+        },
+        {
+          "id": 324,
+          "query": "尼康 Z 85 1.2",
+          "pages": 5,
+          "priority": 180,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "4dc05b45-3d2c-4f2f-bb63-d207c6636111"
+          }
+        },
+        {
+          "id": 325,
+          "query": "尼康 Z 85 1.8",
+          "pages": 5,
+          "priority": 190,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "b638ec74-398b-4be1-bd24-a826b9139c2f"
+          }
+        },
+        {
+          "id": 326,
+          "query": "尼康 Z 105 2.8",
+          "pages": 5,
+          "priority": 200,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "abbf037f-3324-4892-aeb1-91ee89bdd7e6",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_interchangeable_lens",
+            "modelCatalogId": "d6934197-32fb-49aa-a0ec-f301cf82d6af"
+          }
+        },
+        {
+          "id": 327,
+          "query": "尼康 z135 1.8s",
+          "pages": 5,
+          "priority": 600,
+          "status": "ACTIVE",
+          "metadata": {
+            "reason": "user_requested_nikon_lens_shortcut",
+            "source": "manual_user_query",
+            "managedBy": "manual_user_query"
+          }
+        },
+        {
+          "id": 328,
+          "query": "尼康 z 85 1.2s",
+          "pages": 5,
+          "priority": 610,
+          "status": "ACTIVE",
+          "metadata": {
+            "reason": "user_requested_nikon_lens_shortcut",
+            "source": "manual_user_query",
+            "managedBy": "manual_user_query"
+          }
+        },
+        {
+          "id": 329,
+          "query": "尼康 z24 70s",
+          "pages": 5,
+          "priority": 620,
+          "status": "ACTIVE",
+          "metadata": {
+            "reason": "user_requested_nikon_lens_shortcut",
+            "source": "manual_user_query",
+            "managedBy": "manual_user_query"
+          }
+        }
+      ]
+    },
+    {
+      "task_key": "camera-body-catalog-auto",
+      "source_platform": "xianyu",
+      "category_id": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+      "business_domain": "camera_body",
+      "task_type": "PRODUCTION",
+      "display_name": "相机机身 自动采集任务",
+      "keywords": [
+        "佳能 R5 机身",
+        "佳能 R50 机身",
+        "佳能 R6二代 机身",
+        "佳能 R7 机身",
+        "佳能 R8 机身",
+        "富士 X-S20 机身",
+        "富士 X-T5 机身",
+        "富士 X-T50 机身",
+        "尼康 Z5 机身",
+        "尼康 Z6II 机身",
+        "尼康 Z6III 机身",
+        "尼康 Z8 机身",
+        "尼康 Zf 机身",
+        "索尼 A6400 机身",
+        "索尼 A6700 机身",
+        "索尼 A7 III 机身",
+        "索尼 A7 IV 机身",
+        "索尼 A7C II 机身",
+        "索尼 A7CR 机身",
+        "索尼 A7R V 机身"
+      ],
+      "brand_lexicon": [
+        "Canon",
+        "Fujifilm",
+        "Nikon",
+        "Sony"
+      ],
+      "model_lexicon": [
+        "Canon EOS R5",
+        "佳能 R5",
+        "Canon EOS R50",
+        "佳能 R50",
+        "Canon EOS R6 Mark II",
+        "佳能 R6二代",
+        "Canon EOS R7",
+        "佳能 R7",
+        "Canon EOS R8",
+        "佳能 R8",
+        "Fujifilm X-S20",
+        "富士 X-S20",
+        "Fujifilm X-T5",
+        "富士 X-T5",
+        "Fujifilm X-T50",
+        "富士 X-T50",
+        "Nikon Z5",
+        "尼康 Z5",
+        "Nikon Z6 II",
+        "尼康 Z6II",
+        "Nikon Z6 III",
+        "尼康 Z6III",
+        "Nikon Z8",
+        "尼康 Z8",
+        "Nikon Zf",
+        "尼康 Zf",
+        "Sony A6400",
+        "索尼 A6400",
+        "Sony A6700",
+        "索尼 A6700",
+        "Sony A7 III",
+        "索尼 A7 III",
+        "Sony A7 IV",
+        "索尼 A7 IV",
+        "Sony A7C II",
+        "索尼 A7C II",
+        "Sony A7C R",
+        "索尼 A7CR",
+        "Sony A7R V",
+        "索尼 A7R V"
+      ],
+      "config_lexicon": [],
+      "paging_limit": 5,
+      "profile_key": "default",
+      "parallel_tabs": 1,
+      "status": "active",
+      "metadata_json": {
+        "source": "category_model_catalog",
+        "managedBy": "model_catalog_sync",
+        "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+        "categoryCode": "camera_body",
+        "syncModelCatalog": true
+      },
+      "queries": [
+        {
+          "id": 274,
+          "query": "佳能 R5 机身",
+          "pages": 5,
+          "priority": 10,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "7d38b53f-06c7-4f2b-a944-eb89b6634af6"
+          }
+        },
+        {
+          "id": 276,
+          "query": "佳能 R50 机身",
+          "pages": 5,
+          "priority": 20,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "9ac47bb3-fb34-42ea-86ba-715f7db03cec"
+          }
+        },
+        {
+          "id": 278,
+          "query": "佳能 R6二代 机身",
+          "pages": 5,
+          "priority": 30,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "9779c5ee-1568-4f1d-ab49-8e22fb1882ca"
+          }
+        },
+        {
+          "id": 280,
+          "query": "佳能 R7 机身",
+          "pages": 5,
+          "priority": 40,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "3495e1e7-6abc-401b-8e4e-6f0901f00142"
+          }
+        },
+        {
+          "id": 282,
+          "query": "佳能 R8 机身",
+          "pages": 5,
+          "priority": 50,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "b5fe7bdc-ed71-4bb3-ab76-55e292da3d2e"
+          }
+        },
+        {
+          "id": 284,
+          "query": "富士 X-S20 机身",
+          "pages": 5,
+          "priority": 60,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "a5fdd0ff-1269-4b47-aa1c-31c368178ea8"
+          }
+        },
+        {
+          "id": 286,
+          "query": "富士 X-T5 机身",
+          "pages": 5,
+          "priority": 70,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "4ca08bce-efa3-4759-939e-0c8701bdafe7"
+          }
+        },
+        {
+          "id": 288,
+          "query": "富士 X-T50 机身",
+          "pages": 5,
+          "priority": 80,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "f5eda81f-e718-45c4-85e7-23ba364bdfe8"
+          }
+        },
+        {
+          "id": 290,
+          "query": "尼康 Z5 机身",
+          "pages": 5,
+          "priority": 90,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "b9730368-96a8-47bf-b2ac-60849803cd75"
+          }
+        },
+        {
+          "id": 292,
+          "query": "尼康 Z6II 机身",
+          "pages": 5,
+          "priority": 100,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "18222715-9e49-4143-82f0-4c8ad0692b23"
+          }
+        },
+        {
+          "id": 294,
+          "query": "尼康 Z6III 机身",
+          "pages": 5,
+          "priority": 110,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "9a297658-9dd5-475d-b6cd-206806774a69"
+          }
+        },
+        {
+          "id": 296,
+          "query": "尼康 Z8 机身",
+          "pages": 5,
+          "priority": 120,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "66068be4-b842-4f78-99e5-4b23b3a6dc9e"
+          }
+        },
+        {
+          "id": 298,
+          "query": "尼康 Zf 机身",
+          "pages": 5,
+          "priority": 130,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "615505ea-5a63-4fde-bdae-430903c7360c"
+          }
+        },
+        {
+          "id": 300,
+          "query": "索尼 A6400 机身",
+          "pages": 5,
+          "priority": 140,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "2e6896a8-d2f4-4cec-b93e-e07df958ad72"
+          }
+        },
+        {
+          "id": 302,
+          "query": "索尼 A6700 机身",
+          "pages": 5,
+          "priority": 150,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "d320b69b-3020-4475-b5c8-8a2a4be6a507"
+          }
+        },
+        {
+          "id": 304,
+          "query": "索尼 A7 III 机身",
+          "pages": 5,
+          "priority": 160,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "41c9b45e-0ce6-43e9-9b5e-10f008df31c4"
+          }
+        },
+        {
+          "id": 306,
+          "query": "索尼 A7 IV 机身",
+          "pages": 5,
+          "priority": 170,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "bcfabc5f-7f01-4325-ac91-ce79f9db039d"
+          }
+        },
+        {
+          "id": 308,
+          "query": "索尼 A7C II 机身",
+          "pages": 5,
+          "priority": 180,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "ea7fc9de-e9f0-4643-a49b-302a7729a39d"
+          }
+        },
+        {
+          "id": 310,
+          "query": "索尼 A7CR 机身",
+          "pages": 5,
+          "priority": 190,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "38bd16ed-2f59-451b-9058-91be3610b6c2"
+          }
+        },
+        {
+          "id": 312,
+          "query": "索尼 A7R V 机身",
+          "pages": 5,
+          "priority": 200,
+          "status": "ACTIVE",
+          "metadata": {
+            "source": "model_catalog_sync",
+            "managedBy": "model_catalog_sync",
+            "queryKind": "alias",
+            "categoryId": "c9cc6187-e925-42b1-9ebf-75d6866290ff",
+            "syncSource": "category_model_catalog",
+            "categoryCode": "camera_body",
+            "modelCatalogId": "abf8808b-1406-4493-99ac-5441ac3ab9ee"
+          }
+        }
+      ]
+    }
+  ]
+}

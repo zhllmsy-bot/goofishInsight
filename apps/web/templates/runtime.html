@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="async-page" data-async-page>
+  <div data-async-section="/api/dashboard/runtime/status" data-async-priority="high" data-async-renderer="runtime-controls-page" data-async-skeleton-height="760">
+    <article class="panel async-skeleton">
+      <p class="eyebrow">运行控制</p>
+      <h3>正在载入 runtime 控制台...</h3>
+    </article>
+  </div>
+</div>
+{% endblock %}

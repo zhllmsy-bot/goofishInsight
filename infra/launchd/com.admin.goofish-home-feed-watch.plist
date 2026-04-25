@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.admin.goofish-home-feed-watch</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>__GOOFISH_RUNTIME_HOME__/start-home-feed-resident.sh</string>
+	</array>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>GOOFISH_ROOT_DIR</key>
+		<string>__GOOFISH_ROOT_DIR__</string>
+		<key>PROFILE_KEY</key>
+		<string>chrome-attached-mac</string>
+		<key>CDP_URL</key>
+		<string>http://127.0.0.1:9222</string>
+		<key>INTERVAL_SECONDS</key>
+		<string>20</string>
+		<key>MAX_MESSAGES</key>
+		<string>1</string>
+		<key>DRY_RUN</key>
+		<string>0</string>
+		<key>REQUIRE_ACTIONABLE_BAND</key>
+		<string>0</string>
+		<key>ONLY_WITHIN_TARGET_PRICE</key>
+		<string>0</string>
+	</dict>
+	<key>WorkingDirectory</key>
+	<string>__GOOFISH_RUNTIME_HOME__</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>StandardOutPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-home-feed-watch.log</string>
+	<key>StandardErrorPath</key>
+	<string>__GOOFISH_LOG_DIR__/goofish-home-feed-watch.err.log</string>
+</dict>
+</plist>

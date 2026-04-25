@@ -1,0 +1,19 @@
+{
+  "name": "goofish-insight",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dashboard:react:dev": "npm run dev -w @goofish/dashboard-react",
+    "dashboard:nest:dev": "npm run start:dev -w @goofish/dashboard-nest",
+    "dashboard:build": "npm run build -w @goofish/dashboard-react && npm run build -w @goofish/dashboard-nest",
+    "dashboard:start": "npm run start:prod -w @goofish/dashboard-nest",
+    "typecheck": "npm run typecheck -w @goofish/dashboard-react && npm run typecheck -w @goofish/dashboard-nest",
+    "test": "npm run test -w @goofish/dashboard-react && npm run test -w @goofish/dashboard-nest",
+    "lint": "npm run lint -w @goofish/dashboard-react && npm run lint -w @goofish/dashboard-nest",
+    "verify-baseline": "bash scripts/verify-baseline.sh"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

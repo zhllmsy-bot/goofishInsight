@@ -1,0 +1,2 @@
+"""Goofish Insight collector foundation."""
+

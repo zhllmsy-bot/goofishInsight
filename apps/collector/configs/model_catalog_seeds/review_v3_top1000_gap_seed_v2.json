@@ -1,0 +1,164 @@
+{
+  "items": [
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_13_m5_16g_1024g",
+      "modelName": "MacBook Air 13 M5 16G 1024G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "MacBook Air 13寸 M5 16G 1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air M5 13 16+1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air M5 13寸 16+1T", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_13_m5_24g_512g",
+      "modelName": "MacBook Air 13 M5 24G 512G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "MacBook Air 13寸 M5 24G 512G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air M5 24+512", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 13 M5 24+512", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_13_m5_24g_1024g",
+      "modelName": "MacBook Air 13 M5 24G 1024G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "MacBook Air 13寸 M5 24G 1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air M5 24+1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 13 M5 24+1T", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_15_m5_24g_512g",
+      "modelName": "MacBook Air 15 M5 24G 512G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "MacBook Air 15寸 M5 24G 512G", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 15 M5 24+512", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "15寸 MacBook Air M5 24+512", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Air",
+      "modelCode": "apple_computer_macbook_air_15_m5_24g_1024g",
+      "modelName": "MacBook Air 15 M5 24G 1024G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "MacBook Air 15寸 M5 24G 1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Air 15 M5 24+1T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "15寸 MacBook Air M5 24+1T", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Pro",
+      "modelCode": "apple_computer_macbook_pro_14_m2_max_96g_4096g",
+      "modelName": "MacBook Pro 14 M2 Max 96G 4096G",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "A2779max", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "MacBook Pro 14 M2 Max 96G 4T", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "M2 max 96g 4t", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "96g/4tb", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Forerunner",
+      "modelCode": "garmin_watch_forerunner_265",
+      "modelName": "Forerunner 265",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "佳明265", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Forerunner265", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "265 AMOLED", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Fenix",
+      "modelCode": "garmin_watch_fenix_7_pro",
+      "modelName": "Fenix 7 Pro",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "飞7pro", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Fenix7Pro", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Fenix 7 Pro太阳能", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "飞耐时7pro太阳能", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Fenix 7 Pro 47mm", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Tactix",
+      "modelCode": "garmin_watch_tactix_8",
+      "modelName": "Tactix 8",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "佳明泰铁时8", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Tactix8", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Tactix 8 51mm Solar", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Tactix8 51mm太阳能", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "泰铁时8 51mm太阳能", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Tactix",
+      "modelCode": "garmin_watch_tactix_8_amoled",
+      "modelName": "Tactix 8 AMOLED",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "Tactix 8 47mm AMOLED", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Tactix8 47mm炫彩版", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "泰铁时8 47mm AMOLED", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "泰铁时8炫彩版", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    },
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Instinct",
+      "modelCode": "garmin_watch_instinct_solar",
+      "modelName": "Instinct Solar",
+      "status": "ACTIVE",
+      "metadata": { "source": "review_v3_top1000_gap_seed_v2" },
+      "aliases": [
+        { "aliasText": "本能1代太阳能版", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "本能太阳能", "aliasType": "SEED", "status": "ACTIVE" },
+        { "aliasText": "Instinct 1 Solar", "aliasType": "SEED", "status": "ACTIVE" }
+      ]
+    }
+  ]
+}

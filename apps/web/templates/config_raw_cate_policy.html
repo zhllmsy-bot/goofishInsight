@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="config-page" data-raw-cate-policy-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">Raw Cate Policy</p>
+      <h2>Xianyu Raw Category Governance</h2>
+      <p class="hero-text">
+        这里维护咸鱼 raw cate 的治理策略。主路由仍然以任务绑定的大类为准，raw cate 只负责 override、屏蔽和观测。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">BLOCK / FORCE_CATEGORY / FORCE_TEMPLATE / OBSERVE</span>
+    </div>
+  </section>
+
+  {% include "_config_subnav.html" %}
+
+  <section class="panel onboarding-control-panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="eyebrow">操作入口</p>
+        <h3>raw cate policy 列表与保存</h3>
+      </div>
+    </div>
+    <form class="onboarding-controls" data-raw-cate-policy-controls>
+      <label class="filter-field">
+        <span>Operator</span>
+        <input type="text" name="operatorId" value="admin" />
+      </label>
+      <label class="filter-field">
+        <span>Status</span>
+        <select name="status">
+          <option value="">全部</option>
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="DISABLED">DISABLED</option>
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Policy Mode</span>
+        <select name="policyModeFilter">
+          <option value="">全部</option>
+          <option value="BLOCK">BLOCK</option>
+          <option value="FORCE_CATEGORY">FORCE_CATEGORY</option>
+          <option value="FORCE_TEMPLATE">FORCE_TEMPLATE</option>
+          <option value="OBSERVE">OBSERVE</option>
+        </select>
+      </label>
+      <div class="onboarding-action-row">
+        <button type="button" class="secondary-button" data-raw-cate-policy-action="new">新建 policy</button>
+        <button type="button" class="secondary-button" data-raw-cate-policy-action="refresh">刷新列表</button>
+        <button type="button" class="secondary-button" data-raw-cate-policy-action="save-dry-run">预演保存</button>
+        <button type="button" class="primary-button" data-raw-cate-policy-action="save-apply">正式保存</button>
+      </div>
+      <p class="runtime-feedback onboarding-feedback" data-raw-cate-policy-feedback></p>
+    </form>
+  </section>
+
+  <section class="config-layout">
+    <article class="panel config-list-panel">
+      <div class="panel-header tight">
+        <div>
+          <p class="eyebrow">Policies</p>
+          <h3>raw cate 策略列表</h3>
+        </div>
+        <span class="status-pill" data-raw-cate-policy-total>加载中</span>
+      </div>
+      <div class="config-list" data-raw-cate-policy-list>
+        <article class="async-skeleton panel compact-panel">
+          <p class="eyebrow">加载中</p>
+          <h3>正在载入 raw cate policy...</h3>
+        </article>
+      </div>
+    </article>
+
+    <article class="panel config-detail-panel">
+      <div class="panel-header tight">
+        <div>
+          <p class="eyebrow">Editor</p>
+          <h3>匹配条件与策略</h3>
+        </div>
+      </div>
+      <form class="config-form" data-raw-cate-policy-form>
+        <input type="hidden" name="mappingId" />
+        <div class="config-form-grid">
+          <label class="filter-field">
+            <span>Match Scope</span>
+            <select name="matchScope">
+              <option value="C_CAT">C_CAT</option>
+              <option value="CAT_TB">CAT_TB</option>
+              <option value="TB_CAT">TB_CAT</option>
+              <option value="CAT">CAT</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Xianyu C Cat Id</span>
+            <input type="text" name="xianyuCCatId" placeholder="例如：126864783" />
+          </label>
+          <label class="filter-field">
+            <span>Xianyu Cat Id</span>
+            <input type="text" name="xianyuCatId" placeholder="例如：50025387" />
+          </label>
+          <label class="filter-field">
+            <span>Xianyu Tb Cat Id</span>
+            <input type="text" name="xianyuTbCatId" placeholder="例如：140116" />
+          </label>
+          <label class="filter-field">
+            <span>Raw Category Name</span>
+            <input type="text" name="rawCategoryName" placeholder="页面上看到的类目名" />
+          </label>
+          <label class="filter-field">
+            <span>Policy Mode</span>
+            <select name="policyMode">
+              <option value="FORCE_TEMPLATE">FORCE_TEMPLATE</option>
+              <option value="FORCE_CATEGORY">FORCE_CATEGORY</option>
+              <option value="BLOCK">BLOCK</option>
+              <option value="OBSERVE">OBSERVE</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Category Id</span>
+            <input type="text" name="categoryId" placeholder="需要时填写 UUID" />
+          </label>
+          <label class="filter-field">
+            <span>Category Code</span>
+            <input type="text" name="categoryCode" placeholder="例如：camera_interchangeable_lens" />
+          </label>
+          <label class="filter-field">
+            <span>Template Id</span>
+            <input type="text" name="templateId" placeholder="默认模板或历史兼容模板" />
+          </label>
+          <label class="filter-field">
+            <span>Template Override Id</span>
+            <input type="text" name="templateOverrideId" placeholder="仅 FORCE_TEMPLATE 时可选覆盖" />
+          </label>
+          <label class="filter-field">
+            <span>Status</span>
+            <select name="status">
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="DISABLED">DISABLED</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Resolution Source</span>
+            <input type="text" name="resolutionSource" value="manual" />
+          </label>
+        </div>
+
+        <div class="config-inline-meta" data-raw-cate-policy-summary>
+          <p class="runtime-panel-text">选择左侧 policy 后，这里会显示 queue 样本、命中的 category/template，以及当前 policy 语义。</p>
+        </div>
+      </form>
+    </article>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='config-raw-cate-policy.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

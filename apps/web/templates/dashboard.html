@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="async-page dashboard-terminal-page" data-async-page>
+  <div class="dashboard-terminal-shell">
+    <aside class="dashboard-sidebar">
+      <div class="dashboard-sidebar-sticky">
+        <header class="dashboard-sidebar-brand">
+          <h1>买方交易终端</h1>
+          <p>BUY-SIDE TERMINAL</p>
+        </header>
+
+        <div data-async-section="/api/dashboard/sections/filters" data-async-priority="high" data-async-renderer="dashboard-filters" data-async-skeleton-height="720">
+          <article class="dashboard-sidebar-nav-shell async-skeleton">
+            <p class="eyebrow">市场与品类</p>
+            <h3>正在载入导航与筛选...</h3>
+          </article>
+        </div>
+
+        <div data-async-section="/api/dashboard/sections/hero" data-async-priority="high" data-async-renderer="dashboard-hero" data-async-skeleton-height="96">
+          <article class="panel terminal-status-panel async-skeleton">
+            <p class="eyebrow">运行状态</p>
+            <h3>正在载入简版状态...</h3>
+          </article>
+        </div>
+
+        <nav class="dashboard-sidebar-links" aria-label="工作流入口">
+          <a href="/runtime">运行控制</a>
+          <a href="/progress">回刷进度</a>
+          <a href="/onboarding/xianyu">品类开通</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="dashboard-terminal-main">
+      <div data-async-section="/api/dashboard/sections/filters" data-async-renderer="dashboard-selection-bar" data-async-skeleton-height="88">
+        <article class="panel async-skeleton terminal-selection-bar-skeleton">
+          <p class="eyebrow">快捷规格</p>
+          <h3>正在载入快捷切换...</h3>
+        </article>
+      </div>
+
+      <div data-async-section="/api/dashboard/sections/pricing" data-async-priority="high" data-async-renderer="dashboard-pricing" data-async-skeleton-height="500">
+        <article class="panel async-skeleton">
+          <p class="eyebrow">核心价格</p>
+          <h3>正在载入价格终端...</h3>
+        </article>
+      </div>
+
+      <div class="dashboard-terminal-stack dashboard-terminal-opportunities">
+        <div data-async-section="/api/dashboard/sections/items" data-async-renderer="dashboard-items" data-async-skeleton-height="720">
+          <article class="panel async-skeleton">
+            <p class="eyebrow">最新挂牌</p>
+            <h3>正在载入最新在售卡片...</h3>
+          </article>
+        </div>
+
+        <div data-async-section="/api/dashboard/sections/focus" data-async-renderer="dashboard-focus" data-async-skeleton-height="220">
+          <article class="panel async-skeleton">
+            <p class="eyebrow">机会雷达</p>
+            <h3>正在载入收货机会...</h3>
+          </article>
+        </div>
+      </div>
+
+      <section class="panel dashboard-reference-deck" data-home-reference-deck>
+        <div class="dashboard-reference-head">
+          <div class="dashboard-reference-tabs" role="tablist" aria-label="参考面板">
+            <button type="button" class="dashboard-reference-tab is-active" data-home-reference-tab="trend" aria-selected="true">价格趋势</button>
+            <button type="button" class="dashboard-reference-tab" data-home-reference-tab="calibration" aria-selected="false">历史成交校准</button>
+          </div>
+          <button type="button" class="dashboard-reference-toggle" data-home-reference-toggle aria-expanded="true">收起</button>
+        </div>
+        <div class="dashboard-reference-body">
+          <div data-home-reference-panel="trend">
+            <div data-async-section="/api/dashboard/sections/insights" data-async-renderer="dashboard-insights" data-async-skeleton-height="420">
+              <article class="async-skeleton dashboard-reference-skeleton">
+                <p class="eyebrow">趋势与市场</p>
+                <h3>正在载入趋势与行情...</h3>
+              </article>
+            </div>
+          </div>
+          <div data-home-reference-panel="calibration" hidden>
+            <div data-async-section="/api/dashboard/sections/calibration" data-async-renderer="dashboard-calibration" data-async-skeleton-height="360">
+              <article class="async-skeleton dashboard-reference-skeleton">
+                <p class="eyebrow">成交校准</p>
+                <h3>正在载入真实成交对照...</h3>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+{% endblock %}

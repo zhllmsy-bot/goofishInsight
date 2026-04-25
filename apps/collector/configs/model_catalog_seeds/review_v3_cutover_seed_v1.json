@@ -1,0 +1,75 @@
+{
+  "items": [
+    {
+      "categoryCode": "garmin_watch",
+      "brandName": "Garmin",
+      "seriesName": "Venu",
+      "modelCode": "garmin_watch_venu_2s",
+      "modelName": "Venu 2S",
+      "status": "ACTIVE",
+      "metadata": {"source": "review_v3_cutover_seed_v1"},
+      "aliases": [
+        {"aliasText": "Garmin Venu 2S", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "佳明Venu 2S", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "Venu2S", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7_iv",
+      "modelName": "Sony A7 IV",
+      "status": "ACTIVE",
+      "metadata": {"source": "review_v3_cutover_seed_v1"},
+      "aliases": [
+        {"aliasText": "索尼A7M4A", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "Sony A7M4A", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "A7M4A", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "A7 IVA", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Pro",
+      "modelCode": "apple_computer_macbook_pro_14_m5_16g_512g",
+      "modelName": "MacBook Pro 14 M5 16G 512G",
+      "status": "ACTIVE",
+      "metadata": {"source": "review_v3_cutover_seed_v1"},
+      "aliases": [
+        {"aliasText": "MacBook Pro 2025款 14寸 M5 16G 512G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "MacBook Pro 14寸 M5 16G 512G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "苹果MacBook Pro 2025款 14寸 M5 16G 512G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Pro",
+      "modelCode": "apple_computer_macbook_pro_14_m2_max_96g_4096g",
+      "modelName": "MacBook Pro 14 M2 Max 96G 4096G",
+      "status": "ACTIVE",
+      "metadata": {"source": "review_v3_cutover_seed_v1"},
+      "aliases": [
+        {"aliasText": "MacBook Pro 14 M2 Max 96G 4T", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "M2 Max 96G 4T A2779", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "A2779 M2 Max 96G 4T", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_computer",
+      "brandName": "Apple",
+      "seriesName": "MacBook Pro",
+      "modelCode": "apple_computer_macbook_pro_16_intel_32g_1024g_8g",
+      "modelName": "MacBook Pro 16 Intel 32G 1024G 8G",
+      "status": "ACTIVE",
+      "metadata": {"source": "review_v3_cutover_seed_v1"},
+      "aliases": [
+        {"aliasText": "MacBook Pro 16寸 32G 1T 8G 2020", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "MacBook Pro 16 32G 1T 8G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "MacBook Pro 16寸 2.3GHz 32G 1T 8G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    }
+  ]
+}

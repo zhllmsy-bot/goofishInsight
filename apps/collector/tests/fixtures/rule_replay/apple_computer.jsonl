@@ -1,0 +1,20 @@
+{"title": "自用 MBP M3 Pro 18G 512G 国行", "expected": {"brand": "Apple", "model_family": "MacBook Pro", "chip": "M3", "memory_gb": 18, "storage_gb": 512}}
+{"title": "MBP 14寸 M1 Pro 16G 512G", "expected": {"brand": "Apple", "model_family": "MacBook Pro", "chip": "M1", "memory_gb": 16, "storage_gb": 512}}
+{"title": "MacBook Pro M2 16G 512G", "expected": {"brand": "Apple", "model_family": "MacBook Pro", "chip": "M2", "memory_gb": 16, "storage_gb": 512}}
+{"title": "苹果pro 笔记本 m3 18g 512g", "expected": {"brand": "Apple", "model_family": "MacBook Pro", "chip": "M3", "memory_gb": 18, "storage_gb": 512}}
+{"title": "Mac Pro 笔记本 M4 24G 1TB", "expected": {"brand": "Apple", "model_family": "MacBook Pro", "chip": "M4", "memory_gb": 24, "storage_gb": 1024}}
+{"title": "MBA M2 16G 1TB 星光色", "expected": {"brand": "Apple", "model_family": "MacBook Air", "chip": "M2", "memory_gb": 16, "storage_gb": 1024}}
+{"title": "MacBook Air M3 16G 512G", "expected": {"brand": "Apple", "model_family": "MacBook Air", "chip": "M3", "memory_gb": 16, "storage_gb": 512}}
+{"title": "苹果air m1 8g 256g", "expected": {"brand": "Apple", "model_family": "MacBook Air", "chip": "M1", "memory_gb": 8, "storage_gb": 256}}
+{"title": "mac mini m4 16g 512g", "expected": {"brand": "Apple", "model_family": "Mac mini", "chip": "M4", "memory_gb": 16, "storage_gb": 512}}
+{"title": "macmini m2 16g 1tb", "expected": {"brand": "Apple", "model_family": "Mac mini", "chip": "M2", "memory_gb": 16, "storage_gb": 1024}}
+{"title": "迷你主机 m1 16g 512g", "expected": {"brand": "Apple", "model_family": "Mac mini", "chip": "M1", "memory_gb": 16, "storage_gb": 512}}
+{"title": "Mac Studio M2 Max 64G 1TB", "expected": {"brand": "Apple", "model_family": "Mac Studio", "chip": "M2", "memory_gb": 64, "storage_gb": 1024}}
+{"title": "macstudio m2 ultra 128g 2tb", "expected": {"brand": "Apple", "model_family": "Mac Studio", "chip": "M2", "memory_gb": 128, "storage_gb": 2048}}
+{"title": "iMac M3 24G 512G", "expected": {"brand": "Apple", "model_family": "iMac", "chip": "M3", "memory_gb": 24, "storage_gb": 512}}
+{"title": "imac m1 16g 1tb", "expected": {"brand": "Apple", "model_family": "iMac", "chip": "M1", "memory_gb": 16, "storage_gb": 1024}}
+{"title": "MacBook Pro 16 M4 48G 1TB", "expected": {"brand": "Apple", "model_family": "MacBook Pro", "chip": "M4", "memory_gb": 48, "storage_gb": 1024}}
+{"title": "MacBook Air 15 M3 24G 512G", "expected": {"brand": "Apple", "model_family": "MacBook Air", "chip": "M3", "memory_gb": 24, "storage_gb": 512}}
+{"title": "Mac mini M2 8G 256G", "expected": {"brand": "Apple", "model_family": "Mac mini", "chip": "M2", "memory_gb": 8, "storage_gb": 256}}
+{"title": "Mac Studio M1 32G 512G", "expected": {"brand": "Apple", "model_family": "Mac Studio", "chip": "M1", "memory_gb": 32, "storage_gb": 512}}
+{"title": "iMac 24 M3 16G 512G", "expected": {"brand": "Apple", "model_family": "iMac", "chip": "M3", "memory_gb": 16, "storage_gb": 512}}

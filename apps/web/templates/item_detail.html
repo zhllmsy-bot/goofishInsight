@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="detail-hero">
+  <div>
+    <p class="eyebrow">{{ item.domain_label }} · {{ item.task_display_name }}</p>
+    <h2 class="detail-title">{{ item.title }}</h2>
+    <div class="detail-meta-row">
+      <span class="price-badge">{{ item.price|currency }}</span>
+      <span class="status-pill">{{ item.region or "-" }}</span>
+      <span class="status-pill">{{ item.last_seen_at|relative }}</span>
+    </div>
+  </div>
+  <div class="detail-actions">
+    <a href="/" class="secondary-button">返回看板</a>
+    {% if item.listing_url %}
+      <a href="{{ item.listing_url }}" target="_blank" rel="noreferrer" class="primary-button">打开闲鱼原页</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="detail-grid">
+  <article class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Listing facts</p>
+        <h3>商品信息</h3>
+      </div>
+    </div>
+    <div class="detail-image-grid">
+      {% for image_url in item.image_urls %}
+        <img src="{{ image_url }}" alt="{{ item.title }}" class="detail-image" />
+      {% endfor %}
+    </div>
+    <dl class="detail-list">
+      <div><dt>商品 ID</dt><dd>{{ item.item_id }}</dd></div>
+      <div><dt>品牌</dt><dd>{{ item.normalized_brand or "-" }}</dd></div>
+      <div><dt>型号家族</dt><dd>{{ item.normalized_model_family or "-" }}</dd></div>
+      <div><dt>型号</dt><dd>{{ item.normalized_model or "-" }}</dd></div>
+      <div><dt>芯片</dt><dd>{{ item.normalized_chip or "-" }}</dd></div>
+      <div><dt>内存</dt><dd>{% if item.normalized_memory_gb %}{{ item.normalized_memory_gb }} GB{% else %}-{% endif %}</dd></div>
+      <div><dt>硬盘</dt><dd>{% if item.normalized_storage_gb %}{{ item.normalized_storage_gb }} GB{% else %}-{% endif %}</dd></div>
+      <div><dt>发布时间</dt><dd>{{ item.publish_time|datetime }}</dd></div>
+      <div><dt>首次入库</dt><dd>{{ item.first_seen_at|datetime }}</dd></div>
+      <div><dt>最近看到</dt><dd>{{ item.last_seen_at|datetime }}</dd></div>
+      <div><dt>来源关键词</dt><dd>{{ item.source_keyword or "-" }}</dd></div>
+    </dl>
+    {% if spec %}
+      <dl class="detail-list">
+        <div><dt>Spec 状态</dt><dd>{{ spec.status }}</dd></div>
+        <div><dt>Spec 置信度</dt><dd>{% if spec.confidence is not none %}{{ spec.confidence }}{% else %}-{% endif %}</dd></div>
+        <div><dt>抽取方式</dt><dd>{{ spec.extractor_type }}</dd></div>
+        <div><dt>产品线</dt><dd>{{ spec.product_line or "-" }}</dd></div>
+        <div><dt>标准型号</dt><dd>{{ spec.model_name or "-" }}</dd></div>
+        <div><dt>代际</dt><dd>{{ spec.generation or "-" }}</dd></div>
+        <div><dt>表盘尺寸</dt><dd>{% if spec.case_size_mm %}{{ spec.case_size_mm }} mm{% else %}-{% endif %}</dd></div>
+        <div><dt>太阳能</dt><dd>{% if spec.is_solar is sameas true %}是{% elif spec.is_solar is sameas false %}否{% else %}-{% endif %}</dd></div>
+        <div><dt>显示类型</dt><dd>{{ spec.display_type or "-" }}</dd></div>
+        <div><dt>屏幕尺寸</dt><dd>{% if spec.screen_size_in %}{{ spec.screen_size_in }} 寸{% else %}-{% endif %}</dd></div>
+        <div><dt>芯片</dt><dd>{{ spec.chip_family or "-" }}</dd></div>
+        <div><dt>CPU 核心</dt><dd>{{ spec.cpu_cores or "-" }}</dd></div>
+        <div><dt>GPU 核心</dt><dd>{{ spec.gpu_cores or "-" }}</dd></div>
+        <div><dt>内存</dt><dd>{% if spec.memory_gb %}{{ spec.memory_gb }} GB{% else %}-{% endif %}</dd></div>
+        <div><dt>硬盘</dt><dd>{% if spec.storage_gb %}{{ spec.storage_gb }} GB{% else %}-{% endif %}</dd></div>
+        <div><dt>需复核</dt><dd>{% if spec.needs_review %}是{% else %}否{% endif %}</dd></div>
+      </dl>
+    {% endif %}
+    <div class="tag-row roomy">
+      {% for tag in item.condition_tags %}
+        <span class="tag">{{ tag }}</span>
+      {% endfor %}
+      {% if spec %}
+        {% for tag in spec.edition_tags %}
+          <span class="tag">{{ tag }}</span>
+        {% endfor %}
+      {% endif %}
+      {% if item.has_video %}
+        <span class="tag video">Video</span>
+      {% endif %}
+      {% if item.is_ad %}
+        <span class="tag ad">Ad</span>
+      {% endif %}
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Seller context</p>
+        <h3>卖家与快照</h3>
+      </div>
+    </div>
+    <dl class="detail-list compact">
+      <div><dt>卖家</dt><dd>{{ seller.seller_name or "-" }}</dd></div>
+      <div><dt>卖家 ID</dt><dd>{{ seller.seller_id or "-" }}</dd></div>
+      <div><dt>地区</dt><dd>{{ seller.region or "-" }}</dd></div>
+    </dl>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>抓取时间</th>
+            <th>价格</th>
+            <th>地区</th>
+            <th>页码</th>
+            <th>关键词</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for snapshot in snapshots %}
+            <tr>
+              <td>{{ snapshot.snapshot_at|datetime }}</td>
+              <td>{{ snapshot.price|currency }}</td>
+              <td>{{ snapshot.region or "-" }}</td>
+              <td>{{ snapshot.extra_json.page_number if snapshot.extra_json.page_number else "-" }}</td>
+              <td>{{ snapshot.extra_json.source_keyword if snapshot.extra_json.source_keyword else "-" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Evidence chain</p>
+      <h3>原始响应</h3>
+    </div>
+    {% if item.raw_response_id %}
+      <a href="/api/raw-responses/{{ item.raw_response_id }}" target="_blank" rel="noreferrer" class="secondary-button">JSON</a>
+    {% endif %}
+  </div>
+  <pre class="raw-response-block">{{ raw_response_body or "No raw response available." }}</pre>
+</section>
+{% endblock %}

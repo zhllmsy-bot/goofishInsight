@@ -1,0 +1,67 @@
+{
+  "profiles": {
+    "default": {
+      "channel": "chrome",
+      "headless": false,
+      "pages": 1
+    },
+    "chrome-attached": {
+      "channel": "chrome",
+      "headless": false,
+      "pages": 1,
+      "parallel_tabs": 3,
+      "cdp_url": "auto"
+    }
+  },
+  "tasks": [
+    {
+      "task_key": "garmin-zhuanzhuan",
+      "source_platform": "zhuanzhuan",
+      "business_domain": "garmin",
+      "display_name": "Zhuanzhuan Garmin Hot and Premium Discovery",
+      "keywords": ["佳明", "garmin", "forerunner 265", "forerunner 965", "fenix 7 pro", "fenix 8", "epix pro", "instinct 3", "marq 2", "tactix 8", "泰铁时8"],
+      "brand_lexicon": ["佳明", "garmin"],
+      "model_lexicon": ["forerunner 265", "forerunner 965", "fenix 7 pro", "fenix 8", "epix pro", "instinct 3", "marq 2", "tactix 8", "泰铁时8", "fenix", "epix", "instinct", "forerunner", "marq", "tactix"],
+      "config_lexicon": ["42mm", "43mm", "45mm", "47mm", "50mm", "51mm", "solar", "sapphire", "amoled", "太阳能", "蓝宝石", "钛"],
+      "paging_limit": 8,
+      "queries": [
+        { "query": "佳明 forerunner 265", "pages": 0 },
+        { "query": "佳明 forerunner 965", "pages": 0 },
+        { "query": "佳明 fenix 7 pro", "pages": 0 },
+        { "query": "佳明 fenix 8", "pages": 0 },
+        { "query": "佳明 epix pro", "pages": 0 },
+        { "query": "佳明 instinct 3", "pages": 0 },
+        { "query": "佳明 marq 2", "pages": 0 },
+        { "query": "佳明 tactix 8", "pages": 0 },
+        { "query": "佳明 tactix 8 amoled 51mm", "pages": 0 },
+        { "query": "佳明 tactix 8 mip 51mm solar", "pages": 0 }
+      ]
+    },
+    {
+      "task_key": "apple-m-series-zhuanzhuan",
+      "source_platform": "zhuanzhuan",
+      "business_domain": "apple_m_series",
+      "display_name": "Zhuanzhuan Apple M-Series Hot and Premium Discovery",
+      "keywords": ["苹果", "macbook air m1", "macbook air m2", "macbook air m3", "macbook pro 14", "mac mini m4", "mac studio m2 max", "mac studio m4 max", "mac studio m2 ultra", "mac studio m3 ultra"],
+      "brand_lexicon": ["苹果", "apple"],
+      "model_lexicon": ["macbook air", "macbook pro 14", "macbook pro 16", "mac mini", "mac studio", "imac"],
+      "config_lexicon": ["8g", "16g", "18g", "24g", "32g", "36g", "48g", "64g", "96g", "128g", "192g", "256g", "512g", "1tb", "2tb", "4tb", "8tb", "14寸", "15寸", "16寸"],
+      "paging_limit": 8,
+      "queries": [
+        { "query": "macbook air m1 8g 256g", "pages": 0 },
+        { "query": "macbook air m2 8g 256g", "pages": 0 },
+        { "query": "macbook air m3 16g 512g", "pages": 0 },
+        { "query": "macbook pro 14 m1 pro 16g 512g", "pages": 0 },
+        { "query": "macbook pro 14 m3 pro 18g 512g", "pages": 0 },
+        { "query": "macbook pro 14 m4 16g 512g", "pages": 0 },
+        { "query": "mac mini m4 16g 256g", "pages": 0 },
+        { "query": "mac studio m2 max 32g 512g", "pages": 0 },
+        { "query": "mac studio m4 max 36g 512g", "pages": 0 },
+        { "query": "mac studio m2 ultra 64g 1tb", "pages": 0 },
+        { "query": "mac studio m2 ultra 128g 2tb", "pages": 0 },
+        { "query": "mac studio m3 ultra 96g 1tb", "pages": 0 },
+        { "query": "mac studio m3 ultra 256g 4tb", "pages": 0 }
+      ]
+    }
+  ]
+}

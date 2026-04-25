@@ -1,0 +1,236 @@
+{
+  "items": [
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_xr_256g",
+      "modelName": "iPhone XR 256G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果XR 256G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone XR 256GB", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_13_128g",
+      "modelName": "iPhone 13 128G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果13 128G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone13 128G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_13_512g",
+      "modelName": "iPhone 13 512G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果13 512G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone13 512G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_13_mini_128g",
+      "modelName": "iPhone 13 mini 128G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果13mini 128G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone 13 Mini 128G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_13_pro_256g",
+      "modelName": "iPhone 13 Pro 256G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果13Pro 256G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone13pro 256G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_14_pro_max_128g",
+      "modelName": "iPhone 14 Pro Max 128G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果14 Pro Max 128G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone14 Pro Max 128G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_15_pro_max_256g",
+      "modelName": "iPhone 15 Pro Max 256G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果15 Pro Max 256G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone15 Pro Max 256G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_16_128g",
+      "modelName": "iPhone 16 128G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果16 128G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone16 128G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_16_256g",
+      "modelName": "iPhone 16 256G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果16 256G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone16 256G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_16_pro_128g",
+      "modelName": "iPhone 16 Pro 128G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果16 Pro 128G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone16 Pro 128G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_16_pro_max_256g",
+      "modelName": "iPhone 16 Pro Max 256G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果16 Pro Max 256G", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone16 Pro Max 256G", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "phone",
+      "brandName": "Apple",
+      "seriesName": "iPhone",
+      "modelCode": "phone_iphone_air_256g",
+      "modelName": "iPhone Air 256G",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果 iPhone Air 256GB", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "iPhone Air 256GB", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_airpods",
+      "brandName": "Apple",
+      "seriesName": "AirPods",
+      "modelCode": "apple_airpods_3",
+      "modelName": "AirPods 3",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果 AirPods 3", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_airpods",
+      "brandName": "Apple",
+      "seriesName": "AirPods",
+      "modelCode": "apple_airpods_4",
+      "modelName": "AirPods 4",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果 AirPods 4", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_airpods",
+      "brandName": "Apple",
+      "seriesName": "AirPods",
+      "modelCode": "apple_airpods_4_anc",
+      "modelName": "AirPods 4 ANC",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "AirPods 4 降噪版", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "AirPods 4 主动降噪", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "苹果 AirPods 4 (支持主动降噪)", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_airpods",
+      "brandName": "Apple",
+      "seriesName": "AirPods Pro",
+      "modelCode": "apple_airpods_pro_1",
+      "modelName": "AirPods Pro 1",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果 AirPods Pro 一代", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "AirPods Pro 1代", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_airpods",
+      "brandName": "Apple",
+      "seriesName": "AirPods Pro",
+      "modelCode": "apple_airpods_pro_2",
+      "modelName": "AirPods Pro 2",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果 AirPods Pro 2", "aliasType": "SEED", "status": "ACTIVE"},
+        {"aliasText": "airpods pro2代", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    },
+    {
+      "categoryCode": "apple_airpods",
+      "brandName": "Apple",
+      "seriesName": "AirPods Max",
+      "modelCode": "apple_airpods_max",
+      "modelName": "AirPods Max",
+      "status": "ACTIVE",
+      "metadata": {"source": "apple_mobile_audio_seed_v1"},
+      "aliases": [
+        {"aliasText": "苹果 AirPods Max", "aliasType": "SEED", "status": "ACTIVE"}
+      ]
+    }
+  ]
+}

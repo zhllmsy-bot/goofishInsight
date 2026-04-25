@@ -1,0 +1,1462 @@
+{
+  "categories": [
+    {
+      "code": "camera_body",
+      "name": "相机机身",
+      "path": "camera/body",
+      "level": 2,
+      "status": "ACTIVE",
+      "runtime": {
+        "promptProfile": "camera_body_extract_v1",
+        "extractorProfile": "default",
+        "runtimeStatus": "ACTIVE"
+      },
+      "template": {
+        "status": "PUBLISHED",
+        "bindAsActiveTemplate": true,
+        "activateOnPublish": true,
+        "items": [
+          {
+            "attributeCode": "brand_name",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": true,
+            "isDisplay": true,
+            "sortNo": 10
+          },
+          {
+            "attributeCode": "model_name",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": true,
+            "isDisplay": true,
+            "sortNo": 20
+          },
+          {
+            "attributeCode": "product_line",
+            "isRequired": false,
+            "isFilter": true,
+            "isSearch": true,
+            "isDisplay": true,
+            "sortNo": 25
+          },
+          {
+            "attributeCode": "mount_system",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 30
+          },
+          {
+            "attributeCode": "sensor_format",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 40
+          },
+          {
+            "attributeCode": "pixel_resolution",
+            "isRequired": false,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 50
+          },
+          {
+            "attributeCode": "camera_type",
+            "isRequired": false,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 60
+          },
+          {
+            "attributeCode": "generation",
+            "isRequired": false,
+            "isFilter": false,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 70
+          }
+        ]
+      }
+    },
+    {
+      "code": "camera_interchangeable_lens",
+      "name": "可换镜头",
+      "path": "camera/interchangeable-lens",
+      "level": 2,
+      "status": "ACTIVE",
+      "runtime": {
+        "promptProfile": "camera_interchangeable_lens_extract_v1",
+        "extractorProfile": "default",
+        "runtimeStatus": "ACTIVE"
+      },
+      "template": {
+        "status": "PUBLISHED",
+        "bindAsActiveTemplate": true,
+        "activateOnPublish": true,
+        "items": [
+          {
+            "attributeCode": "brand_name",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": true,
+            "isDisplay": true,
+            "sortNo": 10
+          },
+          {
+            "attributeCode": "model_name",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": true,
+            "isDisplay": true,
+            "sortNo": 20
+          },
+          {
+            "attributeCode": "mount_system",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 30
+          },
+          {
+            "attributeCode": "focal_length_type",
+            "isRequired": false,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 40
+          },
+          {
+            "attributeCode": "focal_length_range",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 50
+          },
+          {
+            "attributeCode": "max_aperture",
+            "isRequired": true,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 60
+          },
+          {
+            "attributeCode": "lens_series",
+            "isRequired": false,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 70
+          },
+          {
+            "attributeCode": "generation",
+            "isRequired": false,
+            "isFilter": true,
+            "isSearch": false,
+            "isDisplay": true,
+            "sortNo": 80
+          }
+        ]
+      }
+    }
+  ],
+  "models": [
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7r_iii",
+      "modelName": "Sony A7R III",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼A7R3",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 A7R III",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Alpha",
+      "modelCode": "sony_a7r_iv",
+      "modelName": "Sony A7R IV",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼A7R4",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 A7R IV",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Sony",
+      "seriesName": "Vlog",
+      "modelCode": "sony_zv_e10_ii",
+      "modelName": "Sony ZV-E10 II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼ZV-E10二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 ZV-E10 II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r10",
+      "modelName": "Canon EOS R10",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能R10",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 EOS R10",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_rp",
+      "modelName": "Canon EOS RP",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RP",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 EOS RP",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r100",
+      "modelName": "Canon EOS R100",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能R100",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 EOS R100",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r5_mark_ii",
+      "modelName": "Canon EOS R5 Mark II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能R5二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 EOS R5 Mark II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Canon",
+      "seriesName": "EOS R",
+      "modelCode": "canon_eos_r6",
+      "modelName": "Canon EOS R6",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能R6",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 EOS R6",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z50_ii",
+      "modelName": "Nikon Z50 II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "尼康Z50二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "尼康 Z50II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z50",
+      "modelName": "Nikon Z50",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "尼康Z50",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z30",
+      "modelName": "Nikon Z30",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "尼康Z30",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_zfc",
+      "modelName": "Nikon Z fc",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "尼康Zfc",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Nikon",
+      "seriesName": "Z",
+      "modelCode": "nikon_z9",
+      "modelName": "Nikon Z9",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "尼康Z9",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_t30_ii",
+      "modelName": "Fujifilm X-T30 II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士X-T30二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "富士 X-T30 II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_m5",
+      "modelName": "Fujifilm X-M5",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士X-M5",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_h2",
+      "modelName": "Fujifilm X-H2",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士X-H2",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_h2s",
+      "modelName": "Fujifilm X-H2S",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士X-H2S",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "X",
+      "modelCode": "fujifilm_x_e4",
+      "modelName": "Fujifilm X-E4",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士X-E4",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "GFX",
+      "modelCode": "fujifilm_gfx100s_ii",
+      "modelName": "Fujifilm GFX100S II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士GFX100S二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "富士 GFX100S II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Fujifilm",
+      "seriesName": "GFX",
+      "modelCode": "fujifilm_gfx50s_ii",
+      "modelName": "Fujifilm GFX50S II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "富士GFX50S二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "富士 GFX50S II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX S",
+      "modelCode": "panasonic_lumix_s5_ii",
+      "modelName": "Panasonic LUMIX S5 II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下S5二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "松下 S5 II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX S",
+      "modelCode": "panasonic_lumix_s5_iix",
+      "modelName": "Panasonic LUMIX S5 IIX",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下S5IIX",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX S",
+      "modelCode": "panasonic_lumix_s9",
+      "modelName": "Panasonic LUMIX S9",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下S9",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX G",
+      "modelCode": "panasonic_lumix_g9_ii",
+      "modelName": "Panasonic LUMIX G9 II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下G9二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "松下 G9 II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX GH",
+      "modelCode": "panasonic_lumix_gh7",
+      "modelName": "Panasonic LUMIX GH7",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下GH7",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX GH",
+      "modelCode": "panasonic_lumix_gh6",
+      "modelName": "Panasonic LUMIX GH6",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下GH6",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX GH",
+      "modelCode": "panasonic_lumix_gh5_ii",
+      "modelName": "Panasonic LUMIX GH5 II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下GH5二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "松下 GH5 II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX G",
+      "modelCode": "panasonic_lumix_g100d",
+      "modelName": "Panasonic LUMIX G100D",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下G100D",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX S",
+      "modelCode": "panasonic_lumix_s1h",
+      "modelName": "Panasonic LUMIX S1H",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下S1H",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_body",
+      "brandName": "Panasonic",
+      "seriesName": "LUMIX S",
+      "modelCode": "panasonic_lumix_s1r",
+      "modelName": "Panasonic LUMIX S1R",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "松下S1R",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_16_35_f28_gm_ii",
+      "modelName": "Sony FE 16-35mm F2.8 GM II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼16-35 2.8 GM二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 16-35 F2.8 GM II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_20_70_f4_g",
+      "modelName": "Sony FE 20-70mm F4 G",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼20-70 F4 G",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 20-70 F4 G",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_24_50_f28_g",
+      "modelName": "Sony FE 24-50mm F2.8 G",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼24-50 2.8 G",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 24-50 F2.8 G",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_24_70_f28_gm",
+      "modelName": "Sony FE 24-70mm F2.8 GM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼24-70 2.8 GM一代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 24-70 F2.8 GM",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_24_70_f28_gm_ii",
+      "modelName": "Sony FE 24-70mm F2.8 GM II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼24-70 2.8 GM二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 24-70 F2.8 GM II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_24_105_f4_g",
+      "modelName": "Sony FE 24-105mm F4 G",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼24-105 F4 G",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 24-105 F4 G",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_35_f14_gm",
+      "modelName": "Sony FE 35mm F1.4 GM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼35 1.4 GM",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 35 F1.4 GM",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_50_f14_gm",
+      "modelName": "Sony FE 50mm F1.4 GM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼50 1.4 GM",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 50 F1.4 GM",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_70_200_f28_gm_ii",
+      "modelName": "Sony FE 70-200mm F2.8 GM OSS II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼70-200 2.8 GM二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 70-200 F2.8 GM II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sony",
+      "seriesName": "FE",
+      "modelCode": "sony_fe_85_f14_gm_ii",
+      "modelName": "Sony FE 85mm F1.4 GM II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "索尼85 1.4 GM二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "索尼 FE 85 F1.4 GM II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_15_35_f28_l",
+      "modelName": "Canon RF 15-35mm F2.8 L IS USM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF15-35 2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 15-35 F2.8 L",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_24_70_f28_l",
+      "modelName": "Canon RF 24-70mm F2.8 L IS USM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF24-70 2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 24-70 F2.8 L",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_24_105_f4_l",
+      "modelName": "Canon RF 24-105mm F4 L IS USM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF24-105 F4",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 24-105 F4 L",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_24_105_f4_71",
+      "modelName": "Canon RF 24-105mm F4-7.1 IS STM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF24-105 STM",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 24-105 F4-7.1",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_28_70_f2_l",
+      "modelName": "Canon RF 28-70mm F2 L USM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF28-70 F2",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_35_f18_macro",
+      "modelName": "Canon RF 35mm F1.8 Macro IS STM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF35 1.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 35 F1.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_50_f18",
+      "modelName": "Canon RF 50mm F1.8 STM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF50 1.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 50 F1.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_70_200_f28_l",
+      "modelName": "Canon RF 70-200mm F2.8 L IS USM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF70-200 2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "佳能 RF 70-200 F2.8 L",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_85_f2_macro",
+      "modelName": "Canon RF 85mm F2 Macro IS STM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF85 F2",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Canon",
+      "seriesName": "RF",
+      "modelCode": "canon_rf_100_500_l",
+      "modelName": "Canon RF 100-500mm F4.5-7.1 L IS USM",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "佳能RF100-500",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN Art",
+      "modelCode": "sigma_14_24_f28_dg_dn_art",
+      "modelName": "Sigma 14-24mm F2.8 DG DN Art",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马14-24 2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 14-24 F2.8 Art",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN",
+      "modelCode": "sigma_16_28_f28_dg_dn",
+      "modelName": "Sigma 16-28mm F2.8 DG DN",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马16-28 2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 16-28 F2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN Art",
+      "modelCode": "sigma_24_70_f28_dg_dn_art",
+      "modelName": "Sigma 24-70mm F2.8 DG DN Art",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马24-70 2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 24-70 F2.8 Art",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN Art",
+      "modelCode": "sigma_24_70_f28_dg_dn_art_ii",
+      "modelName": "Sigma 24-70mm F2.8 DG DN Art II",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马24-70 2.8 DG DN二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 24-70 F2.8 Art II",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN",
+      "modelCode": "sigma_28_70_f28_dg_dn",
+      "modelName": "Sigma 28-70mm F2.8 DG DN",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马28-70 2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 28-70 F2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN Art",
+      "modelCode": "sigma_35_f14_dg_dn_art",
+      "modelName": "Sigma 35mm F1.4 DG DN Art",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马35 1.4 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 35 F1.4 Art",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN Art",
+      "modelCode": "sigma_50_f12_dg_dn_art",
+      "modelName": "Sigma 50mm F1.2 DG DN Art",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马50 1.2 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 50 F1.2 Art",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN Art",
+      "modelCode": "sigma_85_f14_dg_dn_art",
+      "modelName": "Sigma 85mm F1.4 DG DN Art",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马85 1.4 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 85 F1.4 Art",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "Sports",
+      "modelCode": "sigma_70_200_f28_dg_dn_sports",
+      "modelName": "Sigma 70-200mm F2.8 DG DN OS Sports",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马70-200 2.8 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "适马 70-200 F2.8 Sports",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Sigma",
+      "seriesName": "DG DN",
+      "modelCode": "sigma_100_400_dg_dn",
+      "modelName": "Sigma 100-400mm F5-6.3 DG DN",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "适马100-400 DG DN",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_17_28_f28_di_iii_rxd",
+      "modelName": "Tamron 17-28mm F2.8 Di III RXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙17-28 2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 17-28 F2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_20_40_f28_di_iii_vxd",
+      "modelName": "Tamron 20-40mm F2.8 Di III VXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙20-40 2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 20-40 F2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_28_75_f28_di_iii_rxd",
+      "modelName": "Tamron 28-75mm F2.8 Di III RXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙28-75 2.8一代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 28-75 F2.8 RXD",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_28_75_f28_di_iii_vxd_g2",
+      "modelName": "Tamron 28-75mm F2.8 Di III VXD G2",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙28-75 2.8二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 28-75 F2.8 G2",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_28_200_f28_56_di_iii",
+      "modelName": "Tamron 28-200mm F2.8-5.6 Di III RXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙28-200",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_35_150_f2_28_di_iii_vxd",
+      "modelName": "Tamron 35-150mm F2-2.8 Di III VXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙35-150 2-2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 35-150 F2-2.8",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_50_400_f45_63_di_iii_vc_vxd",
+      "modelName": "Tamron 50-400mm F4.5-6.3 Di III VC VXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙50-400",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_70_180_f28_di_iii_vxd",
+      "modelName": "Tamron 70-180mm F2.8 Di III VXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙70-180 2.8一代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 70-180 F2.8 VXD",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_70_180_f28_di_iii_vc_vxd_g2",
+      "modelName": "Tamron 70-180mm F2.8 Di III VC VXD G2",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙70-180 2.8二代",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        },
+        {
+          "aliasText": "腾龙 70-180 F2.8 G2",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    },
+    {
+      "categoryCode": "camera_interchangeable_lens",
+      "brandName": "Tamron",
+      "seriesName": "Di III",
+      "modelCode": "tamron_150_500_f56_67_di_iii_vc_vxd",
+      "modelName": "Tamron 150-500mm F5-6.7 Di III VC VXD",
+      "status": "ACTIVE",
+      "aliases": [
+        {
+          "aliasText": "腾龙150-500",
+          "aliasType": "TITLE",
+          "status": "ACTIVE"
+        }
+      ]
+    }
+  ]
+}

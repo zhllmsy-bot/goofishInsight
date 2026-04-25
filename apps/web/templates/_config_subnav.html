@@ -1,0 +1,35 @@
+<section class="panel config-subnav-panel">
+  <div class="config-subnav-copy">
+    <p class="eyebrow">Config Studio</p>
+    <h3>配置导航</h3>
+    <p class="runtime-panel-text">
+      先确定当前上下文，再维护属性池、模板版本和型号库，避免“改了什么、给谁生效”混在一起。
+    </p>
+  </div>
+  <nav class="config-subnav">
+    <a href="/config/categories" class="config-subnav-link {% if request.url.path == '/config/categories' %}is-active{% endif %}">
+      <span>大类</span>
+      <small>Runtime、Prompt、模板绑定</small>
+    </a>
+    <a href="/config/attributes" class="config-subnav-link {% if request.url.path == '/config/attributes' %}is-active{% endif %}">
+      <span>属性</span>
+      <small>全局属性池与通用字段</small>
+    </a>
+    <a href="/config/templates" class="config-subnav-link {% if request.url.path == '/config/templates' %}is-active{% endif %}">
+      <span>模板</span>
+      <small>属性编排与发布版本</small>
+    </a>
+    <a href="/config/models" class="config-subnav-link {% if request.url.path == '/config/models' %}is-active{% endif %}">
+      <span>型号库</span>
+      <small>大类下的具体品类与别名</small>
+    </a>
+    <a href="/config/tasks" class="config-subnav-link {% if request.url.path == '/config/tasks' %}is-active{% endif %}">
+      <span>任务</span>
+      <small>Batch collect 与 query 同步</small>
+    </a>
+    <a href="/config/raw-cate-policy" class="config-subnav-link {% if request.url.path == '/config/raw-cate-policy' %}is-active{% endif %}">
+      <span>Raw Cate</span>
+      <small>兼容策略与纠偏规则</small>
+    </a>
+  </nav>
+</section>

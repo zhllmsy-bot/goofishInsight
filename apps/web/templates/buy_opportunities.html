@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-home-page">
+  {% set feedback = feedbackQuality | default({}) %}
+  {% set calibration = feedbackCalibration | default({}) %}
+  {% set calibration_rec = calibration.recommendations | default({}) %}
+  <article class="hero-panel">
+    <div>
+      <p class="eyebrow">Buy-Side Decision Desk</p>
+      <h2>买入机会工作台</h2>
+      <p class="pricing-legend">围绕目标品类，把合理价、买入线、机会分、风险分和人工反馈放在同一个决策界面里。</p>
+      <div class="terminal-selection-chip-row" style="margin-top: 12px;">
+        <a class="terminal-selection-chip is-active" href="{{ runtime_nav_links.dashboard if runtime_nav_links is defined and runtime_nav_links.dashboard else '/' }}">
+          <span>回到看板首页</span>
+        </a>
+        <a class="terminal-selection-chip" href="{{ runtime_nav_links.runtime if runtime_nav_links is defined and runtime_nav_links.runtime else '/runtime' }}">
+          <span>前往运行控制</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-metrics">
+      <div>
+        <span>{{ summary.opportunityCount }}</span>
+        <small>当前机会</small>
+      </div>
+      <div>
+        <span>{{ "%.1f"|format((summary.alertHitRate or 0) * 100) }}%</span>
+        <small>提醒命中率</small>
+      </div>
+      <div>
+        <span>{{ summary.watchTargetCount }}</span>
+        <small>监控目标</small>
+      </div>
+      <div>
+        <span>{{ summary.feedbackCount or 0 }}</span>
+        <small>30天反馈</small>
+      </div>
+      <div>
+        <span>{{ summary.calibrationRecommendationCount or 0 }}</span>
+        <small>校准建议</small>
+      </div>
+    </div>
+  </article>
+
+  <section class="dashboard-market-layout">
+    <div class="dashboard-market-main">
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Opportunity Pool</p>
+            <h3>机会池</h3>
+          </div>
+          <p class="pricing-legend">按机会分排序，优先看折扣足、风险低、匹配到更细 baseline 的商品。</p>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>商品</th>
+                <th>价格</th>
+                <th>合理价</th>
+                <th>买入线</th>
+                <th>机会/风险</th>
+                <th>状态</th>
+                <th>反馈动作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in opportunities %}
+              <tr data-opportunity-row data-opportunity-id="{{ item.id }}">
+                <td>
+                  <strong>{{ item.title or item.itemId or item.itemIdRef }}</strong>
+                  <small>{{ item.region or "-" }} · {{ item.baselineMatchLevel or "-" }}</small>
+                  <small>{{ item.explanation.readinessSummary }}</small>
+                  <small>review {{ item.explanation.reviewGateSummary }} · spec {{ item.explanation.specGateSummary }}</small>
+                  {% if item.explanation.missingRequiredFields %}
+                  <small>缺字段：{{ item.explanation.missingRequiredFields | join("、") }}</small>
+                  {% endif %}
+                </td>
+                <td>¥{{ item.currentPrice or "-" }}</td>
+                <td>¥{{ item.fairPrice or "-" }}</td>
+                <td>¥{{ item.buyCeiling or "-" }}</td>
+                <td>
+                  <strong>{{ item.opportunityScore or 0 }}</strong>
+                  <small>risk {{ item.riskScore or 0 }}</small>
+                  <small>spec {{ item.specContract.status or "-" }} · conf {{ item.specConfidence or "-" }}</small>
+                </td>
+                <td>
+                  <strong data-opportunity-state>{{ item.status }}{% if item.decision %} · {{ item.decision }}{% endif %}</strong>
+                  <small data-feedback-hint>可在右侧动作中直接回写反馈</small>
+                </td>
+                <td>
+                  <div class="panel-pills" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <button
+                      type="button"
+                      class="secondary-button buy-feedback-action"
+                      data-feedback-label="contacted"
+                      data-link-alert-candidate="true"
+                    >
+                      感兴趣
+                    </button>
+                    <button
+                      type="button"
+                      class="secondary-button buy-feedback-action"
+                      data-feedback-label="not_worth_it"
+                      data-link-alert-candidate="false"
+                    >
+                      不感兴趣
+                    </button>
+                  </div>
+                  <small data-feedback-result>未提交反馈</small>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="7">暂无机会。先运行 `build-buy-baselines` 和 `refresh-buy-opportunities`。</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <aside class="dashboard-market-side">
+      <article class="panel">
+        <p class="eyebrow">Feedback Loop</p>
+        <h3>反馈校准</h3>
+        <div class="mini-card">
+          <strong>采纳 {{ summary.acceptCount or 0 }} · 拒绝 {{ summary.rejectCount or 0 }}</strong>
+          <small>反馈覆盖 {{ "%.1f"|format((feedback.feedbackCount or 0) / ((feedback.opportunityCount or 1)) * 100) }}%</small>
+        </div>
+        {% for tier, stats in (feedback.tierStats or {}).items() %}
+        <div class="mini-card">
+          <strong>{{ tier }}</strong>
+          <small>机会 {{ stats.opportunityCount or 0 }} · 反馈 {{ stats.feedbackCount or 0 }}</small>
+          <small>采纳率 {{ "%.1f"|format((stats.acceptanceRate or 0) * 100) }}%</small>
+        </div>
+        {% endfor %}
+        {% if feedback.rejectReasonCounts %}
+        <div class="mini-card">
+          <strong>常见拒绝原因</strong>
+          {% for reason, count in feedback.rejectReasonCounts.items() %}
+          <small>{{ reason }} · {{ count }}</small>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">Calibration Plan</p>
+        <h3>校准动作建议</h3>
+        {% if calibration_rec.totalRecommendationCount %}
+        <div class="mini-card">
+          <strong>{{ calibration_rec.totalRecommendationCount }} 条可执行建议</strong>
+          <small>{{ calibration.windowDays or 30 }} 天窗口 · 自动生成</small>
+        </div>
+        {% endif %}
+        {% for rec in (calibration_rec.templateFieldRecommendations or [])[:3] %}
+        <div class="mini-card">
+          <strong>[模板] {{ rec.title }}</strong>
+          <small>{{ rec.summary }}</small>
+          <small>{{ rec.recommendedAction }}</small>
+        </div>
+        {% endfor %}
+        {% for rec in (calibration_rec.thresholdRecommendations or [])[:3] %}
+        <div class="mini-card">
+          <strong>[阈值] {{ rec.title }}</strong>
+          <small>{{ rec.summary }}</small>
+          <small>{{ rec.recommendedAction }}</small>
+        </div>
+        {% endfor %}
+        {% for rec in (calibration_rec.rankingRecommendations or [])[:2] %}
+        <div class="mini-card">
+          <strong>[排序] {{ rec.title }}</strong>
+          <small>{{ rec.summary }}</small>
+          <small>{{ rec.recommendedAction }}</small>
+        </div>
+        {% endfor %}
+        {% if not calibration_rec.totalRecommendationCount %}
+        <p class="pricing-legend">当前窗口暂无明确校准动作，继续积累反馈样本。</p>
+        {% endif %}
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">Watch Targets</p>
+        <h3>监控目标</h3>
+        {% for target in watchTargets %}
+        <div class="mini-card">
+          <strong>{{ target.targetName }}</strong>
+          <small>{{ target.profileKey }} · {{ target.status }} · cooldown {{ target.notifyCooldownMinutes }}m</small>
+        </div>
+        {% else %}
+        <p class="pricing-legend">暂无监控目标。刷新机会池时会自动创建默认目标。</p>
+        {% endfor %}
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">Price Baselines</p>
+        <h3>最新价格基线</h3>
+        {% for baseline in baselines[:12] %}
+        <div class="mini-card">
+          <strong>{{ baseline.baselineKey }}</strong>
+          <small>fair ¥{{ baseline.fairPrice or "-" }} · buy ¥{{ baseline.buyCeiling or "-" }} · n={{ baseline.sampleSize }}</small>
+          <small>{{ baseline.explanation.readinessSummary }}</small>
+          <small>{{ baseline.explanation.confidenceSummary }} · reliability {{ baseline.explanation.reliabilityScore or "-" }}</small>
+        </div>
+        {% else %}
+        <p class="pricing-legend">暂无 baseline。先运行 `build-buy-baselines --view all`。</p>
+        {% endfor %}
+      </article>
+    </aside>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const rows = Array.from(document.querySelectorAll("[data-opportunity-row]"));
+    if (!rows.length) {
+      return;
+    }
+
+    const setRowBusy = (row, busy) => {
+      row.querySelectorAll(".buy-feedback-action").forEach((button) => {
+        button.disabled = busy;
+      });
+    };
+
+    const updateResult = (row, text) => {
+      const target = row.querySelector("[data-feedback-result]");
+      if (target) {
+        target.textContent = text;
+      }
+    };
+
+    const updateState = (row, text) => {
+      const target = row.querySelector("[data-opportunity-state]");
+      if (target) {
+        target.textContent = text;
+      }
+    };
+
+    rows.forEach((row) => {
+      const opportunityId = row.getAttribute("data-opportunity-id");
+      row.querySelectorAll(".buy-feedback-action").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const feedbackLabel = button.getAttribute("data-feedback-label");
+          const linkToAlertCandidate = button.getAttribute("data-link-alert-candidate") === "true";
+          if (!opportunityId || !feedbackLabel) {
+            return;
+          }
+          setRowBusy(row, true);
+          updateResult(row, "提交中...");
+          try {
+            const response = await fetch("/api/buy/feedback", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                opportunityId,
+                feedbackLabel,
+                feedbackType: "decision",
+                operatorId: "buy-page",
+                linkToAlertCandidate
+              })
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+              throw new Error(payload.detail || "提交失败");
+            }
+            const opportunity = payload.opportunity || {};
+            updateState(row, `${opportunity.status || "-"}${opportunity.decision ? " · " + opportunity.decision : ""}`);
+            const linkage = payload.alertCandidateLinkage || {};
+            if (linkage.status === "created") {
+              updateResult(row, "已提交反馈，并进入告警候选。");
+            } else if (linkage.status === "duplicate") {
+              updateResult(row, "已提交反馈，告警候选已存在。");
+            } else {
+              updateResult(row, "反馈已提交。");
+            }
+          } catch (error) {
+            updateResult(row, `提交失败：${error instanceof Error ? error.message : "unknown error"}`);
+          } finally {
+            setRowBusy(row, false);
+          }
+        });
+      });
+    });
+  })();
+</script>
+{% endblock %}

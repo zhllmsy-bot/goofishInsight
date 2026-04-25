@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.admin.goofish-dashboard-backend-8791</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__GOOFISH_ROOT_DIR__/.venv/bin/python</string>
+    <string>-m</string>
+    <string>goofish_insight.cli</string>
+    <string>serve-web</string>
+    <string>--host</string>
+    <string>127.0.0.1</string>
+    <string>--port</string>
+    <string>8791</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONPATH</key>
+    <string>apps/collector/src</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>__GOOFISH_ROOT_DIR__</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-dashboard-backend-8791.log</string>
+  <key>StandardErrorPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-dashboard-backend-8791.err.log</string>
+</dict>
+</plist>

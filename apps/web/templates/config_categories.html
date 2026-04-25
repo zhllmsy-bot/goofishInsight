@@ -1,0 +1,593 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="config-page" data-category-config-page>
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <p class="eyebrow">大类配置</p>
+      <h2>Category Runtime Config</h2>
+      <p class="hero-text">
+        这里维护大类本身，以及大类绑定的生效模板和 prompt profile。采集任务、看板和 specs 会逐步全部收敛到这层配置。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="status-pill accent">Phase 2</span>
+      <span class="status-pill">Categories + Runtime Profile</span>
+    </div>
+  </section>
+
+  <div class="config-studio-shell">
+    <aside class="config-studio-sidebar">
+      <article class="panel config-list-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Category Tree</p>
+            <h3>当前大类上下文</h3>
+          </div>
+          <span class="status-pill" data-category-config-total>加载中</span>
+        </div>
+        <div class="config-list" data-category-config-list>
+          <article class="async-skeleton panel compact-panel">
+            <p class="eyebrow">加载中</p>
+            <h3>正在载入大类配置...</h3>
+          </article>
+        </div>
+      </article>
+
+      <section class="panel onboarding-control-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Category Desk</p>
+            <h3>大类列表与操作</h3>
+          </div>
+        </div>
+        <form class="onboarding-controls" data-category-config-controls>
+          <label class="filter-field">
+            <span>Operator</span>
+            <input type="text" name="operatorId" value="admin" />
+          </label>
+          <label class="filter-field">
+            <span>Status</span>
+            <select name="status">
+              <option value="">全部</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+              <option value="ARCHIVED">ARCHIVED</option>
+            </select>
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="primary-button" data-category-config-action="new">新建大类</button>
+            <button type="button" class="secondary-button" data-category-config-action="refresh">刷新列表</button>
+            <button type="button" class="secondary-button" data-category-config-action="save-dry-run">预演保存</button>
+            <button type="button" class="secondary-button" data-category-config-action="save-apply">正式保存</button>
+          </div>
+          <p class="runtime-feedback onboarding-feedback" data-category-config-feedback></p>
+        </form>
+      </section>
+
+      {% include "_config_subnav.html" %}
+    </aside>
+
+    <div class="config-studio-main">
+      <section class="panel config-context-banner">
+        <div>
+          <p class="eyebrow">Current Context</p>
+          <h3 data-category-studio-title>先在左侧选择一个大类</h3>
+          <p class="runtime-panel-text" data-category-studio-description>
+            选中大类后，右侧所有动作都会围绕这个大类展开。这样你随时都知道是在改全局能力，还是在改当前大类的运行配置。
+          </p>
+        </div>
+        <div class="config-context-tabs">
+          <a class="config-context-tab is-active" href="#" aria-current="page">大类详情</a>
+          <a class="config-context-tab" href="/config/attributes">全局属性池</a>
+          <a class="config-context-tab" href="/config/templates" data-category-context-link="templates">模板编排</a>
+          <a class="config-context-tab" href="/config/models" data-category-context-link="models">型号库</a>
+        </div>
+      </section>
+
+      <section class="panel" data-category-ai-panel>
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">AI Assist</p>
+            <h3>自然语言一键建类</h3>
+          </div>
+          <button type="button" class="primary-button" data-category-workflow-open="ai">AI 智能建类</button>
+        </div>
+        <p class="runtime-panel-text">
+          输入自然语言描述，AI 会预填大类、属性和模板。你只需确认一次即可创建属性并绑定模板。模板属性支持动态增删。
+        </p>
+        <p class="runtime-feedback onboarding-feedback" data-category-ai-feedback></p>
+      </section>
+
+      <section class="panel category-workflow-panel" data-category-workflow-panel>
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Workflow Studio</p>
+            <h3>当前大类的一站式配置流</h3>
+          </div>
+          <span class="status-pill" data-category-workflow-context>未选择大类</span>
+        </div>
+        <div class="config-inline-meta" data-category-workflow-summary>
+          <p class="runtime-panel-text">
+            先在左侧列表选择一个大类。然后依次完成：创建属性 -> 创建模板并绑定属性 -> 绑定模板到当前大类 runtime。
+          </p>
+        </div>
+        <div class="category-workflow-grid">
+          <article class="panel compact-panel category-workflow-step">
+            <p class="eyebrow">Step 1</p>
+            <h3>维护属性池</h3>
+            <p class="runtime-panel-text">属性池是全局能力，但当前大类会明确显示推荐使用哪些字段。</p>
+            <div class="onboarding-action-row">
+              <button type="button" class="primary-button" data-category-workflow-open="attribute">新建属性</button>
+              <a class="secondary-button" href="/config/attributes">进入属性页</a>
+            </div>
+          </article>
+
+          <article class="panel compact-panel category-workflow-step">
+            <p class="eyebrow">Step 2</p>
+            <h3>创建模板</h3>
+            <p class="runtime-panel-text">模板属于当前大类的抽取契约，建议始终带着当前大类上下文进入模板页。</p>
+            <div class="onboarding-action-row">
+              <button type="button" class="primary-button" data-category-workflow-open="template">新建模板</button>
+              <a class="secondary-button" href="/config/templates" data-category-context-link="templates">进入模板页</a>
+            </div>
+          </article>
+
+          <article class="panel compact-panel category-workflow-step">
+            <p class="eyebrow">Step 3</p>
+            <h3>绑定 Active 模板</h3>
+            <p class="runtime-panel-text">绑定完成后，采集、规格解析和看板都会读取这条 runtime 配置。</p>
+            <div class="onboarding-action-row">
+              <button type="button" class="primary-button" data-category-workflow-open="bind">绑定模板</button>
+              <a class="secondary-button" href="/config/models" data-category-model-link>维护型号库</a>
+            </div>
+          </article>
+
+          <article class="panel compact-panel category-workflow-step">
+            <p class="eyebrow">Step 4</p>
+            <h3>维护具体品类 / 型号库</h3>
+            <p class="runtime-panel-text">给当前大类补齐标准型号、别名和系列词典，specs、batch collect 和看板会一起消费这一层。</p>
+            <div class="onboarding-action-row">
+              <a class="primary-button" href="/config/models" data-category-model-link>进入型号库</a>
+              <span class="status-pill" data-category-model-count-badge>未选择大类</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <article class="panel config-detail-panel">
+        <div class="panel-header tight">
+          <div>
+            <p class="eyebrow">Category Runtime</p>
+            <h3>当前大类基础档案</h3>
+          </div>
+          <button type="button" class="primary-button" data-category-workflow-open="category-editor">打开基础信息抽屉</button>
+        </div>
+        <div class="config-inline-meta">
+          <p class="runtime-panel-text" data-category-editor-hint>
+            这里专门维护当前大类的 runtime profile、prompt profile 和 active template。属性与模板的创建，统一从上面的工作流入口进入。
+          </p>
+        </div>
+        <div class="config-inline-meta" data-category-config-summary>
+          <p class="runtime-panel-text">
+            选择左侧大类后，这里会显示 legacy 业务域、已有模板和 runtime 绑定信息。属性不在本页直接创建，请先到
+            <a href="/config/attributes">属性管理</a> 与
+            <a href="/config/templates">模板配置</a> 完成属性与模板编排，再回到本页绑定 active template。
+          </p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="config-modal" data-category-workflow-modal="attribute" hidden>
+    <div class="config-modal-backdrop" data-category-workflow-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="category-workflow-attribute-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Step 1</p>
+          <h3 id="category-workflow-attribute-title">新建属性</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-category-workflow-modal-close aria-label="关闭弹窗">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-category-workflow-attribute-form>
+          <div class="config-form-grid">
+            <label class="filter-field">
+              <span>Attribute Code</span>
+              <input type="text" name="code" placeholder="例如：mount_system" />
+            </label>
+            <label class="filter-field">
+              <span>Attribute Name</span>
+              <input type="text" name="name" placeholder="例如：镜头卡口" />
+            </label>
+            <label class="filter-field">
+              <span>Data Type</span>
+              <select name="dataType">
+                <option value="TEXT">TEXT</option>
+                <option value="NUMBER">NUMBER</option>
+                <option value="BOOLEAN">BOOLEAN</option>
+                <option value="ENUM">ENUM</option>
+                <option value="JSON">JSON</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Value Scope</span>
+              <select name="valueScope">
+                <option value="SPU">SPU</option>
+                <option value="SKU">SKU</option>
+                <option value="SALE">SALE</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Unit</span>
+              <input type="text" name="unit" placeholder="例如：mm / GB / inch" />
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select name="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="DRAFT">DRAFT</option>
+                <option value="DISABLED">DISABLED</option>
+                <option value="DEPRECATED">DEPRECATED</option>
+              </select>
+            </label>
+            <label class="filter-field onboarding-checkbox-field">
+              <span>Is Multi</span>
+              <input type="checkbox" name="isMulti" />
+            </label>
+          </div>
+          <label class="filter-field wide-field">
+            <span>Enum Options (每行 `code|name`)</span>
+            <textarea name="optionsText" rows="5" spellcheck="false"></textarea>
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="secondary-button" data-category-workflow-action="attribute-dry-run">属性预演</button>
+            <button type="button" class="primary-button" data-category-workflow-action="attribute-apply">创建属性</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-modal" data-category-workflow-modal="template" hidden>
+    <div class="config-modal-backdrop" data-category-workflow-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="category-workflow-template-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Step 2</p>
+          <h3 id="category-workflow-template-title">新建模板并绑定属性</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-category-workflow-modal-close aria-label="关闭弹窗">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-category-workflow-template-form>
+          <input type="hidden" name="categoryId" />
+          <div class="config-form-grid">
+            <label class="filter-field">
+              <span>Category Code</span>
+              <input type="text" name="categoryCode" placeholder="先选择左侧大类" readonly />
+            </label>
+            <label class="filter-field narrow-field">
+              <span>Version</span>
+              <input type="number" name="version" min="1" value="1" />
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select name="status">
+                <option value="DRAFT">DRAFT</option>
+                <option value="PUBLISHED">PUBLISHED</option>
+                <option value="RETIRED">RETIRED</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Prompt Profile</span>
+              <input type="text" name="promptProfile" placeholder="例如：camera_interchangeable_lens_extract_v1" />
+            </label>
+            <label class="filter-field onboarding-checkbox-field">
+              <span>创建后绑定为 Active</span>
+              <input type="checkbox" name="bindAsActiveTemplate" />
+            </label>
+          </div>
+          <label class="filter-field wide-field">
+            <span>Template Items (每行 `attributeCode|required|sale|filter|search|display|sortNo`)</span>
+            <textarea name="itemsText" rows="9" spellcheck="false"></textarea>
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="secondary-button" data-category-workflow-action="template-fill-preset">填入推荐属性</button>
+            <button type="button" class="secondary-button" data-category-workflow-action="template-diff-preview">预览差异</button>
+            <button type="button" class="secondary-button" data-category-workflow-action="template-dry-run">模板预演</button>
+            <button type="button" class="primary-button" data-category-workflow-action="template-apply">创建模板</button>
+          </div>
+          <div class="config-inline-meta" data-category-workflow-template-diff>
+            <p class="runtime-panel-text">模板差异会显示在这里。</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-modal" data-category-workflow-modal="bind" hidden>
+    <div class="config-modal-backdrop" data-category-workflow-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="category-workflow-bind-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Step 3</p>
+          <h3 id="category-workflow-bind-title">绑定 Active 模板</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-category-workflow-modal-close aria-label="关闭弹窗">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-category-workflow-bind-form>
+          <div class="config-form-grid">
+            <label class="filter-field">
+              <span>Template</span>
+              <select name="templateId">
+                <option value="">请选择模板</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Prompt Profile</span>
+              <input type="text" name="promptProfile" placeholder="默认沿用当前 runtime profile" />
+            </label>
+          </div>
+          <div class="onboarding-action-row">
+            <button type="button" class="secondary-button" data-category-workflow-action="bind-dry-run">绑定预演</button>
+            <button type="button" class="primary-button" data-category-workflow-action="bind-apply">绑定模板</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-modal" data-category-workflow-modal="category-editor" hidden>
+    <div class="config-modal-backdrop" data-category-workflow-modal-close></div>
+    <div class="config-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="category-editor-modal-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">Category Editor</p>
+          <h3 id="category-editor-modal-title">大类与 Runtime Profile</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-category-workflow-modal-close aria-label="关闭弹窗">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-category-config-form>
+          <input type="hidden" name="categoryId" />
+          <div class="config-form-grid">
+            <label class="filter-field">
+              <span>Code</span>
+              <input type="text" name="code" placeholder="例如：apple_computer" />
+            </label>
+            <label class="filter-field">
+              <span>Name</span>
+              <input type="text" name="name" placeholder="例如：Apple电脑" />
+            </label>
+            <label class="filter-field wide-field">
+              <span>Path</span>
+              <input type="text" name="path" placeholder="例如：computers/apple-computer" />
+            </label>
+            <label class="filter-field narrow-field">
+              <span>Level</span>
+              <input type="number" name="level" min="1" max="9" value="2" />
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select name="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+                <option value="ARCHIVED">ARCHIVED</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Prompt Profile</span>
+              <input type="text" name="promptProfile" placeholder="例如：apple_computer_extract_v1" />
+            </label>
+            <label class="filter-field">
+              <span>Active Template</span>
+              <select name="activeTemplateId">
+                <option value="">未绑定</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Extractor Profile</span>
+              <input type="text" name="extractorProfile" placeholder="例如：default" />
+            </label>
+            <label class="filter-field">
+              <span>Validator Profile</span>
+              <input type="text" name="validatorProfile" placeholder="例如：lens_basic_v1" />
+            </label>
+            <label class="filter-field">
+              <span>LLM Provider Override</span>
+              <input type="text" name="llmProviderOverride" placeholder="例如：ark_responses" />
+            </label>
+            <label class="filter-field">
+              <span>LLM Model Override</span>
+              <input type="text" name="llmModelOverride" placeholder="例如：doubao-seed-1-6-flash-250828" />
+            </label>
+            <label class="filter-field">
+              <span>Runtime Status</span>
+              <select name="runtimeStatus">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="config-inline-meta">
+            <p class="runtime-panel-text">
+              选择左侧大类后，这里会显示 legacy 业务域、已有模板和 runtime 绑定信息。属性不在本页直接创建，请先到
+              <a href="/config/attributes">属性管理</a> 与
+              <a href="/config/templates">模板配置</a> 完成属性与模板编排，再回到本页绑定 active template。
+            </p>
+          </div>
+
+          <label class="filter-field wide-field">
+            <span>Runtime Metadata (JSON)</span>
+            <textarea name="runtimeMetadata" rows="8" spellcheck="false">{}</textarea>
+          </label>
+        </form>
+        <div class="onboarding-action-row">
+          <button type="button" class="secondary-button" data-category-config-action="save-dry-run">预演保存</button>
+          <button type="button" class="primary-button" data-category-config-action="save-apply">正式保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-modal" data-category-workflow-modal="ai" hidden>
+    <div class="config-modal-backdrop" data-category-workflow-modal-close></div>
+    <div class="config-modal-dialog ai-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="category-ai-modal-title">
+      <div class="config-modal-header">
+        <div>
+          <p class="eyebrow">AI Assist</p>
+          <h3 id="category-ai-modal-title">自然语言智能建类</h3>
+        </div>
+        <button type="button" class="config-modal-close" data-category-workflow-modal-close aria-label="关闭弹窗">关闭</button>
+      </div>
+      <div class="config-modal-content">
+        <form class="config-form" data-category-ai-form>
+          <label class="filter-field wide-field">
+            <span>自然语言描述</span>
+            <textarea name="description" rows="4" spellcheck="false" placeholder="例如：我要新增一个尼康可换镜头大类，重点识别型号、卡口、焦段、最大光圈，并绑定镜头提取 prompt。"></textarea>
+          </label>
+          <div class="onboarding-action-row">
+            <button type="button" class="secondary-button" data-category-ai-action="generate">AI 生成草案</button>
+          </div>
+
+          <div class="config-inline-meta" data-category-ai-draft-summary hidden>
+            <p class="runtime-panel-text">AI 草案已生成，你可以直接改字段后确认创建。</p>
+            <p class="runtime-panel-text" data-category-ai-draft-overview></p>
+            <div class="config-summary-grid" data-category-ai-governance></div>
+            <div class="onboarding-action-row ai-draft-summary-actions">
+              <button type="button" class="secondary-button" data-category-ai-action="toggle-editor">展开高级编辑</button>
+            </div>
+          </div>
+          <div class="ai-assist-layout" data-category-ai-layout hidden>
+            <section class="panel compact-panel ai-assist-section">
+              <div class="panel-header tight">
+                <div>
+                  <p class="eyebrow">Category Runtime</p>
+                  <h3>大类与运行配置</h3>
+                </div>
+              </div>
+              <div class="config-form-grid ai-draft-fields" data-category-ai-draft-fields>
+                <label class="filter-field">
+                  <span>Category Code</span>
+                  <input type="text" name="categoryCode" />
+                </label>
+                <label class="filter-field">
+                  <span>Category Name</span>
+                  <input type="text" name="categoryName" />
+                </label>
+                <label class="filter-field wide-field">
+                  <span>Category Path</span>
+                  <input type="text" name="categoryPath" />
+                </label>
+                <label class="filter-field">
+                  <span>Prompt Profile</span>
+                  <input type="text" name="promptProfile" />
+                </label>
+              </div>
+              <details class="ai-advanced-details">
+                <summary>高级设置（低频）</summary>
+                <div class="config-form-grid ai-draft-fields-advanced">
+                  <label class="filter-field narrow-field">
+                    <span>Level</span>
+                    <input type="number" name="categoryLevel" min="1" max="9" value="2" />
+                  </label>
+                  <label class="filter-field">
+                    <span>Category Status</span>
+                    <select name="categoryStatus">
+                      <option value="ACTIVE">ACTIVE</option>
+                      <option value="INACTIVE">INACTIVE</option>
+                      <option value="ARCHIVED">ARCHIVED</option>
+                    </select>
+                  </label>
+                  <label class="filter-field">
+                    <span>Extractor Profile</span>
+                    <input type="text" name="extractorProfile" />
+                  </label>
+                  <label class="filter-field">
+                    <span>Validator Profile</span>
+                    <input type="text" name="validatorProfile" />
+                  </label>
+                  <label class="filter-field">
+                    <span>LLM Provider Override</span>
+                    <input type="text" name="llmProviderOverride" placeholder="例如：ark_responses" />
+                  </label>
+                  <label class="filter-field">
+                    <span>LLM Model Override</span>
+                    <input type="text" name="llmModelOverride" placeholder="例如：doubao-seed-1-6-flash-250828" />
+                  </label>
+                  <label class="filter-field">
+                    <span>Runtime Status</span>
+                    <select name="runtimeStatus">
+                      <option value="ACTIVE">ACTIVE</option>
+                      <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                  </label>
+                </div>
+              </details>
+            </section>
+
+            <div class="ai-assist-stack">
+              <div class="panel compact-panel" data-category-ai-attributes-panel hidden>
+                <div class="panel-header tight">
+                  <div>
+                    <p class="eyebrow">Attributes</p>
+                    <h3>属性列表（可增删）</h3>
+                  </div>
+                  <button type="button" class="secondary-button" data-category-ai-action="add-attribute">添加属性</button>
+                </div>
+                <div class="config-list" data-category-ai-attributes-list></div>
+              </div>
+
+              <div class="panel compact-panel" data-category-ai-template-panel hidden>
+                <div class="panel-header tight">
+                  <div>
+                    <p class="eyebrow">Template</p>
+                    <h3>模板属性（可增删）</h3>
+                  </div>
+                  <div class="onboarding-action-row">
+                    <button type="button" class="secondary-button" data-category-ai-action="sync-template-items">模板跟随属性</button>
+                    <button type="button" class="secondary-button" data-category-ai-action="add-template-item">添加模板属性</button>
+                  </div>
+                </div>
+                <div class="config-form-grid">
+                  <label class="filter-field narrow-field">
+                    <span>Template Version</span>
+                    <input type="number" name="templateVersion" min="1" value="1" />
+                  </label>
+                  <label class="filter-field">
+                    <span>Template Status</span>
+                    <select name="templateStatus">
+                      <option value="PUBLISHED">PUBLISHED</option>
+                      <option value="DRAFT">DRAFT</option>
+                      <option value="RETIRED">RETIRED</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="config-list" data-category-ai-template-items-list></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="onboarding-action-row ai-action-footer">
+            <label class="filter-field onboarding-checkbox-field">
+              <span>允许更新已有大类（高风险）</span>
+              <input type="checkbox" name="allowExistingCategoryUpdate" />
+            </label>
+            <label class="filter-field onboarding-checkbox-field">
+              <span>允许切换 Active 模板（高风险）</span>
+              <input type="checkbox" name="allowActiveTemplateRebind" />
+            </label>
+            <button type="button" class="secondary-button" data-category-ai-action="apply-dry-run">预演创建</button>
+            <button type="button" class="primary-button" data-category-ai-action="apply">一键确认创建并绑定模板</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ request.url_for('static', path='config-categories.js') }}?v={{ request.app.state.asset_version }}"></script>
+{% endblock %}

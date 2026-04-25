@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.admin.goofish-dashboard-react-3030</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__GOOFISH_NODE_BIN__</string>
+    <string>__GOOFISH_ROOT_DIR__/apps/dashboard-nest/dist/main.js</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PORT</key>
+    <string>3030</string>
+    <key>GOOFISH_DASHBOARD_BACKEND_ORIGIN</key>
+    <string>http://127.0.0.1:8791</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>__GOOFISH_ROOT_DIR__</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-dashboard-react-3030.log</string>
+  <key>StandardErrorPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-dashboard-react-3030.err.log</string>
+</dict>
+</plist>

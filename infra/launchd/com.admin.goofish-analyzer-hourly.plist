@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.admin.goofish-analyzer-hourly</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>__GOOFISH_RUNTIME_HOME__/start-analyzer-resident.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>GOOFISH_ROOT_DIR</key>
+    <string>__GOOFISH_ROOT_DIR__</string>
+    <key>LOCK_PATH</key>
+    <string>reports/runtime/locks/analyzer_daily_metrics.lock</string>
+    <key>ANALYZER_JOB</key>
+    <string>all</string>
+    <key>SOURCE_MODE</key>
+    <string>legacy_items</string>
+    <key>CATCH_UP</key>
+    <string>true</string>
+    <key>CATCH_UP_LOOKBACK_DAYS</key>
+    <string>7</string>
+    <key>REPLACE_EXISTING</key>
+    <string>true</string>
+    <key>DRY_RUN</key>
+    <string>false</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>__GOOFISH_RUNTIME_HOME__</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key>
+  <integer>3600</integer>
+  <key>StandardOutPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-analyzer-hourly.log</string>
+  <key>StandardErrorPath</key>
+  <string>__GOOFISH_LOG_DIR__/goofish-analyzer-hourly.err.log</string>
+</dict>
+</plist>
