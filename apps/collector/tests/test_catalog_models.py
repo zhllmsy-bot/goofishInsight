@@ -18,6 +18,8 @@ class CatalogModelTests(unittest.TestCase):
                 "category_attr_template",
                 "category_attr_template_item",
                 "sku_spec_schema_snapshots",
+                "sku_fingerprints",
+                "item_samples",
                 "crawl_task_query",
                 "crawl_task_lexicon",
                 "xianyu_category_mapping",
@@ -237,6 +239,39 @@ class CatalogModelTests(unittest.TestCase):
         self.assertIn("valid_from", schema_snapshot.c)
         self.assertIn("valid_to", schema_snapshot.c)
         self.assertIn(("category_code", "template_version"), constraint_columns)
+
+    def test_sample_fact_tables_have_expected_columns_and_constraints(self) -> None:
+        fingerprint = Base.metadata.tables["sku_fingerprints"]
+        item_sample = Base.metadata.tables["item_samples"]
+
+        fingerprint_constraints = {
+            tuple(constraint.columns.keys())
+            for constraint in fingerprint.constraints
+            if getattr(constraint, "columns", None) is not None
+        }
+        item_sample_constraints = {
+            tuple(constraint.columns.keys())
+            for constraint in item_sample.constraints
+            if getattr(constraint, "columns", None) is not None
+        }
+
+        self.assertIn("schema_id", fingerprint.c)
+        self.assertIn("fingerprint_hash", fingerprint.c)
+        self.assertIn("lock_signature", fingerprint.c)
+        self.assertIn("variant_signature", fingerprint.c)
+        self.assertIn("raw_signature", fingerprint.c)
+        self.assertIn("sample_count", fingerprint.c)
+        self.assertIn(("schema_id", "fingerprint_hash"), fingerprint_constraints)
+
+        self.assertIn("item_id_ref", item_sample.c)
+        self.assertIn("sku_fingerprint_id", item_sample.c)
+        self.assertIn("sample_state", item_sample.c)
+        self.assertIn("sample_quality_score", item_sample.c)
+        self.assertIn("missing_required_attrs", item_sample.c)
+        self.assertIn("sample_payload", item_sample.c)
+        self.assertIn("observed_at", item_sample.c)
+        self.assertIn("condition_multiplier", item_sample.c)
+        self.assertIn(("item_id_ref", "sku_fingerprint_id"), item_sample_constraints)
 
 
 if __name__ == "__main__":

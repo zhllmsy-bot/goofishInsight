@@ -111,6 +111,7 @@ export function PricingPanel(props: PricingPanelProps) {
     const contract = props.pricing?.pricing_contract;
     const evidence = availability?.pricingEvidence;
     const templateKeyPreview = contract?.templateKeyPreview;
+    const confidenceReasons = evidence?.confidenceReasons ?? [];
 
     return (
       <section className="panel pricing-panel">
@@ -141,12 +142,34 @@ export function PricingPanel(props: PricingPanelProps) {
           )}
           {!!templateKeyPreview && <p className="template-preview">当前模板键：{templateKeyPreview}</p>}
           {evidence ? (
-            <div className="pill-row">
-              <span className="soft-pill">样本 {formatNumber(evidence.sellerSampleCount)}</span>
-              <span className="soft-pill">卖家 {formatNumber(evidence.uniqueSellerCount)}</span>
-              <span className="soft-pill">精确命中 {formatPercent(evidence.exactSpecRatio, 1)}</span>
-              <span className="soft-pill">可靠度 {formatNumber(evidence.reliabilityScore)}</span>
-            </div>
+            <>
+              <div className="pill-row">
+                <span className="soft-pill">样本 {formatNumber(evidence.sellerSampleCount)}</span>
+                <span className="soft-pill">卖家 {formatNumber(evidence.uniqueSellerCount)}</span>
+                <span className="soft-pill">精确命中 {formatPercent(evidence.exactSpecRatio, 1)}</span>
+                <span className="soft-pill">可靠度 {formatNumber(evidence.reliabilityScore)}</span>
+                {evidence.qualityTier ? <span className="soft-pill">质量 {evidence.qualityTier}</span> : null}
+                {evidence.effectiveSampleCount != null ? (
+                  <span className="soft-pill">有效样本 {formatNumber(evidence.effectiveSampleCount)}</span>
+                ) : null}
+                {evidence.recencyWeightedSampleCount != null ? (
+                  <span className="soft-pill">近样本 {formatNumber(evidence.recencyWeightedSampleCount)}</span>
+                ) : null}
+                {evidence.mad != null ? <span className="soft-pill">MAD {formatCurrency(evidence.mad)}</span> : null}
+                {evidence.confidenceScore != null ? (
+                  <span className="soft-pill">置信度 {formatNumber(evidence.confidenceScore)}</span>
+                ) : null}
+              </div>
+              {!!confidenceReasons.length && (
+                <div className="chip-row">
+                  {confidenceReasons.map((reason) => (
+                    <span className="filter-tag" key={reason}>
+                      {reason}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </>
           ) : null}
         </div>
       </section>
@@ -204,9 +227,31 @@ export function PricingPanel(props: PricingPanelProps) {
       <div className="pill-row">
         <span className="soft-pill is-accent">{props.pricingRow.opportunity_label ?? '观察中'}</span>
         <span className="soft-pill">{formatNumber(props.pricingRow.unique_seller_count)} 个卖家样本</span>
+        {props.pricingRow.schema_id != null ? <span className="soft-pill">Schema v{props.pricingRow.schema_id}</span> : null}
         <span className="soft-pill">可靠度 {formatNumber(props.pricingRow.reliability_score)}</span>
+        {props.pricingRow.quality_tier ? <span className="soft-pill">质量 {props.pricingRow.quality_tier}</span> : null}
+        {props.pricingRow.effective_sample_count != null ? (
+          <span className="soft-pill">有效样本 {formatNumber(props.pricingRow.effective_sample_count)}</span>
+        ) : null}
+        {props.pricingRow.recency_weighted_sample_count != null ? (
+          <span className="soft-pill">近样本 {formatNumber(props.pricingRow.recency_weighted_sample_count)}</span>
+        ) : null}
+        {props.pricingRow.confidence_score != null ? (
+          <span className="soft-pill">置信度 {formatNumber(props.pricingRow.confidence_score)}</span>
+        ) : null}
+        {props.pricingRow.mad != null ? <span className="soft-pill">MAD {formatCurrency(props.pricingRow.mad)}</span> : null}
         <span className="soft-pill">安全毛利率 {formatPercent(props.pricingRow.safe_margin_pct, 1)}</span>
       </div>
+
+      {!!props.pricingRow.confidence_reasons?.length && (
+        <div className="chip-row">
+          {props.pricingRow.confidence_reasons.map((reason) => (
+            <span className="filter-tag" key={reason}>
+              {reason}
+            </span>
+          ))}
+        </div>
+      )}
 
       {!!props.pricingRow.dimensions?.length && (
         <div className="chip-row">

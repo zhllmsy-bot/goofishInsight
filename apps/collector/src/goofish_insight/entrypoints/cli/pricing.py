@@ -19,6 +19,7 @@ from ...application.services.pricing_reporting import (
 )
 from ...application.services.pricing_entrypoints import parse_baseline_date
 from ...pricing import build_pricing_views, build_spec_summary
+from ...pricing import build_pricing_sample_coverage_report
 
 ensure_analyzer_src_on_path()
 
@@ -93,6 +94,21 @@ def register_pricing_commands(app: typer.Typer) -> None:
         if actionable_only:
             rows = [row for row in rows if row["is_actionable"]]
         typer.echo(json.dumps(rows[:limit], ensure_ascii=False, indent=2))
+
+    @app.command("show-pricing-sample-summary")
+    def show_pricing_sample_summary(
+        business_domain: str | None = None,
+        category_code: str | None = None,
+        freshness_days: int = typer.Option(30, min=7, max=180),
+        heartbeat_days: int | None = typer.Option(None, min=1, max=180),
+    ) -> None:
+        report = build_pricing_sample_coverage_report(
+            business_domain=business_domain,
+            category_code=category_code,
+            freshness_days=freshness_days,
+            heartbeat_days=heartbeat_days,
+        )
+        typer.echo(json.dumps(report, ensure_ascii=False, indent=2, default=str))
 
     @app.command("build-buy-baselines")
     def build_buy_baselines(

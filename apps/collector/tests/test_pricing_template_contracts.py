@@ -239,11 +239,26 @@ class PricingTemplateContractTests(unittest.TestCase):
         summary = build_pricing_availability_summary(
             availability_tier="guidance_ready",
             pricing_block_reason=None,
-            evidence={"sellerSampleCount": 7, "reliabilityScore": 82.0},
+            evidence={
+                "sellerSampleCount": 7,
+                "reliabilityScore": 82.0,
+                "effectiveSampleCount": 6.5,
+                "recencyWeightedSampleCount": 5.4,
+                "mad": 180.0,
+                "confidenceScore": 82.0,
+                "confidenceReasons": ["样本充足", "价格离群较少"],
+                "qualityTier": "B",
+                "p15Price": 7600.0,
+                "p35Price": 8200.0,
+                "p50Price": 8800.0,
+            },
         )
 
         self.assertEqual(summary["readinessSummary"], "可直接按价格指导口径使用")
         self.assertEqual(summary["sellerSampleCount"], 7)
+        self.assertEqual(summary["effectiveSampleCount"], 6.5)
+        self.assertEqual(summary["qualityTier"], "B")
+        self.assertEqual(summary["confidenceReasons"], ["样本充足", "价格离群较少"])
 
 
 if __name__ == "__main__":

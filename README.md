@@ -28,10 +28,25 @@ Goofish Insight 是一套面向闲鱼公开供给的二手买入决策系统。�
 ## 主文档
 
 - 系统级技术说明书：[SPEC.md](./SPEC.md)
+- 全局再评估 v2 战略收口方案：[docs/37-goofish-insight-global-reassessment-v2-strategy-spec-20260426.md](./docs/37-goofish-insight-global-reassessment-v2-strategy-spec-20260426.md)
+- 全局再评估 v2 执行 Todo：[docs/38-goofish-insight-global-reassessment-v2-todolist-20260426.md](./docs/38-goofish-insight-global-reassessment-v2-todolist-20260426.md)
+- 产品愿景： [docs/PRODUCT_VISION.md](./docs/PRODUCT_VISION.md)
+- 设计基准： [docs/DESIGN_BENCHMARK.md](./docs/DESIGN_BENCHMARK.md)
 - 最佳实践改造方案：[docs/23-best-practice-architecture-implementation-spec.md](./docs/23-best-practice-architecture-implementation-spec.md)
 - 买方业务技术实施书：[docs/16-buy-side-implementation-spec.md](./docs/16-buy-side-implementation-spec.md)
+- 核心属性与 Schema 快照方案：[docs/33-core-attribute-role-schema-spec-20260425.md](./docs/33-core-attribute-role-schema-spec-20260425.md)
+- Bloomberg 买方终端 UI 方案：[docs/35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md](./docs/35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md)
 - 架构重构追踪说明：[docs/08-architecture-refactor-spec.md](./docs/08-architecture-refactor-spec.md)
 - 商品属性系统方案：[docs/product-attribute-system/README.md](./docs/product-attribute-system/README.md)
+- ADR 与技术决策：
+  - [ADR-0001 Android overlay 主线退出](./docs/ADR-android-overlay-mainline-exit-20260426.md)
+  - [ADR-0002 Jinja legacy 收敛](./docs/ADR-jinja-legacy-convergence-20260426.md)
+
+## 许可证与免责声明
+
+- License: [GNU AGPLv3](./LICENSE)
+- 使用边界与风险声明：[DISCLAIMER.md](./DISCLAIMER.md)
+- 发布说明：[CHANGELOG.md](./CHANGELOG.md)
 
 ## 需求交付标准
 
@@ -83,6 +98,24 @@ python -m goofish_insight.cli serve-web --host 127.0.0.1 --port 8787
 ```
 
 Open [http://127.0.0.1:8787](http://127.0.0.1:8787) to view captured listings, recent crawl runs, and item detail pages.
+
+## v0.1.0 本地最短路径（示例）
+
+```bash
+cp .env.example .env           # 补齐运行参数
+python -m goofish_insight.cli db-upgrade
+python -m goofish_insight.cli collect-search --business-domain apple_computer --max-pages 1
+python -m goofish_insight.cli enrich-specs --business-domain apple_computer --limit 50
+python -m goofish_insight.cli build-buy-baselines --business-domain apple_computer
+python -m goofish_insight.cli refresh-buy-opportunities --business-domain apple_computer
+python -m goofish_insight.cli serve-web --host 127.0.0.1 --port 8787
+```
+
+每次发布前建议先运行：
+
+```bash
+npm run verify-baseline
+```
 
 ## Dashboard 运行口径
 

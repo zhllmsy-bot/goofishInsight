@@ -59,9 +59,29 @@ class PricingReadModelTests(unittest.TestCase):
                             "uniqueSellerCount": 4,
                             "exactSpecRatio": 0.9,
                             "reliabilityScore": 84.0,
+                            "effectiveSampleCount": 5.7,
+                            "recencyWeightedSampleCount": 4.9,
+                            "mad": 180.0,
+                            "confidenceScore": 84.0,
+                            "confidenceReasons": ["样本充足", "价格离群较少"],
+                            "qualityTier": "B",
+                            "p15Price": 3600.0,
+                            "p35Price": 3999.0,
+                            "p50Price": 4200.0,
                             "freshnessDays": 2,
                         },
                     }
+                },
+                "pricing_row": {
+                    "effective_sample_count": 5.7,
+                    "recency_weighted_sample_count": 4.9,
+                    "mad": 180.0,
+                    "confidence_score": 84.0,
+                    "confidence_reasons": ["样本充足", "价格离群较少"],
+                    "quality_tier": "B",
+                    "p15_price": 3600.0,
+                    "p35_price": 3999.0,
+                    "p50_price": 4200.0,
                 },
             },
         )
@@ -77,6 +97,9 @@ class PricingReadModelTests(unittest.TestCase):
         self.assertEqual(read_model["is_active"], True)
         self.assertEqual(read_model["version"], 3)
         self.assertEqual(read_model["explanation"]["availabilityTier"], "guidance_ready")
+        self.assertEqual(read_model["explanation"]["qualityTier"], "B")
+        self.assertEqual(read_model["explanation"]["effectiveSampleCount"], 5.7)
+        self.assertEqual(read_model["explanation"]["confidenceReasons"], ["样本充足", "价格离群较少"])
 
     def test_template_guidance_read_model_exposes_contract_subset(self) -> None:
         read_model = get_template_guidance_read_model(

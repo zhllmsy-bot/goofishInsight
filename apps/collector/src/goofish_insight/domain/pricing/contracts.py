@@ -54,6 +54,15 @@ BASELINE_EXPLANATION_FIELDS = {
     "unique_seller_count": {"type": "int", "required": False},
     "exact_spec_ratio": {"type": "float", "required": False},
     "reliability_score": {"type": "float", "required": False},
+    "effective_sample_count": {"type": "float", "required": False},
+    "recency_weighted_sample_count": {"type": "float", "required": False},
+    "mad": {"type": "float", "required": False},
+    "confidence_score": {"type": "float", "required": False},
+    "confidence_reasons": {"type": "list", "required": False},
+    "quality_tier": {"type": "str", "required": False},
+    "p15_price": {"type": "float", "required": False},
+    "p35_price": {"type": "float", "required": False},
+    "p50_price": {"type": "float", "required": False},
     "freshness_days": {"type": "int", "required": False},
 }
 
@@ -80,6 +89,7 @@ ALERT_EVENT_FIELDS = {
 }
 
 AVAILABILITY_TIERS = {"guidance_ready", "reference_only", "incomplete", "blocked"}
+QUALITY_TIERS = {"A", "B", "C", "D"}
 OPPORTUNITY_STATUSES = {"OPEN", "REFERENCE_ONLY", "STALE", "CLOSED"}
 ALERT_STATUSES = {"PENDING", "SENT", "FAILED", "CANCELLED"}
 COMPLETENESS_STATUSES = {"complete", "partial", "missing", "legacy"}
@@ -101,6 +111,14 @@ def normalize_availability_tier(value: Any) -> str | None:
         return None
     lowered = text.lower()
     return lowered if lowered in AVAILABILITY_TIERS else None
+
+
+def normalize_quality_tier(value: Any) -> str | None:
+    text = _normalize_text(value)
+    if not text:
+        return None
+    upper = text.upper()
+    return upper if upper in QUALITY_TIERS else None
 
 
 def normalize_opportunity_status(value: Any) -> str | None:
@@ -187,6 +205,15 @@ def serialize_baseline_explanation(explanation: dict[str, Any]) -> dict[str, Any
         "uniqueSellerCount": explanation.get("unique_seller_count"),
         "exactSpecRatio": explanation.get("exact_spec_ratio"),
         "reliabilityScore": explanation.get("reliability_score"),
+        "effectiveSampleCount": explanation.get("effective_sample_count"),
+        "recencyWeightedSampleCount": explanation.get("recency_weighted_sample_count"),
+        "mad": explanation.get("mad"),
+        "confidenceScore": explanation.get("confidence_score"),
+        "confidenceReasons": list(explanation.get("confidence_reasons") or []),
+        "qualityTier": explanation.get("quality_tier"),
+        "p15Price": explanation.get("p15_price"),
+        "p35Price": explanation.get("p35_price"),
+        "p50Price": explanation.get("p50_price"),
         "freshnessDays": explanation.get("freshness_days"),
     }
 
@@ -238,6 +265,9 @@ def validate_baseline_explanation(explanation: dict[str, Any]) -> list[str]:
     tier = explanation.get("availability_tier")
     if tier is not None and normalize_availability_tier(tier) is None:
         errors.append(f"invalid availability_tier: {tier}")
+    quality_tier = explanation.get("quality_tier")
+    if quality_tier is not None and normalize_quality_tier(quality_tier) is None:
+        errors.append(f"invalid quality_tier: {quality_tier}")
     return errors
 
 
@@ -332,6 +362,7 @@ __all__ = [
     "normalize_completeness_status",
     "normalize_opportunity_status",
     "normalize_pricing_block_reason",
+    "normalize_quality_tier",
     "serialize_alert_event",
     "serialize_baseline_explanation",
     "serialize_pricing_record",

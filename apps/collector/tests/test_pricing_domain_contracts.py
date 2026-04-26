@@ -10,6 +10,7 @@ from goofish_insight.domain.pricing.contracts import (
     COMPLETENESS_STATUSES,
     OPPORTUNITY_STATUSES,
     PRICING_BLOCK_REASONS,
+    QUALITY_TIERS,
     PRICING_RECORD_FIELDS,
     BASELINE_EXPLANATION_FIELDS,
     TEMPLATE_GUIDANCE_FIELDS,
@@ -20,6 +21,7 @@ from goofish_insight.domain.pricing.contracts import (
     normalize_completeness_status,
     normalize_opportunity_status,
     normalize_pricing_block_reason,
+    normalize_quality_tier,
     serialize_alert_event,
     serialize_baseline_explanation,
     serialize_pricing_record,
@@ -57,6 +59,14 @@ class NormalizeAvailabilityTierTests(unittest.TestCase):
 
     def test_invalid_returns_none(self) -> None:
         self.assertIsNone(normalize_availability_tier("unknown_tier"))
+
+
+class NormalizeQualityTierTests(unittest.TestCase):
+    def test_tiers_are_normalized(self) -> None:
+        self.assertEqual(normalize_quality_tier("a"), "A")
+        self.assertEqual(normalize_quality_tier("B"), "B")
+        self.assertEqual(normalize_quality_tier(" c "), "C")
+        self.assertIsNone(normalize_quality_tier("unknown"))
 
 
 class NormalizeOpportunityStatusTests(unittest.TestCase):
@@ -196,6 +206,15 @@ class SerializeBaselineExplanationTests(unittest.TestCase):
             "unique_seller_count": 4,
             "exact_spec_ratio": 0.92,
             "reliability_score": 82.0,
+            "effective_sample_count": 6.5,
+            "recency_weighted_sample_count": 5.4,
+            "mad": 180.0,
+            "confidence_score": 82.0,
+            "confidence_reasons": ["样本充足", "价格离群较少"],
+            "quality_tier": "B",
+            "p15_price": 7600.0,
+            "p35_price": 8200.0,
+            "p50_price": 8800.0,
             "freshness_days": 3,
         }
         result = serialize_baseline_explanation(explanation)
@@ -207,6 +226,15 @@ class SerializeBaselineExplanationTests(unittest.TestCase):
         self.assertEqual(result["uniqueSellerCount"], 4)
         self.assertEqual(result["exactSpecRatio"], 0.92)
         self.assertEqual(result["reliabilityScore"], 82.0)
+        self.assertEqual(result["effectiveSampleCount"], 6.5)
+        self.assertEqual(result["recencyWeightedSampleCount"], 5.4)
+        self.assertEqual(result["mad"], 180.0)
+        self.assertEqual(result["confidenceScore"], 82.0)
+        self.assertEqual(result["confidenceReasons"], ["样本充足", "价格离群较少"])
+        self.assertEqual(result["qualityTier"], "B")
+        self.assertEqual(result["p15Price"], 7600.0)
+        self.assertEqual(result["p35Price"], 8200.0)
+        self.assertEqual(result["p50Price"], 8800.0)
         self.assertEqual(result["freshnessDays"], 3)
 
 
@@ -361,6 +389,9 @@ class BuildContractFieldLinesTests(unittest.TestCase):
 class ContractConstantsTests(unittest.TestCase):
     def test_availability_tiers_are_complete(self) -> None:
         self.assertEqual(AVAILABILITY_TIERS, {"guidance_ready", "reference_only", "incomplete", "blocked"})
+
+    def test_quality_tiers_are_complete(self) -> None:
+        self.assertEqual(QUALITY_TIERS, {"A", "B", "C", "D"})
 
     def test_opportunity_statuses_are_complete(self) -> None:
         self.assertEqual(OPPORTUNITY_STATUSES, {"OPEN", "REFERENCE_ONLY", "STALE", "CLOSED"})

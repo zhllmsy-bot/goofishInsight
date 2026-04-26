@@ -4,6 +4,7 @@ import unittest
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from goofish_insight.application.services.pricing_eligibility import (
     build_pricing_eligibility_snapshot,
@@ -14,6 +15,8 @@ from goofish_insight.application.services.pricing_eligibility import (
 )
 from goofish_insight.pricing import (
     filter_outlier_price_records,
+    build_pricing_sample_snapshot,
+    build_pricing_sample_coverage_report,
     resolve_domain_redirect_scope,
     resolve_pricing_record,
     resolve_pricing_scope,
@@ -484,6 +487,215 @@ class PricingFilterTests(unittest.TestCase):
         self.assertEqual(record["spec_contract"]["status"], "complete")
         self.assertEqual(record["spec_contract"]["missingRequiredFields"], [])
 
+    def test_build_pricing_sample_snapshot_hash_changes_with_schema_id(self) -> None:
+        now = datetime.now(UTC)
+        item = SimpleNamespace(
+            id=3,
+            item_id="sample-hash-1",
+            source_platform="xianyu",
+            business_domain="apple_computer",
+            resolved_category_id=None,
+            target_category_id=None,
+            resolved_template_id=None,
+            seller_profile_id=None,
+            title="MacBook Pro M3 Max 36G 1T 14寸",
+            region="Shanghai",
+            listing_url="https://example.com/item/3",
+            current_price=Decimal("12999"),
+            last_seen_at=now,
+            publish_time=now - timedelta(days=1),
+            first_seen_at=now - timedelta(days=2),
+            normalized_brand="Apple",
+            normalized_model_family="MacBook Pro",
+            normalized_model="MacBook Pro M3 Max",
+            normalized_chip="M3 Max",
+            normalized_memory_gb=36,
+            normalized_storage_gb=1024,
+            condition_tags=["99新"],
+            source_keyword=None,
+            llm_reviewed=True,
+            llm_review_status="valid",
+            llm_review_needs_audit=False,
+            llm_review_confidence=Decimal("0.9900"),
+        )
+        spec = SimpleNamespace(
+            category_id="cat-apple",
+            template_id="tpl-apple",
+            model_catalog_id="catalog-1",
+            extractor_type="hybrid",
+            confidence=Decimal("0.91"),
+            status="complete",
+            brand="Apple",
+            product_line="MacBook Pro",
+            model_family="MacBook Pro",
+            model_name="MacBook Pro M3 Max",
+            display_type=None,
+            case_size_mm=None,
+            is_solar=None,
+            screen_size_in=None,
+            chip_family="M3 Max",
+            cpu_cores=None,
+            gpu_cores=None,
+            memory_gb=36,
+            storage_gb=1024,
+        )
+        schema_a = {
+            "schemaId": 11,
+            "categoryCode": "apple_computer",
+            "lockingAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "requiredAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "variantAttrs": ["screen_size_in"],
+        }
+        schema_b = dict(schema_a, schemaId=12)
+
+        snapshot_a = build_pricing_sample_snapshot(item=item, spec=spec, spec_schema=schema_a)
+        snapshot_b = build_pricing_sample_snapshot(item=item, spec=spec, spec_schema=schema_b)
+
+        self.assertEqual(snapshot_a.sample_state, "eligible")
+        self.assertNotEqual(snapshot_a.fingerprint_hash, snapshot_b.fingerprint_hash)
+
+    def test_build_pricing_sample_snapshot_marks_missing_required_attrs(self) -> None:
+        now = datetime.now(UTC)
+        item = SimpleNamespace(
+            id=4,
+            item_id="sample-missing-1",
+            source_platform="xianyu",
+            business_domain="apple_computer",
+            resolved_category_id=None,
+            target_category_id=None,
+            resolved_template_id=None,
+            seller_profile_id=None,
+            title="MacBook Pro M3 Max 36G 自用出",
+            region="Shanghai",
+            listing_url="https://example.com/item/4",
+            current_price=Decimal("11888"),
+            last_seen_at=now,
+            publish_time=now - timedelta(days=1),
+            first_seen_at=now - timedelta(days=2),
+            normalized_brand="Apple",
+            normalized_model_family="MacBook Pro",
+            normalized_model="MacBook Pro M3 Max",
+            normalized_chip="M3 Max",
+            normalized_memory_gb=36,
+            normalized_storage_gb=None,
+            condition_tags=["轻微使用痕迹"],
+            source_keyword=None,
+            llm_reviewed=True,
+            llm_review_status="valid",
+            llm_review_needs_audit=False,
+            llm_review_confidence=Decimal("0.9900"),
+        )
+        spec = SimpleNamespace(
+            category_id="cat-apple",
+            template_id="tpl-apple",
+            model_catalog_id="catalog-1",
+            extractor_type="hybrid",
+            confidence=Decimal("0.91"),
+            status="partial",
+            brand="Apple",
+            product_line="MacBook Pro",
+            model_family="MacBook Pro",
+            model_name="MacBook Pro M3 Max",
+            display_type=None,
+            case_size_mm=None,
+            is_solar=None,
+            screen_size_in=None,
+            chip_family="M3 Max",
+            cpu_cores=None,
+            gpu_cores=None,
+            memory_gb=36,
+            storage_gb=None,
+        )
+        schema = {
+            "schemaId": 21,
+            "categoryCode": "apple_computer",
+            "lockingAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "requiredAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "variantAttrs": ["screen_size_in"],
+        }
+
+        snapshot = build_pricing_sample_snapshot(item=item, spec=spec, spec_schema=schema)
+
+        self.assertEqual(snapshot.sample_state, "missing_required_attrs")
+        self.assertIn("storage_gb", snapshot.missing_required_attrs)
+        self.assertIsNotNone(snapshot.fingerprint_hash)
+
+    def test_build_pricing_sample_coverage_report_summarizes_sample_states(self) -> None:
+        now = datetime.now(UTC)
+        item = SimpleNamespace(
+            id=5,
+            item_id="sample-report-1",
+            source_platform="xianyu",
+            business_domain="apple_computer",
+            resolved_category_id=None,
+            target_category_id=None,
+            resolved_template_id=None,
+            seller_profile_id=None,
+            title="MacBook Pro M3 Max 36G 1T 14寸",
+            region="Shanghai",
+            listing_url="https://example.com/item/5",
+            current_price=Decimal("12999"),
+            last_seen_at=now,
+            publish_time=now - timedelta(days=1),
+            first_seen_at=now - timedelta(days=2),
+            normalized_brand="Apple",
+            normalized_model_family="MacBook Pro",
+            normalized_model="MacBook Pro M3 Max",
+            normalized_chip="M3 Max",
+            normalized_memory_gb=36,
+            normalized_storage_gb=1024,
+            condition_tags=["99新"],
+            source_keyword=None,
+            llm_reviewed=True,
+            llm_review_status="valid",
+            llm_review_needs_audit=False,
+            llm_review_confidence=Decimal("0.9900"),
+        )
+        spec = SimpleNamespace(
+            category_id="cat-apple",
+            template_id="tpl-apple",
+            model_catalog_id="catalog-1",
+            extractor_type="hybrid",
+            confidence=Decimal("0.91"),
+            status="complete",
+            brand="Apple",
+            product_line="MacBook Pro",
+            model_family="MacBook Pro",
+            model_name="MacBook Pro M3 Max",
+            display_type=None,
+            case_size_mm=None,
+            is_solar=None,
+            screen_size_in=None,
+            chip_family="M3 Max",
+            cpu_cores=None,
+            gpu_cores=None,
+            memory_gb=36,
+            storage_gb=1024,
+        )
+        schema = {
+            "schemaId": 11,
+            "categoryCode": "apple_computer",
+            "lockingAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "requiredAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "variantAttrs": ["screen_size_in"],
+        }
+
+        with patch(
+            "goofish_insight.pricing._load_pricing_candidate_rows_with_schema_from_session",
+            return_value=[(item, spec, schema)],
+        ):
+            report = build_pricing_sample_coverage_report(
+                category_code="apple_computer",
+                freshness_days=30,
+                session=SimpleNamespace(),
+            )
+
+        self.assertEqual(report["summary"]["candidateCount"], 1)
+        self.assertEqual(report["summary"]["eligibleCount"], 1)
+        self.assertEqual(report["summary"]["fingerprintableCount"], 1)
+        self.assertEqual(report["summary"]["fingerprintHitRatio"], 100.0)
+        self.assertIn("apple_computer", report["categories"])
+
     def test_avg_floor_prefilter_removes_extreme_low_prices_for_large_expensive_groups(self) -> None:
         records = [
             {"price": price, "seller_key": f"seller-{index}", "title": f"item-{index}"}
@@ -660,6 +872,10 @@ class PricingFilterTests(unittest.TestCase):
         self.assertFalse(row["is_actionable"])
         self.assertEqual(row["opportunity_tier"], "low")
         self.assertLess(row["normal_margin_pct"], 1)
+        self.assertGreaterEqual(row["effective_sample_count"], 2.8)
+        self.assertGreaterEqual(row["recency_weighted_sample_count"], 2)
+        self.assertIn(row["quality_tier"], {"B", "C"})
+        self.assertTrue(row["confidence_reasons"])
 
     def test_profitable_group_can_be_marked_actionable(self) -> None:
         now = datetime.now(UTC)
@@ -680,6 +896,11 @@ class PricingFilterTests(unittest.TestCase):
         self.assertTrue(row["is_actionable"])
         self.assertEqual(row["opportunity_tier"], "good")
         self.assertGreaterEqual(row["normal_margin_pct"], 10)
+        self.assertIn(row["quality_tier"], {"B", "C"})
+        self.assertGreaterEqual(row["confidence_score"], 70)
+        self.assertGreaterEqual(row["p15_price"], 3500)
+        self.assertGreaterEqual(row["p35_price"], 3500)
+        self.assertGreaterEqual(row["p50_price"], 3500)
 
     def test_reliability_score_penalizes_wide_price_band_and_outliers(self) -> None:
         now = datetime.now(UTC)
@@ -709,6 +930,7 @@ class PricingFilterTests(unittest.TestCase):
         assert stable is not None and volatile is not None
         self.assertGreater(stable["price_stability_score"], volatile["price_stability_score"])
         self.assertGreater(stable["reliability_score"], volatile["reliability_score"])
+        self.assertGreater(volatile["mad"], stable["mad"])
 
     def test_reliability_score_penalizes_extreme_listing_age_profile(self) -> None:
         now = datetime.now(UTC)
@@ -738,6 +960,7 @@ class PricingFilterTests(unittest.TestCase):
         assert balanced is not None and extreme_age is not None
         self.assertGreater(balanced["listing_age_score"], extreme_age["listing_age_score"])
         self.assertGreater(balanced["reliability_score"], extreme_age["reliability_score"])
+        self.assertGreater(balanced["recency_weighted_sample_count"], extreme_age["recency_weighted_sample_count"])
 
     def _pricing_record(
         self,

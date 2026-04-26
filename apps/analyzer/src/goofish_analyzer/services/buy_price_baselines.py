@@ -86,6 +86,7 @@ def build_buy_price_baselines_with_session(
         category_code=normalized_category_code,
         freshness_days=freshness_days,
         session=session,
+        persist_item_samples=True,
     )
     calibration_state = load_buy_side_calibration_config_with_session(
         session,
@@ -193,6 +194,15 @@ def upsert_buy_price_baseline_from_pricing_row(
         unique_seller_count=pricing_row.get("unique_seller_count"),
         exact_spec_ratio=pricing_row.get("exact_spec_ratio"),
         reliability_score=pricing_row.get("reliability_score"),
+        effective_sample_count=pricing_row.get("effective_sample_count"),
+        recency_weighted_sample_count=pricing_row.get("recency_weighted_sample_count"),
+        mad=pricing_row.get("mad"),
+        confidence_score=pricing_row.get("confidence_score"),
+        confidence_reasons=pricing_row.get("confidence_reasons"),
+        quality_tier=pricing_row.get("quality_tier"),
+        p15_price=pricing_row.get("p15_price"),
+        p35_price=pricing_row.get("p35_price"),
+        p50_price=pricing_row.get("p50_price") or pricing_row.get("median_price"),
         latest_seen_at=pricing_row.get("latest_seen_at"),
         reference_only_thresholds=dict((pricing_thresholds or {}).get("referenceOnly") or {}),
         guidance_ready_thresholds=dict((pricing_thresholds or {}).get("guidanceReady") or {}),
@@ -271,6 +281,8 @@ def build_baseline_key(*, pricing_row: dict[str, Any], view: str) -> str:
 
 
 def serialize_buy_price_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
+    payload = dict(row.payload or {})
+    pricing_row = dict(payload.get("pricing_row") or {})
     return {
         "id": row.id,
         "categoryId": row.category_id,
@@ -284,13 +296,22 @@ def serialize_buy_price_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
         "medianPrice": _decimal_to_float(row.median_price),
         "p25Price": _decimal_to_float(row.p25_price),
         "p75Price": _decimal_to_float(row.p75_price),
+        "p15Price": _decimal_to_float(pricing_row.get("p15_price")),
+        "p35Price": _decimal_to_float(pricing_row.get("p35_price")),
+        "p50Price": _decimal_to_float(pricing_row.get("p50_price") or pricing_row.get("median_price")),
         "fairPrice": _decimal_to_float(row.fair_price),
         "buyCeiling": _decimal_to_float(row.buy_ceiling),
         "confidence": _decimal_to_float(row.confidence),
+        "mad": _decimal_to_float(pricing_row.get("mad")),
+        "effectiveSampleCount": _decimal_to_float(pricing_row.get("effective_sample_count")),
+        "recencyWeightedSampleCount": _decimal_to_float(pricing_row.get("recency_weighted_sample_count")),
+        "qualityTier": pricing_row.get("quality_tier"),
+        "confidenceScore": _decimal_to_float(pricing_row.get("confidence_score")),
+        "confidenceReasons": list(pricing_row.get("confidence_reasons") or []),
         "baselineDate": row.baseline_date.isoformat() if row.baseline_date else None,
         "schemaSummary": dict((row.payload or {}).get("schema", {}).get("schemaSummary") or {}),
         "explanation": build_buy_price_baseline_explanation(row),
-        "payload": dict(row.payload or {}),
+        "payload": payload,
     }
 
 

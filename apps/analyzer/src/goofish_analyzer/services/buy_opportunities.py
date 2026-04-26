@@ -125,6 +125,7 @@ def refresh_buy_opportunities_with_session(
         category_code=normalized_category_code,
         freshness_days=freshness_days,
         session=session,
+        persist_item_samples=True,
     )
     purged_tombstoned_opportunity_count = purge_tombstoned_buy_opportunities_with_session(
         session,

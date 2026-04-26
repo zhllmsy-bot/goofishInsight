@@ -88,11 +88,20 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
                 "unique_seller_count": 4,
                 "exact_spec_ratio": 0.85,
                 "median_price": 8800,
+                "p15_price": 8200,
+                "p35_price": 8600,
+                "p50_price": 8800,
                 "good_value_price": 8000,
                 "high_price_floor": 9600,
                 "fair_price": 8800,
                 "target_buy_ceiling": 8200,
                 "reliability_score": 82.35,
+                "effective_sample_count": 6.5,
+                "recency_weighted_sample_count": 5.4,
+                "mad": 180.0,
+                "confidence_score": 82.35,
+                "confidence_reasons": ["样本充足", "价格离群较少"],
+                "quality_tier": "B",
                 "latest_seen_at": datetime.now(UTC).isoformat(),
                 "schema_id": 42,
                 "schema": {"schemaId": 42, "summary": {"lockingAttrCount": 4}},
@@ -112,6 +121,7 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
         self.assertEqual(row.fair_price, Decimal("8800"))
         self.assertEqual(row.buy_ceiling, Decimal("8200"))
         self.assertEqual(row.confidence, Decimal("0.8235"))
+        self.assertEqual(row.payload["pricing_row"]["quality_tier"], "B")
         self.assertEqual(row.payload["build_config"]["freshness_days"], 30)
         self.assertEqual(
             row.payload["pricingTemplate"]["templateKey"],
@@ -125,6 +135,8 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
         self.assertEqual(explanation["readinessSummary"], "可直接作为买入线参考")
         self.assertEqual(explanation["confidenceSummary"], "高置信")
         self.assertEqual(explanation["sellerSampleCount"], 7)
+        self.assertEqual(explanation["qualityTier"], "B")
+        self.assertEqual(explanation["confidenceReasons"], ["样本充足", "价格离群较少"])
 
     def test_upsert_updates_existing_baseline(self) -> None:
         existing = BuyPriceBaseline(
@@ -182,6 +194,8 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
                             "uniqueSellerCount": 1,
                             "exactSpecRatio": 1.0,
                             "reliabilityScore": 55.0,
+                            "confidenceScore": 55.0,
+                            "qualityTier": "D",
                             "freshnessDays": 1,
                         },
                     }
@@ -194,6 +208,7 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
         self.assertEqual(explanation["availabilityReason"], "insufficient_seller_samples")
         self.assertEqual(explanation["availabilityReasonLabel"], "卖家样本数不足")
         self.assertEqual(explanation["readinessSummary"], "暂不建议引用：卖家样本数不足")
+        self.assertEqual(explanation["qualityTier"], "D")
 
     def test_upsert_keeps_product_level_config_dimensions_empty(self) -> None:
         session = _FakeSession()

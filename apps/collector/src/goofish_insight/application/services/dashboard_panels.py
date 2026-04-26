@@ -52,6 +52,14 @@ def format_focus_caption(row: dict[str, Any]) -> str:
         f"{int(row.get('seller_sample_count') or 0)} 个卖家样本",
         f"可靠度 {int(row.get('reliability_score') or 0)}",
     ]
+    if row.get("quality_tier"):
+        parts.append(f"质量 {row['quality_tier']}")
+    if row.get("schema_id") is not None:
+        parts.append(f"Schema v{row['schema_id']}")
+    if row.get("effective_sample_count") is not None:
+        parts.append(f"有效样本 {round(float(row['effective_sample_count'] or 0), 1)}")
+    if row.get("recency_weighted_sample_count") is not None:
+        parts.append(f"近样本 {round(float(row['recency_weighted_sample_count'] or 0), 1)}")
     if row.get("normal_margin_pct") is not None:
         parts.append(f"正常毛利 {float(row['normal_margin_pct']):.1f}%")
     if row.get("view"):
@@ -106,6 +114,16 @@ def to_focus_card(*, title: str, tone: str, row: dict[str, Any] | None, empty_te
         "high_price_floor": row.get("high_price_floor"),
         "reliability_score": row.get("reliability_score"),
         "seller_sample_count": row.get("seller_sample_count"),
+        "schema_id": row.get("schema_id"),
+        "effective_sample_count": row.get("effective_sample_count"),
+        "recency_weighted_sample_count": row.get("recency_weighted_sample_count"),
+        "quality_tier": row.get("quality_tier"),
+        "confidence_score": row.get("confidence_score"),
+        "confidence_reasons": list(row.get("confidence_reasons") or []),
+        "mad": row.get("mad"),
+        "p15_price": row.get("p15_price"),
+        "p35_price": row.get("p35_price"),
+        "p50_price": row.get("p50_price"),
         "caption": format_focus_caption(row),
         "dimensions": compact_row_dimensions(row),
         "latest_seen_at": row.get("latest_seen_at"),

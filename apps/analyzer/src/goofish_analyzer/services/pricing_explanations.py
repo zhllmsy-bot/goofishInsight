@@ -57,6 +57,7 @@ def build_buy_opportunity_explanation(
 def build_buy_price_baseline_explanation(row: BuyPriceBaseline) -> dict[str, Any]:
     payload = dict(row.payload or {})
     pricing_template = dict(payload.get("pricingTemplate") or {})
+    pricing_row = dict(payload.get("pricing_row") or {})
     availability = dict(pricing_template.get("availability") or {})
     evidence = dict(availability.get("pricingEvidence") or {})
     availability_tier = normalize_availability_tier(availability.get("availabilityTier"))
@@ -92,6 +93,15 @@ def build_buy_price_baseline_explanation(row: BuyPriceBaseline) -> dict[str, Any
         "unique_seller_count": availability_summary.get("uniqueSellerCount"),
         "exact_spec_ratio": availability_summary.get("exactSpecRatio"),
         "reliability_score": availability_summary.get("reliabilityScore"),
+        "effective_sample_count": availability_summary.get("effectiveSampleCount"),
+        "recency_weighted_sample_count": availability_summary.get("recencyWeightedSampleCount"),
+        "mad": availability_summary.get("mad") if availability_summary.get("mad") is not None else pricing_row.get("mad"),
+        "confidence_score": availability_summary.get("confidenceScore"),
+        "confidence_reasons": list(availability_summary.get("confidenceReasons") or []),
+        "quality_tier": availability_summary.get("qualityTier") or pricing_row.get("quality_tier"),
+        "p15_price": availability_summary.get("p15Price") if availability_summary.get("p15Price") is not None else pricing_row.get("p15_price"),
+        "p35_price": availability_summary.get("p35Price") if availability_summary.get("p35Price") is not None else pricing_row.get("p35_price"),
+        "p50_price": availability_summary.get("p50Price") if availability_summary.get("p50Price") is not None else pricing_row.get("p50_price"),
         "freshness_days": availability_summary.get("freshnessDays"),
     }
     return serialize_baseline_explanation(internal_explanation)

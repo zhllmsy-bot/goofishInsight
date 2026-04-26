@@ -305,6 +305,7 @@ class Item(TimestampMixin, Base):
 
     seller: Mapped["SellerProfile | None"] = relationship(back_populates="items")
     snapshots: Mapped[list["ItemSnapshot"]] = relationship(back_populates="item")
+    samples: Mapped[list["ItemSample"]] = relationship("ItemSample", back_populates="item")
     spec_enrichment: Mapped["ItemSpecEnrichment | None"] = relationship(
         back_populates="item",
         uselist=False,
@@ -473,6 +474,77 @@ class ItemSnapshot(Base):
     extra_json: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
 
     item: Mapped["Item"] = relationship(back_populates="snapshots")
+
+
+class SkuFingerprint(TimestampMixin, Base):
+    __tablename__ = "sku_fingerprints"
+    __table_args__ = (
+        UniqueConstraint(
+            "schema_id",
+            "fingerprint_hash",
+            name="uq_sku_fingerprint_schema_hash",
+        ),
+        Index(
+            "ix_sku_fingerprint_schema",
+            "schema_id",
+            "fingerprint_hash",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    schema_id: Mapped[int] = mapped_column(
+        ForeignKey("sku_spec_schema_snapshots.schema_id"),
+        nullable=False,
+    )
+    fingerprint_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    lock_signature: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+    variant_signature: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    raw_signature: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    sample_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    schema_snapshot: Mapped["SkuSpecSchemaSnapshot"] = relationship(back_populates="sku_fingerprints")
+    samples: Mapped[list["ItemSample"]] = relationship(back_populates="sku_fingerprint")
+
+
+class ItemSample(TimestampMixin, Base):
+    __tablename__ = "item_samples"
+    __table_args__ = (
+        UniqueConstraint(
+            "item_id_ref",
+            "sku_fingerprint_id",
+            name="uq_item_sample_item_fingerprint",
+        ),
+        Index("ix_item_sample_item", "item_id_ref"),
+        Index("ix_item_sample_fingerprint", "sku_fingerprint_id"),
+        Index("ix_item_sample_state", "sample_state"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    item_id_ref: Mapped[int] = mapped_column(ForeignKey("items.id"), nullable=False)
+    sku_fingerprint_id: Mapped[int] = mapped_column(
+        ForeignKey("sku_fingerprints.id"),
+        nullable=False,
+    )
+    sample_state: Mapped[str] = mapped_column(String(32), nullable=False)
+    sample_quality_score: Mapped[Decimal] = mapped_column(
+        Numeric(5, 4),
+        nullable=False,
+        default=Decimal("0"),
+    )
+    missing_required_attrs: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    sample_payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+    observed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    condition_multiplier: Mapped[Decimal | None] = mapped_column(
+        Numeric(6, 3),
+        nullable=True,
+    )
+
+    item: Mapped["Item"] = relationship(back_populates="samples")
+    sku_fingerprint: Mapped["SkuFingerprint"] = relationship(back_populates="samples")
 
 
 class ItemSpecEnrichment(TimestampMixin, Base):
@@ -1156,6 +1228,7 @@ class SkuSpecSchemaSnapshot(TimestampMixin, Base):
     category: Mapped["Category | None"] = relationship(back_populates="spec_schema_snapshots")
     template: Mapped["CategoryAttrTemplate | None"] = relationship(back_populates="spec_schema_snapshots")
     buy_price_baselines: Mapped[list["BuyPriceBaseline"]] = relationship(back_populates="schema_snapshot")
+    sku_fingerprints: Mapped[list["SkuFingerprint"]] = relationship(back_populates="schema_snapshot")
 
 
 class ProductSpu(TimestampMixin, Base):

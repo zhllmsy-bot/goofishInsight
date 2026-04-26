@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import math
+import hashlib
+import json
 import re
 import statistics
 from collections import defaultdict
@@ -45,6 +47,7 @@ from .application.services.pricing_eligibility import (
     build_pricing_eligibility_snapshot,
     is_item_eligible_for_pricing,
     pricing_gate_exclusion_reason,
+    spec_pricing_exclusion_reason,
     spec_confidence_passes_pricing_gate,
     usable_spec_for_pricing,
 )
@@ -53,6 +56,7 @@ from .application.services.spec_schema_snapshots import (
     load_active_spec_schema_for_pricing_with_session,
 )
 from .models import Item, ItemIngestRejection, ItemSpecEnrichment
+from .models import ItemSample, SkuFingerprint
 from .normalizers import normalize_market_price
 from .specs import extract_rule_specs, lens_title_is_non_target_body_listing
 
@@ -211,12 +215,456 @@ GARMIN_LOW_PRICE_PLACEHOLDER_DAMAGE_TOKENS = (
     "不开机",
     "电池坏",
 )
+PRICING_SAMPLE_RECENCY_HALF_LIFE_DAYS = 14.0
 @dataclass(frozen=True, slots=True)
 class PricingScope:
     requested_scope: str | None
     category_code: str | None
     legacy_business_domain: str | None
     scope_keys: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class PricingSampleSnapshot:
+    schema_id: int | None
+    fingerprint_hash: str | None
+    lock_signature: dict[str, Any]
+    variant_signature: dict[str, Any] | None
+    raw_signature: dict[str, Any]
+    sample_state: str
+    sample_quality_score: Decimal
+    missing_required_attrs: tuple[str, ...]
+    condition_multiplier: Decimal | None
+    sample_payload: dict[str, Any]
+
+
+def _record_lookup(record: dict[str, Any] | None, key: str) -> Any:
+    if record is None:
+        return None
+    return record.get(key)
+
+
+def _has_value(value: Any) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, (list, tuple, set, dict)):
+        return bool(value)
+    return True
+
+
+def _json_safe_value(value: Any) -> Any:
+    if value is None:
+        return None
+    if isinstance(value, Decimal):
+        return str(value)
+    if isinstance(value, datetime):
+        return value.isoformat()
+    if isinstance(value, dict):
+        return {str(key): _json_safe_value(subvalue) for key, subvalue in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe_value(subvalue) for subvalue in value]
+    return value
+
+
+def _sample_title_condition_multiplier(item: Item) -> Decimal | None:
+    tags = [str(tag).strip().lower() for tag in (item.condition_tags or []) if str(tag).strip()]
+    if not tags:
+        return None
+    joined = " ".join(tags)
+    if any(token in joined for token in ("全新", "未拆", "仅试", "99新", "98新", "95新", "9成新")):
+        return Decimal("0.980")
+    if any(token in joined for token in ("轻微", "正常使用", "功能正常", "成色好", "少用")):
+        return Decimal("0.940")
+    if any(token in joined for token in ("划痕", "磕碰", "磨损", "使用痕迹", "掉漆")):
+        return Decimal("0.850")
+    if any(token in joined for token in ("故障", "不开机", "损坏", "进水", "碎屏", "维修")):
+        return Decimal("0.700")
+    return Decimal("0.900")
+
+
+def _sample_quality_score(*, sample_state: str, spec_confidence: float | None, missing_required_count: int) -> Decimal:
+    if sample_state == "eligible":
+        confidence = Decimal(str(spec_confidence or 0.85))
+        return min(Decimal("0.9900"), max(confidence, Decimal("0.8500")))
+    if sample_state == "condition_unknown":
+        base = Decimal(str(spec_confidence or 0.65))
+        return min(Decimal("0.8000"), max(base, Decimal("0.6500")))
+    if sample_state == "missing_required_attrs":
+        if missing_required_count <= 0:
+            return Decimal("0.4500")
+        penalty = Decimal(min(missing_required_count, 4)) * Decimal("0.0500")
+        return max(Decimal("0.2500"), Decimal("0.4500") - penalty)
+    if sample_state == "rejected":
+        return Decimal("0.0000")
+    return Decimal("0.1000")
+
+
+def _sample_quality_weight(*, record: dict[str, Any]) -> float:
+    weight = 1.0 if record.get("exact_spec_ready") else 0.7
+    spec_confidence = record.get("spec_confidence")
+    if spec_confidence is not None:
+        confidence = min(max(float(spec_confidence), 0.0), 1.0)
+        weight *= 0.85 + (0.15 * confidence)
+    return max(min(weight, 1.0), 0.25)
+
+
+def _sample_recency_weight(
+    *,
+    record: dict[str, Any],
+    reference: datetime | None = None,
+) -> float:
+    anchor = first_non_null(
+        record.get("publish_time"),
+        record.get("first_seen_at"),
+        record.get("last_seen_at"),
+    )
+    if not isinstance(anchor, datetime):
+        return 0.35
+    reference_time = reference or datetime.now(UTC)
+    age_hours = max((reference_time - anchor.astimezone(UTC)).total_seconds() / 3600, 0.0)
+    age_days = age_hours / 24.0
+    return max(0.25, 0.5 ** (age_days / PRICING_SAMPLE_RECENCY_HALF_LIFE_DAYS))
+
+
+def _effective_sample_count(*, records: list[dict[str, Any]]) -> float:
+    return round(sum(_sample_quality_weight(record=record) for record in records), 2)
+
+
+def _recency_weighted_sample_count(*, records: list[dict[str, Any]]) -> float:
+    reference = datetime.now(UTC)
+    return round(
+        sum(
+            _sample_quality_weight(record=record)
+            * _sample_recency_weight(record=record, reference=reference)
+            for record in records
+        ),
+        2,
+    )
+
+
+def _confidence_reasons(
+    *,
+    sample_confident: bool,
+    exact_ready_ratio: float,
+    outlier_ratio: float,
+    listing_age_score: float,
+    effective_sample_count: float,
+    recency_weighted_sample_count: float,
+) -> list[str]:
+    reasons = [
+        "样本充足" if sample_confident else "样本不足",
+        "精确规格覆盖高" if exact_ready_ratio >= 0.8 else "精确规格覆盖偏低" if exact_ready_ratio < 0.65 else "精确规格覆盖尚可",
+        "价格离群较少" if outlier_ratio <= 0.10 else "价格离群偏高" if outlier_ratio >= 0.25 else "价格离群可控",
+        "样本较新" if listing_age_score >= 0.8 else "样本偏旧" if listing_age_score <= 0.55 else "样本尚新",
+    ]
+    if effective_sample_count >= 5 and recency_weighted_sample_count >= 3:
+        reasons.insert(1, "有效样本充足")
+    elif recency_weighted_sample_count < max(2.0, effective_sample_count * 0.6):
+        reasons.insert(1, "近样本偏少")
+    return reasons[:4]
+
+
+def _quality_tier(
+    *,
+    sample_confident: bool,
+    reliability_score: float,
+    exact_ready_ratio: float,
+    outlier_ratio: float,
+    listing_age_score: float,
+) -> str:
+    if not sample_confident:
+        return "D"
+    if reliability_score >= 80 and exact_ready_ratio >= 0.8 and outlier_ratio <= 0.10 and listing_age_score >= 0.8:
+        return "A"
+    if reliability_score >= 65 and exact_ready_ratio >= 0.65 and outlier_ratio <= 0.20 and listing_age_score >= 0.65:
+        return "B"
+    return "C"
+
+
+def _sample_projection_value(
+    *,
+    record: dict[str, Any] | None,
+    spec: ItemSpecEnrichment | None,
+    item: Item,
+    key: str,
+    fallback: Any = None,
+) -> Any:
+    value = _record_lookup(record, key)
+    if _has_value(value):
+        return value
+    if spec is not None:
+        value = getattr(spec, key, None)
+        if _has_value(value):
+            return value
+    value = getattr(item, fallback if isinstance(fallback, str) else key, None) if fallback is not None else None
+    if _has_value(value):
+        return value
+    return None
+
+
+def _build_sample_projection(
+    *,
+    item: Item,
+    spec: ItemSpecEnrichment | None,
+    record: dict[str, Any] | None,
+) -> dict[str, Any]:
+    brand = first_text(
+        _record_lookup(record, "brand"),
+        getattr(spec, "brand", None) if spec is not None else None,
+        item.normalized_brand,
+    )
+    product_line = first_text(
+        _record_lookup(record, "product_line"),
+        getattr(spec, "product_line", None) if spec is not None else None,
+        getattr(spec, "model_family", None) if spec is not None else None,
+        item.normalized_model_family,
+    )
+    model_name = first_text(
+        _record_lookup(record, "model_name"),
+        getattr(spec, "model_name", None) if spec is not None else None,
+        item.normalized_model,
+        product_line,
+    )
+    chip_family = first_text(
+        _record_lookup(record, "chip_family"),
+        getattr(spec, "chip_family", None) if spec is not None else None,
+        item.normalized_chip,
+    )
+    display_type = first_text(
+        _record_lookup(record, "display_type"),
+        getattr(spec, "display_type", None) if spec is not None else None,
+    )
+    case_size_mm = first_non_null(
+        _record_lookup(record, "case_size_mm"),
+        getattr(spec, "case_size_mm", None) if spec is not None else None,
+    )
+    is_solar = first_non_null(
+        _record_lookup(record, "is_solar"),
+        getattr(spec, "is_solar", None) if spec is not None else None,
+    )
+    screen_size_in = first_non_null(
+        _record_lookup(record, "screen_size_in"),
+        getattr(spec, "screen_size_in", None) if spec is not None else None,
+    )
+    cpu_cores = first_non_null(
+        _record_lookup(record, "cpu_cores"),
+        getattr(spec, "cpu_cores", None) if spec is not None else None,
+    )
+    gpu_cores = first_non_null(
+        _record_lookup(record, "gpu_cores"),
+        getattr(spec, "gpu_cores", None) if spec is not None else None,
+    )
+    memory_gb = first_non_null(
+        _record_lookup(record, "memory_gb"),
+        getattr(spec, "memory_gb", None) if spec is not None else None,
+        item.normalized_memory_gb,
+    )
+    storage_gb = first_non_null(
+        _record_lookup(record, "storage_gb"),
+        getattr(spec, "storage_gb", None) if spec is not None else None,
+        item.normalized_storage_gb,
+    )
+    return {
+        "brand": brand,
+        "brand_name": brand,
+        "product_line": product_line,
+        "model_family": first_text(
+            _record_lookup(record, "model_family"),
+            getattr(spec, "model_family", None) if spec is not None else None,
+            product_line,
+        ),
+        "model_name": model_name,
+        "product_label": first_text(_record_lookup(record, "product_label"), model_name, product_line),
+        "chip_family": chip_family,
+        "display_type": display_type,
+        "case_size_mm": case_size_mm,
+        "is_solar": is_solar,
+        "screen_size_in": screen_size_in,
+        "cpu_cores": cpu_cores,
+        "gpu_cores": gpu_cores,
+        "memory_gb": memory_gb,
+        "ram_gb": memory_gb,
+        "storage_gb": storage_gb,
+        "condition_tags": list(item.condition_tags or []),
+    }
+
+
+def _subset_signature(schema_attrs: list[str] | tuple[str, ...], projection: dict[str, Any]) -> dict[str, Any]:
+    signature: dict[str, Any] = {}
+    for attr_code in schema_attrs or []:
+        value = projection.get(attr_code)
+        if _has_value(value):
+            signature[attr_code] = _json_safe_value(value)
+        else:
+            signature[attr_code] = None
+    return signature
+
+
+def _stable_json_dumps(value: Any) -> str:
+    return json.dumps(_json_safe_value(value), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _compute_fingerprint_hash(
+    *,
+    schema_id: int,
+    lock_signature: dict[str, Any],
+    variant_signature: dict[str, Any] | None,
+) -> str:
+    seed = {
+        "schemaId": schema_id,
+        "lockSignature": lock_signature,
+        "variantSignature": variant_signature or {},
+    }
+    return hashlib.sha256(_stable_json_dumps(seed).encode("utf-8")).hexdigest()
+
+
+def build_pricing_sample_snapshot(
+    *,
+    item: Item,
+    spec: ItemSpecEnrichment | None,
+    spec_schema: dict[str, Any] | None,
+    record: dict[str, Any] | None = None,
+) -> PricingSampleSnapshot:
+    usable_spec = usable_spec_for_pricing(spec)
+    sample_spec = usable_spec or spec
+    spec_status = str(getattr(sample_spec, "status", "") or "").strip().lower() or None
+    spec_confidence = max_optional_float(
+        decimal_to_float(getattr(sample_spec, "confidence", None)) if sample_spec is not None else None,
+    )
+    projection = _build_sample_projection(item=item, spec=sample_spec, record=record)
+    schema_completeness = evaluate_pricing_record_schema(
+        record=projection,
+        schema=spec_schema,
+    )
+    missing_required_attrs = tuple(schema_completeness.get("missingRequiredAttrs") or [])
+
+    review_reason = pricing_gate_exclusion_reason(item)
+    spec_reason = spec_pricing_exclusion_reason(
+        raw_spec=spec,
+        spec_status=spec_status,
+        spec_confidence=spec_confidence,
+    )
+    title_mismatch = not title_matches_domain(item.business_domain, item.title)
+    non_comparable = title_is_non_comparable_listing(
+        business_domain=item.business_domain,
+        title=item.title,
+        price=item.current_price,
+    )
+    brand_missing = not _has_value(projection.get("brand"))
+
+    if review_reason or spec_reason or title_mismatch or non_comparable or brand_missing:
+        sample_state = "rejected"
+    elif schema_completeness.get("status") == "incomplete":
+        sample_state = "missing_required_attrs"
+    elif not _has_value(projection.get("condition_tags")):
+        sample_state = "condition_unknown"
+    else:
+        sample_state = "eligible"
+
+    schema_id_raw = schema_completeness.get("schemaId")
+    schema_id = int(schema_id_raw) if schema_id_raw is not None else None
+    locking_attrs = list(spec_schema.get("lockingAttrs") or []) if spec_schema else []
+    variant_attrs = list(spec_schema.get("variantAttrs") or []) if spec_schema else []
+    required_attrs = list(spec_schema.get("requiredAttrs") or []) if spec_schema else []
+    lock_signature = _subset_signature(locking_attrs, projection)
+    variant_signature = _subset_signature(variant_attrs, projection) if variant_attrs else {}
+    raw_signature = {
+        "schemaId": schema_id,
+        "categoryCode": resolve_category_code(item.business_domain),
+        "requiredAttrs": required_attrs,
+        "missingRequiredAttrs": list(missing_required_attrs),
+        "projection": projection,
+    }
+    fingerprint_hash = (
+        _compute_fingerprint_hash(
+            schema_id=schema_id,
+            lock_signature=lock_signature,
+            variant_signature=variant_signature,
+        )
+        if schema_id is not None
+        else None
+    )
+    condition_multiplier = _sample_title_condition_multiplier(item)
+    sample_quality_score = _sample_quality_score(
+        sample_state=sample_state,
+        spec_confidence=spec_confidence,
+        missing_required_count=len(missing_required_attrs),
+    )
+    sample_payload = {
+        "sampleState": sample_state,
+        "reviewReason": review_reason,
+        "specReason": spec_reason,
+        "schemaCompleteness": dict(schema_completeness),
+        "projection": projection,
+        "conditionMultiplier": decimal_to_float(condition_multiplier) if condition_multiplier is not None else None,
+        "fingerprintHash": fingerprint_hash,
+    }
+    return PricingSampleSnapshot(
+        schema_id=schema_id,
+        fingerprint_hash=fingerprint_hash,
+        lock_signature=lock_signature,
+        variant_signature=variant_signature or None,
+        raw_signature=raw_signature,
+        sample_state=sample_state,
+        sample_quality_score=sample_quality_score,
+        missing_required_attrs=missing_required_attrs,
+        condition_multiplier=condition_multiplier,
+        sample_payload=sample_payload,
+    )
+
+
+def persist_pricing_sample(
+    session,
+    *,
+    item: Item,
+    snapshot: PricingSampleSnapshot,
+) -> None:
+    if snapshot.schema_id is None or snapshot.fingerprint_hash is None:
+        return
+
+    fingerprint = session.execute(
+        select(SkuFingerprint)
+        .where(SkuFingerprint.schema_id == snapshot.schema_id)
+        .where(SkuFingerprint.fingerprint_hash == snapshot.fingerprint_hash)
+    ).scalar_one_or_none()
+    if fingerprint is None:
+        fingerprint = SkuFingerprint(
+            schema_id=snapshot.schema_id,
+            fingerprint_hash=snapshot.fingerprint_hash,
+            lock_signature=dict(snapshot.lock_signature),
+            variant_signature=dict(snapshot.variant_signature or {}) or None,
+            raw_signature=dict(snapshot.raw_signature),
+            sample_count=0,
+        )
+        session.add(fingerprint)
+        session.flush()
+
+    existing_sample = session.execute(
+        select(ItemSample)
+        .where(ItemSample.item_id_ref == item.id)
+        .where(ItemSample.sku_fingerprint_id == fingerprint.id)
+    ).scalar_one_or_none()
+    if existing_sample is None:
+        existing_sample = ItemSample(
+            item_id_ref=item.id,
+            sku_fingerprint_id=fingerprint.id,
+            sample_state=snapshot.sample_state,
+            sample_quality_score=snapshot.sample_quality_score,
+            missing_required_attrs=list(snapshot.missing_required_attrs),
+            sample_payload=dict(snapshot.sample_payload),
+            condition_multiplier=snapshot.condition_multiplier,
+        )
+        session.add(existing_sample)
+        fingerprint.sample_count = int(fingerprint.sample_count or 0) + 1
+    else:
+        existing_sample.sample_state = snapshot.sample_state
+        existing_sample.sample_quality_score = snapshot.sample_quality_score
+        existing_sample.missing_required_attrs = list(snapshot.missing_required_attrs)
+        existing_sample.sample_payload = dict(snapshot.sample_payload)
+        existing_sample.condition_multiplier = snapshot.condition_multiplier
+    existing_sample.observed_at = datetime.now(UTC)
 
 
 def resolve_pricing_scope(
@@ -304,6 +752,7 @@ def load_pricing_records(
     freshness_days: int,
     heartbeat_days: int | None = None,
     session=None,
+    persist_item_samples: bool = False,
 ) -> list[dict[str, Any]]:
     now = datetime.now(UTC)
     cutoff = now - timedelta(days=max(freshness_days, 1))
@@ -318,6 +767,7 @@ def load_pricing_records(
                 category_code=category_code,
                 cutoff=cutoff,
                 heartbeat_cutoff=heartbeat_cutoff,
+                persist_item_samples=persist_item_samples,
             )
     return _load_pricing_records_from_session(
         session=session,
@@ -325,6 +775,7 @@ def load_pricing_records(
         category_code=category_code,
         cutoff=cutoff,
         heartbeat_cutoff=heartbeat_cutoff,
+        persist_item_samples=persist_item_samples,
     )
 
 
@@ -425,8 +876,9 @@ def _load_pricing_records_from_session(
     category_code: str | None,
     cutoff: datetime,
     heartbeat_cutoff: datetime | None,
+    persist_item_samples: bool,
 ) -> list[dict[str, Any]]:
-    rows = _load_pricing_candidate_rows_from_session(
+    rows = _load_pricing_candidate_rows_with_schema_from_session(
         session=session,
         business_domain=business_domain,
         category_code=category_code,
@@ -434,7 +886,46 @@ def _load_pricing_records_from_session(
         heartbeat_cutoff=heartbeat_cutoff,
     )
     records: list[dict[str, Any]] = []
+    for item, spec, spec_schema in rows:
+        record = resolve_pricing_record(
+            item=item,
+            spec=spec,
+            spec_schema=spec_schema,
+        )
+        if persist_item_samples:
+            snapshot = build_pricing_sample_snapshot(
+                item=item,
+                spec=spec,
+                spec_schema=spec_schema,
+                record=record,
+            )
+            persist_pricing_sample(
+                session,
+                item=item,
+                snapshot=snapshot,
+            )
+        if record is not None:
+            records.append(record)
+    return records
+
+
+def _load_pricing_candidate_rows_with_schema_from_session(
+    *,
+    session,
+    business_domain: str | None,
+    category_code: str | None,
+    cutoff: datetime,
+    heartbeat_cutoff: datetime | None,
+) -> list[tuple[Item, ItemSpecEnrichment | None, dict[str, Any] | None]]:
+    rows = _load_pricing_candidate_rows_from_session(
+        session=session,
+        business_domain=business_domain,
+        category_code=category_code,
+        cutoff=cutoff,
+        heartbeat_cutoff=heartbeat_cutoff,
+    )
     schema_by_category_code: dict[str, dict[str, Any] | None] = {}
+    resolved_rows: list[tuple[Item, ItemSpecEnrichment | None, dict[str, Any] | None]] = []
     for item, spec in rows:
         item_category_code = resolve_category_code(item.business_domain)
         if item_category_code and item_category_code not in schema_by_category_code:
@@ -443,14 +934,121 @@ def _load_pricing_records_from_session(
                 category_code=item_category_code,
             )
         spec_schema = schema_by_category_code.get(item_category_code) if item_category_code else None
-        record = resolve_pricing_record(
-            item=item,
-            spec=spec,
-            spec_schema=spec_schema,
+        resolved_rows.append((item, spec, spec_schema))
+    return resolved_rows
+
+
+def build_pricing_sample_coverage_report(
+    *,
+    business_domain: str | None = None,
+    category_code: str | None = None,
+    freshness_days: int,
+    heartbeat_days: int | None = None,
+    session=None,
+) -> dict[str, Any]:
+    now = datetime.now(UTC)
+    cutoff = now - timedelta(days=max(freshness_days, 1))
+    heartbeat_cutoff = None
+    if heartbeat_days is not None:
+        heartbeat_cutoff = now - timedelta(days=max(heartbeat_days, 1))
+
+    def _build_report(session_obj) -> dict[str, Any]:
+        rows = _load_pricing_candidate_rows_with_schema_from_session(
+            session=session_obj,
+            business_domain=business_domain,
+            category_code=category_code,
+            cutoff=cutoff,
+            heartbeat_cutoff=heartbeat_cutoff,
         )
-        if record is not None:
-            records.append(record)
-    return records
+        category_stats: dict[str, dict[str, Any]] = {}
+        totals = {
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "fingerprintableCount": 0,
+            "missingRequiredAttrsCount": 0,
+            "conditionUnknownCount": 0,
+            "rejectedCount": 0,
+        }
+        for item, spec, spec_schema in rows:
+            item_category_code = resolve_category_code(item.business_domain) or str(item.business_domain)
+            stats = category_stats.setdefault(
+                item_category_code,
+                {
+                    "categoryCode": item_category_code,
+                    "candidateCount": 0,
+                    "eligibleCount": 0,
+                    "fingerprintableCount": 0,
+                    "missingRequiredAttrsCount": 0,
+                    "conditionUnknownCount": 0,
+                    "rejectedCount": 0,
+                    "sampleStateCounts": defaultdict(int),
+                },
+            )
+            snapshot = build_pricing_sample_snapshot(
+                item=item,
+                spec=spec,
+                spec_schema=spec_schema,
+            )
+            stats["candidateCount"] += 1
+            totals["candidateCount"] += 1
+            stats["sampleStateCounts"][snapshot.sample_state] += 1
+            if snapshot.sample_state == "eligible":
+                stats["eligibleCount"] += 1
+                totals["eligibleCount"] += 1
+            if snapshot.fingerprint_hash is not None:
+                stats["fingerprintableCount"] += 1
+                totals["fingerprintableCount"] += 1
+            if snapshot.sample_state == "missing_required_attrs":
+                stats["missingRequiredAttrsCount"] += 1
+                totals["missingRequiredAttrsCount"] += 1
+            elif snapshot.sample_state == "condition_unknown":
+                stats["conditionUnknownCount"] += 1
+                totals["conditionUnknownCount"] += 1
+            elif snapshot.sample_state == "rejected":
+                stats["rejectedCount"] += 1
+                totals["rejectedCount"] += 1
+
+        categories = {
+            category_code_key: {
+                **{key: value for key, value in stats.items() if key != "sampleStateCounts"},
+                "sampleStateCounts": dict(sorted(stats["sampleStateCounts"].items())),
+                "fingerprintHitRatio": round(
+                    (100 * stats["fingerprintableCount"] / stats["candidateCount"]),
+                    1,
+                )
+                if stats["candidateCount"]
+                else 0.0,
+                "eligibleRatio": round((100 * stats["eligibleCount"] / stats["candidateCount"]), 1)
+                if stats["candidateCount"]
+                else 0.0,
+            }
+            for category_code_key, stats in sorted(category_stats.items())
+        }
+        return {
+            "generatedAt": now.isoformat(),
+            "businessDomain": business_domain,
+            "categoryCode": category_code,
+            "freshnessDays": freshness_days,
+            "heartbeatDays": heartbeat_days,
+            "summary": {
+                **totals,
+                "fingerprintHitRatio": round(
+                    (100 * totals["fingerprintableCount"] / totals["candidateCount"]),
+                    1,
+                )
+                if totals["candidateCount"]
+                else 0.0,
+                "eligibleRatio": round((100 * totals["eligibleCount"] / totals["candidateCount"]), 1)
+                if totals["candidateCount"]
+                else 0.0,
+            },
+            "categories": categories,
+        }
+
+    if session is None:
+        with session_scope() as db_session:
+            return _build_report(db_session)
+    return _build_report(session)
 
 
 def summarize_pricing_gate(
@@ -853,6 +1451,10 @@ def summarize_pricing_group(
         elif exact_ready_ratio < 0.65:
             reliability_score = min(reliability_score, 69.9)
 
+    effective_sample_count = _effective_sample_count(records=cleaned_records)
+    recency_weighted_sample_count = _recency_weighted_sample_count(records=cleaned_records)
+    confidence_score = round(min(max(reliability_score, 0.0), 100.0), 1)
+
     actionable_threshold = max(min_sample_points, 3 if view != "brand" else 2)
     sample_confident = (
         len(cleaned_records) >= actionable_threshold
@@ -880,6 +1482,21 @@ def summarize_pricing_group(
         required_profit_amount=required_profit_amount,
     )
     is_actionable = sample_confident and meets_profit_gate
+    quality_tier = _quality_tier(
+        sample_confident=sample_confident,
+        reliability_score=reliability_score,
+        exact_ready_ratio=exact_ready_ratio,
+        outlier_ratio=outlier_ratio,
+        listing_age_score=listing_age_metrics["score"],
+    )
+    confidence_reasons = _confidence_reasons(
+        sample_confident=sample_confident,
+        exact_ready_ratio=exact_ready_ratio,
+        outlier_ratio=outlier_ratio,
+        listing_age_score=listing_age_metrics["score"],
+        effective_sample_count=effective_sample_count,
+        recency_weighted_sample_count=recency_weighted_sample_count,
+    )
     sample_titles = [record["title"] for record in sorted(group_records, key=sort_last_seen, reverse=True)[:3]]
 
     result = {
@@ -901,6 +1518,10 @@ def summarize_pricing_group(
         "safe_buy_price": round_money(p15_price),
         "normal_buy_price": round_money(p35_price),
         "market_mid_price": round_money(median_price),
+        "p15_price": round_money(p15_price),
+        "p35_price": round_money(p35_price),
+        "p50_price": round_money(median_price),
+        "mad": round_money(filter_meta.get("mad"), digits=6),
         "estimated_profit_floor": round_money(estimated_profit_floor),
         "estimated_profit_ceiling": round_money(estimated_profit_ceiling),
         "normal_margin_pct": round_money(normal_margin_pct, digits=2),
@@ -927,6 +1548,11 @@ def summarize_pricing_group(
         "reliability_tier": reliability_tier(reliability_score),
         "sample_confident": sample_confident,
         "is_actionable": is_actionable,
+        "effective_sample_count": round_money(effective_sample_count, digits=2),
+        "recency_weighted_sample_count": round_money(recency_weighted_sample_count, digits=2),
+        "confidence_score": confidence_score,
+        "confidence_reasons": confidence_reasons,
+        "quality_tier": quality_tier,
         "required_profit_amount": round_money(required_profit_amount),
         "opportunity_score": round(opportunity_score, 1),
         "opportunity_tier": opportunity_tier,
