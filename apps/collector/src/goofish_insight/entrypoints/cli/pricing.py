@@ -18,6 +18,12 @@ from ...application.services.pricing_reporting import (
     write_template_smoke_report,
 )
 from ...application.services.pricing_entrypoints import parse_baseline_date
+from ...application.services.buy_job_runtime import (
+    build_buy_job_rows,
+    process_buy_job_events,
+    schedule_buy_baseline_job,
+    schedule_buy_opportunity_refresh_job,
+)
 from ...pricing import build_pricing_views, build_spec_summary
 from ...pricing import build_pricing_sample_coverage_report
 
@@ -133,6 +139,26 @@ def register_pricing_commands(app: typer.Typer) -> None:
         )
         typer.echo(json.dumps(result, ensure_ascii=False, indent=2, default=str))
 
+    @app.command("queue-buy-baselines")
+    def queue_buy_baselines(
+        category_code: str | None = None,
+        business_domain: str | None = None,
+        view: str = typer.Option("all", help="all, brand, product, spec"),
+        freshness_days: int = typer.Option(30, min=7, max=180),
+        min_sample_points: int = typer.Option(4, min=2, max=20),
+        debounce_minutes: int = typer.Option(10, min=0, max=120),
+    ) -> None:
+        result = schedule_buy_baseline_job(
+            category_code=category_code,
+            business_domain=business_domain,
+            view=view,
+            freshness_days=freshness_days,
+            min_sample_points=min_sample_points,
+            debounce_minutes=debounce_minutes,
+            requested_by="cli:queue-buy-baselines",
+        )
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+
     @app.command("refresh-buy-opportunities")
     def refresh_buy_opportunities_command(
         category_code: str | None = None,
@@ -157,6 +183,44 @@ def register_pricing_commands(app: typer.Typer) -> None:
             dry_run=dry_run,
         )
         typer.echo(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+
+    @app.command("queue-buy-opportunities")
+    def queue_buy_opportunities(
+        category_code: str | None = None,
+        business_domain: str | None = None,
+        freshness_days: int = typer.Option(30, min=7, max=180),
+        min_discount_rate: float = typer.Option(0.02, min=0.0, max=1.0),
+        min_opportunity_score: float = typer.Option(35.0, min=0.0, max=100.0),
+        debounce_minutes: int = typer.Option(10, min=0, max=120),
+    ) -> None:
+        result = schedule_buy_opportunity_refresh_job(
+            category_code=category_code,
+            business_domain=business_domain,
+            freshness_days=freshness_days,
+            min_discount_rate=min_discount_rate,
+            min_opportunity_score=min_opportunity_score,
+            debounce_minutes=debounce_minutes,
+            requested_by="cli:queue-buy-opportunities",
+        )
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+
+    @app.command("show-buy-jobs")
+    def show_buy_jobs(limit: int = typer.Option(20, min=1, max=200)) -> None:
+        typer.echo(json.dumps(build_buy_job_rows(limit=limit), ensure_ascii=False, indent=2, default=str))
+
+    @app.command("process-buy-jobs")
+    def process_buy_jobs(
+        limit: int = typer.Option(20, min=1, max=200),
+        dry_run: bool = True,
+    ) -> None:
+        typer.echo(
+            json.dumps(
+                process_buy_job_events(limit=limit, dry_run=dry_run),
+                ensure_ascii=False,
+                indent=2,
+                default=str,
+            )
+        )
 
     @app.command("emit-buy-alerts")
     def emit_buy_alerts_command(

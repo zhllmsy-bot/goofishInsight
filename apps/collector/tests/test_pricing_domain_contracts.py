@@ -159,6 +159,13 @@ class SerializePricingRecordTests(unittest.TestCase):
             "spec_contract": {"status": "complete"},
             "spec_source": {"source": "stored_spec"},
             "pricing_eligibility": {"pricingReady": True},
+            "schema_id": 42,
+            "sample_snapshot": {
+                "schemaId": 42,
+                "sampleState": "eligible",
+                "fingerprintHash": "abc12345",
+                "sampleQualityScore": 0.91,
+            },
         }
         result = serialize_pricing_record(record)
 
@@ -180,6 +187,8 @@ class SerializePricingRecordTests(unittest.TestCase):
         self.assertEqual(result["specContract"], {"status": "complete"})
         self.assertEqual(result["specSource"], {"source": "stored_spec"})
         self.assertEqual(result["pricingEligibility"], {"pricingReady": True})
+        self.assertEqual(result["schemaId"], 42)
+        self.assertEqual(result["sampleSnapshot"]["fingerprintHash"], "abc12345")
 
     def test_handles_decimal_price(self) -> None:
         record = {"price": Decimal("3999.00"), "screen_size_in": Decimal("14.0")}

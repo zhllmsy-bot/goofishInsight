@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from decimal import InvalidOperation
 from decimal import Decimal
 from typing import Any
+from uuid import uuid4
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -23,6 +24,7 @@ from goofish_analyzer.adapters import (
     UTC,
     session_scope,
     BuyDecisionFeedback,
+    DecisionFeedbackLog,
     BuyOpportunity,
     Category,
 )
@@ -167,6 +169,7 @@ def record_buy_decision_feedback_with_session(
     recorded_at = datetime.now(UTC)
 
     feedback = BuyDecisionFeedback(
+        id=str(uuid4()),
         opportunity_id=normalized_opportunity_id,
         feedback_type=normalized_feedback_type,
         feedback_label=normalized_feedback_label,
@@ -228,6 +231,16 @@ def record_buy_decision_feedback_with_session(
         },
     }
     _flush(session)
+    _record_feedback_log_with_session(
+        session,
+        feedback=feedback,
+        opportunity=opportunity,
+        feedback_action=feedback_action,
+        feedback_category=feedback_category,
+        opportunity_status=opportunity.status,
+        operator_id=operator_id,
+        recorded_at=recorded_at,
+    )
 
     return {
         "dryRun": False,
@@ -239,6 +252,55 @@ def record_buy_decision_feedback_with_session(
         },
         "alertCandidateLinkage": linkage_result,
     }
+
+
+def _record_feedback_log_with_session(
+    session: Session,
+    *,
+    feedback: BuyDecisionFeedback,
+    opportunity: BuyOpportunity,
+    feedback_action: str,
+    feedback_category: str,
+    opportunity_status: str | None,
+    operator_id: str | None,
+    recorded_at: datetime,
+) -> None:
+    pricing_record = dict(dict(opportunity.payload or {}).get("pricing_record") or {})
+    sample_snapshot = dict(pricing_record.get("sample_snapshot") or {})
+    log_row = DecisionFeedbackLog(
+        id=str(uuid4()),
+        feedback_id=str(feedback.id),
+        opportunity_id=str(opportunity.id),
+        item_id_ref=getattr(opportunity, "item_id_ref", None),
+        category_id=_normalize_optional_string(getattr(opportunity, "category_id", None)),
+        scope_key=_normalize_optional_string(pricing_record.get("category_code") or pricing_record.get("business_domain")),
+        model_catalog_id=_normalize_optional_string(
+            getattr(opportunity, "model_catalog_id", None) or pricing_record.get("model_catalog_id")
+        ),
+        schema_id=_optional_int(pricing_record.get("schema_id") or sample_snapshot.get("schemaId")),
+        fingerprint_hash=_normalize_optional_string(sample_snapshot.get("fingerprintHash")),
+        baseline_match_level=_normalize_optional_string(dict(opportunity.payload or {}).get("baseline_match_level")),
+        baseline_match_key=_normalize_optional_string(dict(opportunity.payload or {}).get("baseline_match_key")),
+        feedback_type=str(feedback.feedback_type),
+        feedback_label=str(feedback.feedback_label),
+        feedback_action=str(feedback_action),
+        feedback_category=str(feedback_category),
+        opportunity_status=_normalize_optional_string(opportunity_status),
+        operator_id=_normalize_optional_string(operator_id),
+        recorded_at=recorded_at,
+        payload={
+            "pricingRecord": {
+                "itemId": _normalize_optional_string(pricing_record.get("item_id")),
+                "title": _normalize_optional_string(pricing_record.get("title")),
+                "price": pricing_record.get("price"),
+                "schemaId": pricing_record.get("schema_id") or sample_snapshot.get("schemaId"),
+            },
+            "sampleSnapshot": sample_snapshot,
+            "feedbackPayload": dict(feedback.payload or {}),
+        },
+    )
+    session.add(log_row)
+    _flush(session)
 
 
 def opportunity_status_for_feedback_label(feedback_label: str) -> str:
@@ -782,6 +844,15 @@ def _optional_decimal(value: Any) -> Decimal | None:
         return Decimal(str(value))
     except (InvalidOperation, ValueError) as exc:
         raise BuyFeedbackError(f"Invalid decimal value: {value}") from exc
+
+
+def _optional_int(value: Any) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _decimal_to_float(value: Decimal | None) -> float | None:

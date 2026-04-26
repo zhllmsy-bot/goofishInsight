@@ -105,6 +105,9 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
                 "latest_seen_at": datetime.now(UTC).isoformat(),
                 "schema_id": 42,
                 "schema": {"schemaId": 42, "summary": {"lockingAttrCount": 4}},
+                "dominant_fingerprint_hash": "fp-apple-1",
+                "sample_fingerprint_count": 3,
+                "sample_state_counts": {"eligible": 7},
             },
             view="spec",
             baseline_date=date(2026, 4, 8),
@@ -131,6 +134,7 @@ class BuyPriceBaselineServiceTests(unittest.TestCase):
             row.payload["pricingTemplate"]["availability"]["availabilityTier"],
             "guidance_ready",
         )
+        self.assertEqual(row.payload["sampleFingerprint"]["dominantFingerprintHash"], "fp-apple-1")
         explanation = build_buy_price_baseline_explanation(row)
         self.assertEqual(explanation["readinessSummary"], "可直接作为买入线参考")
         self.assertEqual(explanation["confidenceSummary"], "高置信")

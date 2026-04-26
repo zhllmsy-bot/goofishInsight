@@ -142,9 +142,19 @@ class BuyDecisionHubTests(unittest.TestCase):
                     "listing_url": "https://example.com/item-101",
                     "region": "上海",
                     "spec_confidence": 0.88,
+                    "schema_id": 42,
+                    "sample_snapshot": {
+                        "schemaId": 42,
+                        "sampleState": "eligible",
+                        "fingerprintHash": "fp-101abc",
+                    },
                 },
                 "baseline_match_level": "template",
                 "baseline_match_key": "template:apple_computer|model_name=MacBook Pro / M5",
+                "feedbackSummary": {
+                    "feedbackAction": "watch",
+                    "feedbackLabel": "contacted",
+                },
             },
         )
         baseline = BuyPriceBaseline(
@@ -231,6 +241,9 @@ class BuyDecisionHubTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["feedbackCount"], 3)
         self.assertEqual(payload["summary"]["calibrationRecommendationCount"], 2)
         self.assertEqual(payload["summary"]["todayOpportunityCount"], 1)
+        self.assertEqual(payload["opportunities"][0]["schemaId"], 42)
+        self.assertEqual(payload["opportunities"][0]["sampleSnapshot"]["fingerprintHash"], "fp-101abc")
+        self.assertEqual(payload["opportunities"][0]["feedbackSummary"]["feedbackLabel"], "contacted")
         self.assertEqual(payload["outcomeFunnel"]["openedOpportunityCount"], 3)
         self.assertEqual(payload["outcomeFunnel"]["purchasedOpportunityCount"], 1)
         self.assertEqual(payload["outcomeFunnel"]["roiEvidenceCount"], 1)
@@ -455,6 +468,12 @@ class BuyDecisionHubTests(unittest.TestCase):
                     "listing_url": "https://example.com/item-101",
                     "region": "上海",
                     "spec_confidence": 0.88,
+                    "schema_id": 42,
+                    "sample_snapshot": {
+                        "schemaId": 42,
+                        "sampleState": "eligible",
+                        "fingerprintHash": "fp-xy101",
+                    },
                 },
                 "feedbackSummary": {
                     "feedbackAction": "accept",
@@ -565,6 +584,8 @@ class BuyDecisionHubTests(unittest.TestCase):
         self.assertEqual(payload["opportunity"]["id"], "opp-1")
         self.assertEqual(payload["opportunity"]["itemId"], "xy-101")
         self.assertEqual(payload["opportunity"]["decisionNote"], "准备私聊砍价")
+        self.assertEqual(payload["opportunity"]["schemaId"], 42)
+        self.assertEqual(payload["opportunity"]["sampleSnapshot"]["fingerprintHash"], "fp-xy101")
         self.assertEqual(payload["watchTarget"]["targetName"], "apple_computer:default")
         self.assertEqual(payload["baseline"]["baselineKey"], "template:apple_computer|model_name=MacBook Pro / M5")
         self.assertEqual(payload["risks"][0]["riskCode"], "LOW_SAMPLE_SIZE")

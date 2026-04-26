@@ -370,6 +370,53 @@ class PricingEntrypointTests(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertEqual(payload["alertCandidateLinkage"]["status"], "created")
 
+    def test_queue_buy_baselines_command_schedules_job(self) -> None:
+        app = typer.Typer()
+        register_pricing_commands(app)
+        runner = CliRunner()
+
+        with patch(
+            "goofish_insight.entrypoints.cli.pricing.schedule_buy_baseline_job",
+            return_value={"eventId": "event-1", "jobType": "buy.build_baseline"},
+        ) as queue_mock:
+            result = runner.invoke(
+                app,
+                [
+                    "queue-buy-baselines",
+                    "--category-code",
+                    "apple_computer",
+                ],
+            )
+
+        self.assertEqual(result.exit_code, 0)
+        queue_mock.assert_called_once()
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["eventId"], "event-1")
+
+    def test_process_buy_jobs_command_outputs_summary(self) -> None:
+        app = typer.Typer()
+        register_pricing_commands(app)
+        runner = CliRunner()
+
+        with patch(
+            "goofish_insight.entrypoints.cli.pricing.process_buy_job_events",
+            return_value={"eventCount": 1, "processedCount": 1, "failedCount": 0},
+        ) as process_mock:
+            result = runner.invoke(
+                app,
+                [
+                    "process-buy-jobs",
+                    "--limit",
+                    "5",
+                    "--no-dry-run",
+                ],
+            )
+
+        self.assertEqual(result.exit_code, 0)
+        process_mock.assert_called_once_with(limit=5, dry_run=False)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["processedCount"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

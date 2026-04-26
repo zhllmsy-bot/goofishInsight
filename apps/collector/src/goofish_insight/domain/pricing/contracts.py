@@ -42,6 +42,8 @@ PRICING_RECORD_FIELDS = {
     "spec_contract": {"type": "dict", "required": False},
     "spec_source": {"type": "dict", "required": False},
     "pricing_eligibility": {"type": "dict", "required": False},
+    "schema_id": {"type": "int", "required": False},
+    "sample_snapshot": {"type": "dict", "required": False},
 }
 
 BASELINE_EXPLANATION_FIELDS = {
@@ -191,6 +193,8 @@ def serialize_pricing_record(record: dict[str, Any]) -> dict[str, Any]:
         "specContract": dict(record.get("spec_contract") or {}),
         "specSource": dict(record.get("spec_source") or {}),
         "pricingEligibility": dict(record.get("pricing_eligibility") or {}),
+        "schemaId": record.get("schema_id"),
+        "sampleSnapshot": dict(record.get("sample_snapshot") or {}),
     }
 
 

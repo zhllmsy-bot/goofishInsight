@@ -481,6 +481,29 @@ def register_maintenance_commands(
 
         typer.echo(json.dumps(summary, ensure_ascii=False, indent=2))
 
+    @app.command("queue-enrich-specs")
+    def queue_enrich_specs(
+        business_domain: str | None = None,
+        item_id: str | None = None,
+        limit: int = typer.Option(50, min=1, max=500),
+        force: bool = False,
+        use_llm: bool = True,
+        debounce_minutes: int = typer.Option(0, min=0, max=120),
+    ) -> None:
+        from ...application.services.buy_job_runtime import schedule_spec_enrichment_job
+
+        configured_llm = use_llm and llm_is_configured()
+        result = schedule_spec_enrichment_job(
+            business_domain=business_domain,
+            item_id=item_id,
+            limit=limit,
+            force=force,
+            allow_llm=configured_llm,
+            debounce_minutes=debounce_minutes,
+            requested_by="cli:queue-enrich-specs",
+        )
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+
     @app.command("cleanup-history")
     def cleanup_history(
         dry_run: bool = False,

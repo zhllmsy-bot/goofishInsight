@@ -21,6 +21,38 @@ type FeedbackState = {
   message: string;
 };
 
+function formatSchemaTag(value: number | null | undefined): string | null {
+  return typeof value === 'number' ? `schema ${formatNumber(value)}` : null;
+}
+
+function formatFingerprintTag(value: string | null | undefined): string | null {
+  const normalized = value?.trim();
+  return normalized ? `fp ${normalized.slice(0, 8)}` : null;
+}
+
+function formatSampleStateLabel(value: string | null | undefined): string | null {
+  switch (value) {
+    case 'eligible':
+      return '样本可用';
+    case 'missing_required_attrs':
+      return '指纹缺字段';
+    case 'condition_unknown':
+      return '成色待判';
+    case 'rejected':
+      return '样本已挡';
+    default:
+      return null;
+  }
+}
+
+function formatSampleQualityLabel(value: number | null | undefined): string | null {
+  if (typeof value !== 'number') {
+    return null;
+  }
+  const normalized = value <= 1 ? value : value / 100;
+  return `Q ${normalized.toFixed(2)}`;
+}
+
 export function BuyOpportunityDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,6 +78,11 @@ export function BuyOpportunityDetailPage() {
   const runtimeTarget = buildWorkspaceLocation('/ops/runtime', workspaceQuery);
   const itemTarget = itemId ? buildWorkspaceLocation(`/items/${itemId}`, workspaceQuery) : null;
   const matchedFields = Object.entries(opportunity?.matchedFieldValues ?? {});
+  const schemaTag = formatSchemaTag(opportunity?.schemaId);
+  const fingerprintTag = formatFingerprintTag(opportunity?.sampleSnapshot?.fingerprintHash);
+  const sampleStateLabel = formatSampleStateLabel(opportunity?.sampleSnapshot?.sampleState);
+  const sampleQualityLabel = formatSampleQualityLabel(opportunity?.sampleSnapshot?.sampleQualityScore);
+  const missingSampleAttrs = opportunity?.sampleSnapshot?.missingRequiredAttrs ?? [];
 
   const feedbackMutation = useMutation({
     mutationFn: async (payload: BuyFeedbackRequest) => postBuyFeedback(payload),
@@ -176,6 +213,8 @@ export function BuyOpportunityDetailPage() {
                       <DetailFact label="风险分" value={formatNumber(opportunity.riskScore)} />
                       <DetailFact label="首次识别" value={opportunity.firstDetectedAt ?? '-'} />
                       <DetailFact label="最近识别" value={opportunity.lastDetectedAt ?? '-'} />
+                      <DetailFact label="Schema" value={schemaTag} />
+                      <DetailFact label="指纹" value={fingerprintTag} />
                       <DetailFact label="基线匹配" value={opportunity.baselineMatchLevel ?? '-'} />
                       <DetailFact label="模板可用性" value={opportunity.templateAvailabilityTier ?? '-'} />
                       <DetailFact label="监控目标" value={detail.watchTarget?.targetName ?? '-'} />
@@ -186,6 +225,8 @@ export function BuyOpportunityDetailPage() {
                       <p>命中原因：{opportunity.explanation?.readinessSummary ?? '等待更多证据。'}</p>
                       <p>review gate：{opportunity.explanation?.reviewGateSummary ?? '-'} · spec gate：{opportunity.explanation?.specGateSummary ?? '-'}</p>
                       <p>合理价证据：{detail.baseline?.explanation?.readinessSummary ?? '当前没有额外基线解释。'}</p>
+                      {schemaTag || fingerprintTag ? <p>SKU 指纹：{[schemaTag, fingerprintTag].filter(Boolean).join(' · ')}</p> : null}
+                      {sampleStateLabel || sampleQualityLabel ? <p>样本状态：{[sampleStateLabel, sampleQualityLabel].filter(Boolean).join(' · ')}</p> : null}
                       {opportunity.decisionNote ? <p>最近备注：{opportunity.decisionNote}</p> : null}
                       {opportunity.feedbackSummary?.recordedAt ? (
                         <p>最近反馈：{opportunity.feedbackSummary.feedbackLabel ?? '-'} · {formatRelative(opportunity.feedbackSummary.recordedAt)}</p>
@@ -197,6 +238,19 @@ export function BuyOpportunityDetailPage() {
                         {opportunity.explanation.missingRequiredFields.map((fieldName) => (
                           <span className="soft-pill is-warning" key={fieldName}>
                             缺字段 {fieldName}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {schemaTag || fingerprintTag || sampleStateLabel || missingSampleAttrs.length ? (
+                      <div className="pill-row">
+                        {schemaTag ? <span className="soft-pill"><code>{schemaTag}</code></span> : null}
+                        {fingerprintTag ? <span className="soft-pill"><code>{fingerprintTag}</code></span> : null}
+                        {sampleStateLabel ? <span className="soft-pill">{sampleStateLabel}</span> : null}
+                        {missingSampleAttrs.map((fieldName) => (
+                          <span className="soft-pill is-warning" key={`sample-missing:${fieldName}`}>
+                            指纹缺 {fieldName}
                           </span>
                         ))}
                       </div>
@@ -417,7 +471,7 @@ export function BuyOpportunityDetailPage() {
                       <>
                         <div className="mini-card">
                           <strong>{detail.baseline.baselineKey}</strong>
-                          <small>样本 {formatNumber(detail.baseline.sampleSize)} · 置信度 {formatPercent((detail.baseline.confidence ?? 0) * 100, 1)}</small>
+                          <small>样本 {formatNumber(detail.baseline.sampleSize)} · 置信度 {formatPercent((detail.baseline.confidence ?? 0) * 100, 1)}{detail.baseline.schemaId ? ` · schema ${formatNumber(detail.baseline.schemaId)}` : ''}</small>
                           <small>合理价 {formatCurrency(detail.baseline.fairPrice)} · 买入线 {formatCurrency(detail.baseline.buyCeiling)}</small>
                         </div>
                         <p className="panel-subtitle">{detail.baseline.explanation?.readinessSummary ?? '当前没有更多基线解释。'}</p>

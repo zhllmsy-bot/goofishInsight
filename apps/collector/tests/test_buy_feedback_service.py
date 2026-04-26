@@ -14,7 +14,7 @@ from goofish_analyzer.services.buy_feedback import (
 from goofish_insight.application.services.buy_feedback import (
     record_buy_decision_feedback_with_session as collector_record_buy_decision_feedback_with_session,
 )
-from goofish_insight.models import BuyOpportunity
+from goofish_insight.models import BuyOpportunity, DecisionFeedbackLog
 
 
 class _FakeSession:
@@ -154,6 +154,10 @@ class BuyFeedbackServiceTests(unittest.TestCase):
         self.assertEqual(summary.get("feedbackAction"), "accept")
         self.assertEqual(summary.get("feedbackCategory"), "accepted_contacted")
         self.assertEqual(dict(summary.get("alertCandidateLinkage") or {}).get("status"), "created")
+        log_rows = [row for row in session.added if isinstance(row, DecisionFeedbackLog)]
+        self.assertEqual(len(log_rows), 1)
+        self.assertEqual(log_rows[0].feedback_action, "accept")
+        self.assertEqual(log_rows[0].opportunity_status, "CONTACTED")
 
     def test_record_engagement_feedback_preserves_decision_state(self) -> None:
         opportunity = BuyOpportunity(
@@ -187,6 +191,9 @@ class BuyFeedbackServiceTests(unittest.TestCase):
         engagement_summary = dict((opportunity.payload or {}).get("engagementSummary") or {})
         self.assertEqual(engagement_summary.get("feedbackAction"), "engage")
         self.assertEqual(engagement_summary.get("feedbackLabel"), "detail_opened")
+        log_rows = [row for row in session.added if isinstance(row, DecisionFeedbackLog)]
+        self.assertEqual(len(log_rows), 1)
+        self.assertEqual(log_rows[0].feedback_action, "engage")
 
     def test_record_feedback_rejects_invalid_decimal_input(self) -> None:
         opportunity = BuyOpportunity(

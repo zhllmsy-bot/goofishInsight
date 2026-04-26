@@ -31,6 +31,13 @@ class BuyDashboardServiceTests(unittest.TestCase):
                     "region": "上海",
                     "exact_spec_ready": True,
                     "spec_confidence": 0.88,
+                    "schema_id": 42,
+                    "sample_snapshot": {
+                        "schemaId": 42,
+                        "sampleState": "eligible",
+                        "fingerprintHash": "fp-abc12345",
+                        "sampleQualityScore": 0.93,
+                    },
                     "pricing_eligibility": {
                         "pricingReady": True,
                         "specSource": {"present": True, "extractorType": "hybrid", "isShadow": False, "pricingUsable": True},
@@ -41,6 +48,11 @@ class BuyDashboardServiceTests(unittest.TestCase):
                         "status": "complete",
                         "missingRequiredFields": [],
                     },
+                },
+                "feedbackSummary": {
+                    "feedbackAction": "watch",
+                    "feedbackLabel": "contacted",
+                    "recordedAt": "2026-04-26T03:00:00+00:00",
                 },
             },
         )
@@ -55,6 +67,9 @@ class BuyDashboardServiceTests(unittest.TestCase):
         self.assertEqual(payload["pricingEligibility"]["pricingReady"], True)
         self.assertEqual(payload["specSource"]["pricingUsable"], True)
         self.assertEqual(payload["specContract"]["status"], "complete")
+        self.assertEqual(payload["schemaId"], 42)
+        self.assertEqual(payload["sampleSnapshot"]["fingerprintHash"], "fp-abc12345")
+        self.assertEqual(payload["feedbackSummary"]["feedbackLabel"], "contacted")
         self.assertEqual(payload["explanation"]["readinessSummary"], "可直接按价格池口径判断")
         self.assertEqual(payload["explanation"]["reviewGateSummary"], "review ready")
         self.assertEqual(payload["explanation"]["specGateSummary"], "spec ready")

@@ -11,6 +11,9 @@ from goofish_insight.application.services.buy_side_calibration import (
     load_buy_side_calibration_config_with_session,
     resolve_buy_side_pricing_thresholds,
 )
+from goofish_insight.application.services.pricing_support import (
+    refresh_sku_neighbors_with_session,
+)
 
 from goofish_analyzer.adapters import (
     aggregate_pricing_view,
@@ -98,6 +101,7 @@ def build_buy_price_baselines_with_session(
     expected_keys: set[tuple[str | None, str]] = set()
     row_counts_by_view: dict[str, int] = {}
     expanded_views = _expand_views(normalized_view)
+    support_refresh: list[dict[str, Any]] = []
     for view_name in expanded_views:
         rows = aggregate_pricing_view(
             records=records,
@@ -130,6 +134,20 @@ def build_buy_price_baselines_with_session(
         baseline_key_prefixes=_view_prefixes(list(expanded_views)),
         expected_keys=expected_keys,
     )
+    schema_ids = sorted(
+        {
+            int(record["schema_id"])
+            for record in records
+            if record.get("schema_id") is not None
+        }
+    )
+    for schema_id in schema_ids:
+        support_refresh.append(
+            refresh_sku_neighbors_with_session(
+                session,
+                schema_id=schema_id,
+            )
+        )
     session.flush()
 
     return {
@@ -140,6 +158,7 @@ def build_buy_price_baselines_with_session(
         "candidateRecordCount": len(records),
         "baselineCountByView": row_counts_by_view,
         "baselineCount": len(changed_rows),
+        "supportRefresh": support_refresh,
         "items": [serialize_buy_price_baseline(row) for row in changed_rows],
     }
 
@@ -237,6 +256,11 @@ def upsert_buy_price_baseline_from_pricing_row(
             "schemaId": schema_id,
             "schemaSummary": dict(pricing_template.get("schemaSummary") or {}),
         },
+        "sampleFingerprint": {
+            "dominantFingerprintHash": _normalize_optional_string(pricing_row.get("dominant_fingerprint_hash")),
+            "fingerprintCount": _optional_int(pricing_row.get("sample_fingerprint_count")) or 0,
+            "sampleStateCounts": dict(pricing_row.get("sample_state_counts") or {}),
+        },
     }
     return row
 
@@ -310,6 +334,7 @@ def serialize_buy_price_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
         "confidenceReasons": list(pricing_row.get("confidence_reasons") or []),
         "baselineDate": row.baseline_date.isoformat() if row.baseline_date else None,
         "schemaSummary": dict((row.payload or {}).get("schema", {}).get("schemaSummary") or {}),
+        "sampleFingerprint": dict((row.payload or {}).get("sampleFingerprint") or {}),
         "explanation": build_buy_price_baseline_explanation(row),
         "payload": payload,
     }

@@ -157,6 +157,16 @@ describe('BuyWorkbenchPage', () => {
                         reviewGateSummary: '通过',
                         specGateSummary: '通过',
                       },
+                      schemaId: 42,
+                      sampleSnapshot: {
+                        schemaId: 42,
+                        sampleState: 'eligible',
+                        fingerprintHash: '1234abcdeffedcba',
+                      },
+                      feedbackSummary: {
+                        feedbackLabel: 'contacted',
+                        recordedAt: '2026-04-24T15:00:00+00:00',
+                      },
                       specContract: { status: 'complete' },
                     },
                   },
@@ -198,6 +208,16 @@ describe('BuyWorkbenchPage', () => {
                 reviewGateSummary: '通过',
                 specGateSummary: '通过',
               },
+              schemaId: 42,
+              sampleSnapshot: {
+                schemaId: 42,
+                sampleState: 'eligible',
+                fingerprintHash: '1234abcdeffedcba',
+              },
+              feedbackSummary: {
+                feedbackLabel: 'contacted',
+                recordedAt: '2026-04-24T15:00:00+00:00',
+              },
               specContract: { status: 'complete' },
             },
           ],
@@ -237,6 +257,9 @@ describe('BuyWorkbenchPage', () => {
     expect(screen.getByRole('heading', { name: '今日机会任务包' })).toBeInTheDocument();
     expect(screen.getByText(/把 OPEN 机会消化成反馈、联系、成交和 ROI 证据/)).toBeInTheDocument();
     expect(screen.getByText(/OPEN backlog 941 · 未入队 940/)).toBeInTheDocument();
+    expect(screen.getByText('schema 42')).toBeInTheDocument();
+    expect(screen.getByText('fp 1234abcd')).toBeInTheDocument();
+    expect(screen.getByText(/反馈 contacted/)).toBeInTheDocument();
 
     expect(screen.getByRole('link', { name: '前往市场大盘' })).toHaveAttribute(
       'href',

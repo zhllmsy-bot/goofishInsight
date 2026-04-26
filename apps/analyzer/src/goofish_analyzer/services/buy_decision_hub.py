@@ -968,7 +968,7 @@ def build_buy_opportunity_detail_with_session(
         **serialize_buy_workbench_opportunity(opportunity),
         "firstDetectedAt": opportunity.first_detected_at.isoformat() if opportunity.first_detected_at else None,
         "decisionNote": opportunity.decision_note,
-        "feedbackSummary": dict((opportunity.payload or {}).get("feedbackSummary") or {}),
+        "feedbackSummary": _serialize_feedback_summary(dict(opportunity.payload or {})),
         "matchedTemplateKey": (opportunity.payload or {}).get("matchedTemplateKey"),
         "matchedTemplateLabel": (opportunity.payload or {}).get("matchedTemplateLabel"),
         "matchedFieldValues": dict((opportunity.payload or {}).get("matchedFieldValues") or {}),
@@ -1065,21 +1065,22 @@ def build_buy_price_baselines_with_session(
 
 
 def serialize_buy_workbench_opportunity(row: BuyOpportunity) -> dict[str, Any]:
-    pricing_record = dict((row.payload or {}).get("pricing_record") or {})
+    payload = dict(row.payload or {})
+    pricing_record = dict(payload.get("pricing_record") or {})
     pricing_eligibility = dict(
         pricing_record.get("pricing_eligibility")
-        or (row.payload or {}).get("pricingEligibility")
+        or payload.get("pricingEligibility")
         or {}
     )
     spec_contract = dict(
         pricing_record.get("spec_contract")
-        or (row.payload or {}).get("specContract")
+        or payload.get("specContract")
         or {}
     )
     spec_source = dict(
         pricing_record.get("spec_source")
         or pricing_eligibility.get("specSource")
-        or (row.payload or {}).get("specSource")
+        or payload.get("specSource")
         or {}
     )
     normalized_status = normalize_opportunity_status(row.status)
@@ -1089,10 +1090,11 @@ def serialize_buy_workbench_opportunity(row: BuyOpportunity) -> dict[str, Any]:
         spec_contract=spec_contract,
         template_guidance_ready=_coerce_template_guidance_ready(
             normalized_status,
-            (row.payload or {}).get("templateGuidanceReady"),
+            payload.get("templateGuidanceReady"),
         ),
     )
     serialized_record = serialize_pricing_record(pricing_record)
+    feedback_summary = _serialize_feedback_summary(payload)
     return {
         "id": row.id,
         "itemIdRef": str(row.item_id_ref) if row.item_id_ref is not None else None,
@@ -1113,10 +1115,13 @@ def serialize_buy_workbench_opportunity(row: BuyOpportunity) -> dict[str, Any]:
         "pricingEligibility": pricing_eligibility,
         "specContract": spec_contract,
         "specSource": spec_source,
+        "schemaId": serialized_record.get("schemaId"),
+        "sampleSnapshot": dict(serialized_record.get("sampleSnapshot") or {}),
+        "feedbackSummary": feedback_summary,
         "explanation": explanation,
-        "baselineMatchLevel": (row.payload or {}).get("baseline_match_level"),
-        "baselineMatchKey": (row.payload or {}).get("baseline_match_key"),
-        "templateAvailabilityTier": (row.payload or {}).get("templateAvailabilityTier"),
+        "baselineMatchLevel": payload.get("baseline_match_level"),
+        "baselineMatchKey": payload.get("baseline_match_key"),
+        "templateAvailabilityTier": payload.get("templateAvailabilityTier"),
         "lastDetectedAt": row.last_detected_at.isoformat() if row.last_detected_at else None,
     }
 
@@ -1144,6 +1149,19 @@ def serialize_buy_workbench_baseline(row: BuyPriceBaseline) -> dict[str, Any]:
         "baselineDate": row.baseline_date.isoformat() if row.baseline_date else None,
         "schemaSummary": dict((row.payload or {}).get("schema", {}).get("schemaSummary") or {}),
         "explanation": explanation,
+    }
+
+
+def _serialize_feedback_summary(payload: dict[str, Any]) -> dict[str, Any]:
+    feedback_summary = dict(payload.get("feedbackSummary") or {})
+    return {
+        "feedbackAction": _normalize_optional_string(feedback_summary.get("feedbackAction")),
+        "feedbackCategory": _normalize_optional_string(feedback_summary.get("feedbackCategory")),
+        "feedbackLabel": _normalize_optional_string(feedback_summary.get("feedbackLabel")),
+        "operatorId": _normalize_optional_string(feedback_summary.get("operatorId")),
+        "feedbackNote": _normalize_optional_string(feedback_summary.get("feedbackNote")),
+        "recordedAt": _normalize_optional_string(feedback_summary.get("recordedAt")),
+        "alertCandidateLinkage": dict(feedback_summary.get("alertCandidateLinkage") or {}),
     }
 
 

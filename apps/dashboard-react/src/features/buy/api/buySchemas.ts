@@ -239,6 +239,29 @@ export const buyFeedbackCalibrationApplyResponseSchema = z.object({
   opportunityRefresh: z.record(z.string(), z.unknown()).nullable().optional(),
 }).passthrough();
 
+const feedbackSummarySchema = z.object({
+  feedbackAction: nullableStringSchema,
+  feedbackCategory: nullableStringSchema,
+  feedbackLabel: nullableStringSchema,
+  operatorId: nullableStringSchema,
+  feedbackNote: nullableStringSchema,
+  recordedAt: nullableStringSchema,
+  alertCandidateLinkage: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+const sampleSnapshotSchema = z.object({
+  sampleState: nullableStringSchema,
+  reviewReason: nullableStringSchema,
+  specReason: nullableStringSchema,
+  schemaId: nullableNumberSchema,
+  schemaCompleteness: z.record(z.string(), z.unknown()).optional(),
+  projection: z.record(z.string(), z.unknown()).optional(),
+  conditionMultiplier: nullableNumberSchema,
+  fingerprintHash: nullableStringSchema,
+  sampleQualityScore: nullableNumberSchema,
+  missingRequiredAttrs: z.array(z.string()).optional(),
+}).passthrough();
+
 export const buyOpportunitySchema = z.object({
   id: z.string(),
   itemIdRef: nullableStringSchema,
@@ -256,6 +279,9 @@ export const buyOpportunitySchema = z.object({
   riskScore: nullableNumberSchema,
   exactSpecReady: nullableBooleanSchema,
   specConfidence: nullableNumberSchema,
+  schemaId: nullableNumberSchema,
+  sampleSnapshot: sampleSnapshotSchema.optional(),
+  feedbackSummary: feedbackSummarySchema.optional(),
   baselineMatchLevel: nullableStringSchema,
   baselineMatchKey: nullableStringSchema,
   templateAvailabilityTier: nullableStringSchema,
@@ -320,17 +346,6 @@ const dailyOpportunityPackSchema = z.object({
 export const buyOpportunityDetailOpportunitySchema = buyOpportunitySchema.extend({
   firstDetectedAt: nullableStringSchema,
   decisionNote: nullableStringSchema,
-  feedbackSummary: z
-    .object({
-      feedbackAction: nullableStringSchema,
-      feedbackCategory: nullableStringSchema,
-      feedbackLabel: nullableStringSchema,
-      operatorId: nullableStringSchema,
-      feedbackNote: nullableStringSchema,
-      recordedAt: nullableStringSchema,
-      alertCandidateLinkage: z.record(z.string(), z.unknown()).optional(),
-    })
-    .optional(),
   matchedTemplateKey: nullableStringSchema,
   matchedTemplateLabel: nullableStringSchema,
   matchedFieldValues: z.record(z.string(), z.unknown()).optional(),
@@ -341,6 +356,7 @@ export const buyOpportunityDetailOpportunitySchema = buyOpportunitySchema.extend
 export const buyBaselineSchema = z.object({
   id: z.string(),
   baselineKey: z.string(),
+  schemaId: nullableNumberSchema,
   sampleSize: nullableNumberSchema,
   fairPrice: nullableNumberSchema,
   buyCeiling: nullableNumberSchema,

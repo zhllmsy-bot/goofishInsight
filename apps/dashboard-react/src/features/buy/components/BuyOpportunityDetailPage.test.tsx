@@ -39,6 +39,13 @@ describe('BuyOpportunityDetailPage', () => {
             riskScore: 9,
             firstDetectedAt: '2026-04-24T01:00:00+00:00',
             lastDetectedAt: '2026-04-24T02:00:00+00:00',
+            schemaId: 42,
+            sampleSnapshot: {
+              schemaId: 42,
+              sampleState: 'eligible',
+              fingerprintHash: '1234abcdeffedcba',
+              sampleQualityScore: 0.92,
+            },
             explanation: {
               readinessSummary: '可以买',
               reviewGateSummary: '通过',
@@ -92,6 +99,8 @@ describe('BuyOpportunityDetailPage', () => {
     expect(screen.getByText(/提醒 1 · 打开 1 · 联系 1 · 成交 1/)).toBeInTheDocument();
     expect(screen.getByText(/买入价 ¥6,800 · 预估转售价 ¥7,600/)).toBeInTheDocument();
     expect(screen.getByText(/预估利润 ¥800 · ROI 11.8%/)).toBeInTheDocument();
+    expect(screen.getByText(/SKU 指纹：schema 42 · fp 1234abcd/)).toBeInTheDocument();
+    expect(screen.getByText(/样本状态：样本可用 · Q 0.92/)).toBeInTheDocument();
     await waitFor(() => {
       const engagementCall = fetchMock.mock.calls.find(([, callInit]) => {
         if (callInit?.method !== 'POST') {

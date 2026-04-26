@@ -206,6 +206,43 @@ function baselineSampleLabel(opportunity: BuyOpportunity, evidence: BaselineEvid
   return `n=${sampleSize === null ? '--' : formatNumber(sampleSize)} · ${opportunityTier(opportunity)}`;
 }
 
+function schemaTag(opportunity: BuyOpportunity): string | null {
+  const schemaId = numeric(opportunity.schemaId);
+  return schemaId === null ? null : `schema ${formatNumber(schemaId)}`;
+}
+
+function fingerprintTag(opportunity: BuyOpportunity): string | null {
+  const fingerprint = opportunity.sampleSnapshot?.fingerprintHash?.trim();
+  if (!fingerprint) {
+    return null;
+  }
+  return `fp ${fingerprint.slice(0, 8)}`;
+}
+
+function sampleStateLabel(opportunity: BuyOpportunity): string | null {
+  switch (opportunity.sampleSnapshot?.sampleState) {
+    case 'eligible':
+      return '样本可用';
+    case 'missing_required_attrs':
+      return '指纹缺字段';
+    case 'condition_unknown':
+      return '成色待判';
+    case 'rejected':
+      return '样本已挡';
+    default:
+      return null;
+  }
+}
+
+function feedbackTag(opportunity: BuyOpportunity): string | null {
+  const label = opportunity.feedbackSummary?.feedbackLabel?.trim();
+  if (!label) {
+    return null;
+  }
+  const recordedAt = formatCompactRelative(opportunity.feedbackSummary?.recordedAt);
+  return recordedAt === '-' ? `反馈 ${label}` : `反馈 ${label} ${recordedAt}`;
+}
+
 function isTextEditingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) {
     return false;
@@ -985,7 +1022,10 @@ function OpportunityRow(props: {
     sellerLabel,
     props.row.valueSignals?.[0] ?? opportunity.explanation?.readinessSummary ?? '95%new',
     baselineSampleLabel(opportunity, props.baselineEvidence),
-  ].join(' · ');
+    sampleStateLabel(opportunity),
+    feedbackTag(opportunity),
+  ].filter((value): value is string => Boolean(value)).join(' · ');
+  const metadataPills = [schemaTag(opportunity), fingerprintTag(opportunity)].filter((value): value is string => Boolean(value));
   const rowClassName = [
     'desk-opportunity-row',
     props.isSelected ? 'is-selected' : '',
@@ -1016,6 +1056,11 @@ function OpportunityRow(props: {
       <div className="desk-row-main">
         <div className="desk-row-title-line">
           <h3 title={title}>{title}</h3>
+          {metadataPills.map((pill) => (
+            <span className="soft-pill" key={pill}>
+              <code>{pill}</code>
+            </span>
+          ))}
         </div>
         <p className="desk-row-note" title={signalLine}>{signalLine}</p>
       </div>
@@ -1152,6 +1197,12 @@ function OpportunityDetailSheet(props: {
   const confidenceLabel = confidence === null
     ? 'confidence --'
     : `confidence ${confidence <= 1 ? confidence.toFixed(2) : (confidence / 100).toFixed(2)}`;
+  const detailMetaLine = [schemaTag(opportunity), fingerprintTag(opportunity)].filter((value): value is string => Boolean(value)).join(' · ') || 'Opportunity evidence';
+  const evidenceChips = [
+    sampleStateLabel(opportunity),
+    feedbackTag(opportunity),
+    ...((opportunity.sampleSnapshot?.missingRequiredAttrs ?? []).map((fieldName) => `缺 ${fieldName}`)),
+  ].filter((value): value is string => Boolean(value));
 
   return (
     <Sheet open={props.isOpen} onOpenChange={(open) => {
@@ -1161,9 +1212,7 @@ function OpportunityDetailSheet(props: {
     }}>
       <SheetContent side="right" className="buy-detail-sheet">
         <SheetHeader className="detail-sheet-header">
-          <SheetDescription className="detail-breadcrumb">
-            Apple › MacBook Pro 14 › M3 Max › 16C/40G 64G/1T
-          </SheetDescription>
+          <SheetDescription className="detail-breadcrumb">{detailMetaLine}</SheetDescription>
           <SheetTitle className="detail-title" title={title}>{title}</SheetTitle>
         </SheetHeader>
 
@@ -1197,17 +1246,16 @@ function OpportunityDetailSheet(props: {
         </section>
 
         <section className="detail-condition-block">
-          <h3>Condition</h3>
+          <h3>Evidence</h3>
           <div className="detail-chip-row">
-            <span>95% new</span>
-            <span>有原包</span>
-            <span>no repair</span>
-            <span>seller 0.92</span>
+            {evidenceChips.length ? evidenceChips.map((chip) => (
+              <span key={chip}>{chip}</span>
+            )) : <span>等待更多结构化证据</span>}
           </div>
         </section>
 
         <section className="detail-baseline-block">
-          <h3>Baseline · Tier {opportunityTier(opportunity)} · {sampleLabel} · Schema v3</h3>
+          <h3>Baseline · Tier {opportunityTier(opportunity)} · {sampleLabel}{schemaTag(opportunity) ? ` · ${schemaTag(opportunity)}` : ''}</h3>
           <div className="detail-baseline-grid">
             <div>
               <span>P15</span>
@@ -1222,7 +1270,7 @@ function OpportunityDetailSheet(props: {
               <strong data-number>{formatYuan(p50)}</strong>
             </div>
           </div>
-          <p>MAD ±¥680 · {confidenceLabel}</p>
+          <p>MAD ±¥680 · {confidenceLabel}{fingerprintTag(opportunity) ? ` · ${fingerprintTag(opportunity)}` : ''}</p>
         </section>
 
         <section className="detail-actions-block">

@@ -553,6 +553,8 @@ class PricingFilterTests(unittest.TestCase):
 
         self.assertEqual(snapshot_a.sample_state, "eligible")
         self.assertNotEqual(snapshot_a.fingerprint_hash, snapshot_b.fingerprint_hash)
+        self.assertEqual(snapshot_a.sample_payload["schemaId"], 11)
+        self.assertEqual(snapshot_a.sample_payload["sampleQualityScore"], snapshot_a.sample_quality_score)
 
     def test_build_pricing_sample_snapshot_marks_missing_required_attrs(self) -> None:
         now = datetime.now(UTC)
@@ -619,6 +621,84 @@ class PricingFilterTests(unittest.TestCase):
         self.assertEqual(snapshot.sample_state, "missing_required_attrs")
         self.assertIn("storage_gb", snapshot.missing_required_attrs)
         self.assertIsNotNone(snapshot.fingerprint_hash)
+        self.assertEqual(snapshot.sample_payload["missingRequiredAttrs"], ["storage_gb"])
+
+    def test_build_pricing_sample_snapshot_prefers_configured_condition_adjuster(self) -> None:
+        now = datetime.now(UTC)
+        item = SimpleNamespace(
+            id=4,
+            item_id="sample-adjuster-1",
+            source_platform="xianyu",
+            business_domain="apple_computer",
+            resolved_category_id=None,
+            target_category_id=None,
+            resolved_template_id=None,
+            seller_profile_id=None,
+            title="MacBook Pro M3 Max 36G 1T 自用",
+            region="Shanghai",
+            listing_url="https://example.com/item/4",
+            current_price=Decimal("11888"),
+            last_seen_at=now,
+            publish_time=now - timedelta(days=1),
+            first_seen_at=now - timedelta(days=2),
+            normalized_brand="Apple",
+            normalized_model_family="MacBook Pro",
+            normalized_model="MacBook Pro M3 Max",
+            normalized_chip="M3 Max",
+            normalized_memory_gb=36,
+            normalized_storage_gb=1024,
+            condition_tags=["轻微使用痕迹"],
+            source_keyword=None,
+            llm_reviewed=True,
+            llm_review_status="valid",
+            llm_review_needs_audit=False,
+            llm_review_confidence=Decimal("0.9900"),
+        )
+        spec = SimpleNamespace(
+            category_id="cat-apple",
+            template_id="tpl-apple",
+            model_catalog_id="catalog-1",
+            extractor_type="hybrid",
+            confidence=Decimal("0.91"),
+            status="complete",
+            brand="Apple",
+            product_line="MacBook Pro",
+            model_family="MacBook Pro",
+            model_name="MacBook Pro M3 Max",
+            display_type=None,
+            case_size_mm=None,
+            is_solar=None,
+            screen_size_in=None,
+            chip_family="M3 Max",
+            cpu_cores=None,
+            gpu_cores=None,
+            memory_gb=36,
+            storage_gb=1024,
+        )
+        schema = {
+            "schemaId": 21,
+            "categoryCode": "apple_computer",
+            "lockingAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "requiredAttrs": ["product_line", "chip_family", "memory_gb", "storage_gb"],
+            "variantAttrs": ["screen_size_in"],
+        }
+        adjuster = SimpleNamespace(
+            condition_code="light_wear",
+            condition_label="Light Wear",
+            match_tokens=["轻微使用痕迹"],
+            multiplier=Decimal("0.910"),
+        )
+
+        snapshot = build_pricing_sample_snapshot(
+            item=item,
+            spec=spec,
+            spec_schema=schema,
+            condition_adjusters=[adjuster],
+        )
+
+        self.assertEqual(snapshot.sample_payload["conditionCode"], "light_wear")
+        self.assertEqual(snapshot.sample_payload["conditionSource"], "configured")
+        self.assertEqual(snapshot.condition_multiplier, Decimal("0.910"))
 
     def test_build_pricing_sample_coverage_report_summarizes_sample_states(self) -> None:
         now = datetime.now(UTC)

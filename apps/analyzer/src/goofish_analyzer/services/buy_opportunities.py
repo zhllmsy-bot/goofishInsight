@@ -12,6 +12,10 @@ from goofish_insight.application.services.buy_side_calibration import (
     load_buy_side_calibration_config_with_session,
     resolve_buy_side_scoring_config,
 )
+from goofish_insight.application.services.pricing_support import (
+    load_msrp_anchors_by_key_with_session,
+    load_sku_neighbor_hashes_by_source_with_session,
+)
 
 from goofish_analyzer.adapters import (
     build_pricing_record_template_snapshot,
@@ -105,12 +109,24 @@ def refresh_buy_opportunities_with_session(
             "items": [],
         }
 
-    baselines = _load_baselines_by_key(
+    baseline_rows = _load_baseline_rows(
         session,
         category_id=str(category.id),
         baseline_date=baseline_date,
     )
-    if not baselines:
+    baselines = _index_baselines_by_key(baseline_rows)
+    baseline_fingerprints = _index_baselines_by_fingerprint(baseline_rows)
+    schema_ids = {int(row.schema_id) for row in baseline_rows if row.schema_id is not None}
+    neighbor_hashes_by_source = load_sku_neighbor_hashes_by_source_with_session(
+        session,
+        schema_ids=schema_ids,
+    )
+    msrp_anchors = load_msrp_anchors_by_key_with_session(
+        session,
+        scope_key=normalized_category_code,
+        as_of=baseline_date,
+    )
+    if not baselines and not msrp_anchors:
         return {
             "dryRun": False,
             "categoryCode": normalized_category_code,
@@ -151,9 +167,13 @@ def refresh_buy_opportunities_with_session(
         if watch_target is None:
             skipped["no_watch_target_match"] += 1
             continue
-        baseline_match = select_best_baseline_for_pricing_record(
+        baseline_match = select_best_available_baseline_for_pricing_record(
             record=record,
             baselines_by_key=baselines,
+            baselines_by_fingerprint=baseline_fingerprints,
+            neighbor_hashes_by_source=neighbor_hashes_by_source,
+            msrp_anchors_by_key=msrp_anchors,
+            category_id=str(category.id),
         )
         if baseline_match is None:
             skipped["no_baseline_match"] += 1
@@ -343,6 +363,49 @@ def select_best_baseline_for_pricing_record(
             candidate = baselines_by_key.get((lookup_model_id, baseline_key))
             if candidate is not None:
                 return candidate, _normalized_baseline_match_level(match_level), baseline_key
+    return None
+
+
+def select_best_available_baseline_for_pricing_record(
+    *,
+    record: dict[str, Any],
+    baselines_by_key: dict[tuple[str | None, str], BuyPriceBaseline],
+    baselines_by_fingerprint: dict[str, BuyPriceBaseline] | None = None,
+    neighbor_hashes_by_source: dict[str, list[str]] | None = None,
+    msrp_anchors_by_key: dict[tuple[str | None, str], Any] | None = None,
+    category_id: str | None = None,
+) -> tuple[BuyPriceBaseline, str, str] | None:
+    direct = select_best_baseline_for_pricing_record(
+        record=record,
+        baselines_by_key=baselines_by_key,
+    )
+    if direct is not None:
+        return direct
+
+    sample_snapshot = dict(record.get("sample_snapshot") or {})
+    fingerprint_hash = _normalize_optional_string(sample_snapshot.get("fingerprintHash"))
+    if fingerprint_hash and baselines_by_fingerprint:
+        direct_fingerprint = baselines_by_fingerprint.get(fingerprint_hash)
+        if direct_fingerprint is not None:
+            return direct_fingerprint, "fingerprint", f"fingerprint:{fingerprint_hash}"
+        for neighbor_hash in list((neighbor_hashes_by_source or {}).get(fingerprint_hash) or []):
+            candidate = baselines_by_fingerprint.get(str(neighbor_hash))
+            if candidate is not None:
+                return candidate, "neighbor_fingerprint", f"fingerprint:{neighbor_hash}"
+
+    if msrp_anchors_by_key:
+        model_catalog_id = _normalize_optional_string(record.get("model_catalog_id"))
+        for _match_level, baseline_key in baseline_keys_for_pricing_record(record):
+            for lookup_model_id in (model_catalog_id, None):
+                anchor = msrp_anchors_by_key.get((lookup_model_id, baseline_key))
+                if anchor is None:
+                    continue
+                synthetic = _synthetic_baseline_from_msrp_anchor(
+                    anchor=anchor,
+                    category_id=category_id,
+                    record=record,
+                )
+                return synthetic, "msrp_anchor", baseline_key
     return None
 
 
@@ -662,6 +725,53 @@ def risk_findings_for_opportunity(
     return findings
 
 
+def _synthetic_baseline_from_msrp_anchor(
+    *,
+    anchor: Any,
+    category_id: str | None,
+    record: dict[str, Any],
+) -> BuyPriceBaseline:
+    msrp_price = _optional_decimal(getattr(anchor, "msrp_price", None))
+    if msrp_price is None or msrp_price <= 0:
+        raise BuyOpportunityError(f"Invalid MSRP anchor price for key: {getattr(anchor, 'anchor_key', None)}")
+    buy_ceiling_ratio = _optional_decimal(getattr(anchor, "buy_ceiling_ratio", None)) or Decimal("0.8200")
+    buy_ceiling = (msrp_price * buy_ceiling_ratio).quantize(Decimal("0.01"))
+    scope_key = _normalize_optional_string(getattr(anchor, "scope_key", None))
+    return BuyPriceBaseline(
+        id=f"msrp-anchor:{getattr(anchor, 'id', 'synthetic')}",
+        category_id=str(category_id or record.get("category_id") or ""),
+        model_catalog_id=_normalize_optional_string(getattr(anchor, "model_catalog_id", None))
+        or _normalize_optional_string(record.get("model_catalog_id")),
+        schema_id=_optional_int(getattr(anchor, "schema_id", None) or record.get("schema_id")),
+        baseline_key=_normalize_optional_string(getattr(anchor, "anchor_key", None)) or "msrp:unknown",
+        baseline_date=getattr(anchor, "effective_from", None) or date.today(),
+        sample_size=0,
+        median_price=msrp_price,
+        fair_price=msrp_price,
+        buy_ceiling=buy_ceiling,
+        confidence=Decimal("0.3500"),
+        payload={
+            "source": "msrp_anchor",
+            "pricingTemplate": {
+                "templateKey": None,
+                "templateLabel": scope_key,
+                "availability": {
+                    "availabilityTier": "reference_only",
+                    "pricingBlockReason": "msrp_anchor_only",
+                },
+            },
+            "msrpAnchor": {
+                "anchorId": getattr(anchor, "id", None),
+                "anchorKey": getattr(anchor, "anchor_key", None),
+                "scopeKey": scope_key,
+                "sourceLabel": _normalize_optional_string(getattr(anchor, "source_label", None)),
+                "currencyCode": _normalize_optional_string(getattr(anchor, "currency_code", None)) or "CNY",
+                "buyCeilingRatio": _decimal_to_float(buy_ceiling_ratio),
+            },
+        },
+    )
+
+
 def _load_watch_targets(session: Session, *, category_id: str) -> list[BuyWatchTarget]:
     return list(
         session.execute(
@@ -674,20 +784,20 @@ def _load_watch_targets(session: Session, *, category_id: str) -> list[BuyWatchT
     )
 
 
-def _load_baselines_by_key(
+def _load_baseline_rows(
     session: Session,
     *,
     category_id: str,
     baseline_date: date | None,
-) -> dict[tuple[str | None, str], BuyPriceBaseline]:
+) -> list[BuyPriceBaseline]:
     target_date = baseline_date
     if target_date is None:
         target_date = session.execute(
             select(func.max(BuyPriceBaseline.baseline_date)).where(BuyPriceBaseline.category_id == category_id)
         ).scalar_one_or_none()
     if target_date is None:
-        return {}
-    rows = list(
+        return []
+    return list(
         session.execute(
             select(BuyPriceBaseline)
             .where(BuyPriceBaseline.category_id == category_id)
@@ -696,6 +806,11 @@ def _load_baselines_by_key(
         .scalars()
         .all()
     )
+
+
+def _index_baselines_by_key(
+    rows: list[BuyPriceBaseline],
+) -> dict[tuple[str | None, str], BuyPriceBaseline]:
     indexed: dict[tuple[str | None, str], BuyPriceBaseline] = {}
     for row in rows:
         model_catalog_id = _normalize_optional_string(row.model_catalog_id)
@@ -707,6 +822,18 @@ def _load_baselines_by_key(
     return indexed
 
 
+def _index_baselines_by_fingerprint(
+    rows: list[BuyPriceBaseline],
+) -> dict[str, BuyPriceBaseline]:
+    indexed: dict[str, BuyPriceBaseline] = {}
+    for row in rows:
+        sample_fingerprint = dict((row.payload or {}).get("sampleFingerprint") or {})
+        fingerprint_hash = _normalize_optional_string(sample_fingerprint.get("dominantFingerprintHash"))
+        if fingerprint_hash and fingerprint_hash not in indexed:
+            indexed[fingerprint_hash] = row
+    return indexed
+
+
 def classify_buy_opportunity_status(
     *,
     match_level: str,
@@ -715,7 +842,7 @@ def classify_buy_opportunity_status(
 ) -> str:
     if not is_price_template_opportunity_enabled():
         return "OPEN"
-    if match_level in {"degraded_product", "degraded_brand"}:
+    if match_level in {"degraded_product", "degraded_brand", "neighbor_fingerprint", "msrp_anchor"}:
         return "REFERENCE_ONLY"
     if not _normalize_optional_string(matched_template_key):
         return "REFERENCE_ONLY"
@@ -736,6 +863,10 @@ def template_match_error_type_for_context(
         return "degraded_product_match"
     if match_level == "degraded_brand":
         return "degraded_brand_match"
+    if match_level == "neighbor_fingerprint":
+        return "neighbor_fingerprint_match"
+    if match_level == "msrp_anchor":
+        return "msrp_anchor_reference"
     if not _normalize_optional_string(matched_template_key):
         return "missing_template_key"
     normalized_tier = _normalize_optional_string(template_availability_tier)
@@ -755,7 +886,7 @@ def _effective_template_availability_tier(
     )
     if not is_price_template_opportunity_enabled():
         return raw_tier or "guidance_ready"
-    if match_level in {"degraded_product", "degraded_brand"}:
+    if match_level in {"degraded_product", "degraded_brand", "neighbor_fingerprint", "msrp_anchor"}:
         return "reference_only"
     if not _normalize_optional_string(matched_template_key):
         return "reference_only"
@@ -878,6 +1009,7 @@ __all__ = [
     "refresh_buy_opportunities",
     "refresh_buy_opportunities_with_session",
     "risk_findings_for_opportunity",
+    "select_best_available_baseline_for_pricing_record",
     "select_best_baseline_for_pricing_record",
     "select_watch_target_for_pricing_record",
     "serialize_buy_opportunity",

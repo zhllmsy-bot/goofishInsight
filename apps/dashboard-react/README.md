@@ -4,12 +4,12 @@
 
 ## 当前职责
 
-- 提供机会优先的主入口：优先处理 `/buy/opportunities` 机会队列，再回到首页证据看板核验
-- 提供 React 版看板首页 `/`
-- 提供 LLM DevOps 页面 `/llm-devops`
-- 提供运行控制页面 `/runtime`
+- 提供机会优先的主入口：`/` 直接打开今日机会工作台
+- 提供 React 版市场大盘 `/market`
+- 提供 LLM 运维页面 `/ops/llm`
+- 提供运行控制页面 `/ops/runtime`
 - 提供多 Agent 观测页面 `/agent-harness`
-- 提供买方工作台 `/buy/opportunities`
+- 提供兼容跳转：`/buy/opportunities`、`/llm-devops`、`/runtime` 会重定向到当前主路由
 - 通过 URL 保存当前工作区上下文，例如 `category_code`、`product_label`、`spec_label`
 
 ## 依赖的后端模式
@@ -63,6 +63,6 @@ src/
 ## 当前边界
 
 - React 前端负责工作流与可视化，不承担采集、价格计算或任务编排
-- `/` 首页现在定位为“证据看板”，`/buy/opportunities` 才是面向操作者的主动作页
-- 历史 Jinja 页面仍然存在，部分跳转会回落到旧页面
+- `/` 是买方主决策入口，`/market` 才是市场证据看板
+- 历史 Jinja 页面仍然存在，但只保留运维/配置/support 边界，不再承担主产品路径
 - URL 中只保存工作区语境，不把复杂服务端状态放进前端 store

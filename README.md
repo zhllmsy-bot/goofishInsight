@@ -118,10 +118,24 @@ python -m goofish_insight.cli serve-web --host 127.0.0.1 --port 8787
 npm run verify-baseline
 ```
 
+## Buy Jobs 与冷启动兜底
+
+- `python -m goofish_insight.cli queue-enrich-specs --business-domain apple_computer`
+- `python -m goofish_insight.cli queue-buy-baselines --category-code apple_computer`
+- `python -m goofish_insight.cli queue-buy-opportunities --category-code apple_computer`
+- `python -m goofish_insight.cli process-buy-jobs --no-dry-run`
+
+买方链路现在会持久化 `condition_adjusters / sku_neighbors / msrp_anchors / decision_feedback_log`：
+
+- `condition_adjusters` 允许按品类配置成色 multiplier，并在无配置时回退启发式。
+- `sku_neighbors` 为冷启动 SKU 提供邻近指纹回退。
+- `msrp_anchors` 在基线缺失时提供 reference-only MSRP 锚点。
+- `decision_feedback_log` 记录反馈闭环事件，连同 schema / fingerprint / baseline 证据一起落库。
+
 ## Dashboard 运行口径
 
-- `python -m goofish_insight.cli serve-web` 启动的是 `apps/collector` 的 FastAPI/Jinja 运维看板，默认端口 `8787`。
-- `apps/dashboard-react` 是主 React 工作台，主链路可直连 FastAPI，也可按部署配置回退到 Nest BFF。
+- `python -m goofish_insight.cli serve-web` 启动的是 `apps/collector` 的 FastAPI 入口，既承载 React shell，也继续承载少量 legacy Jinja 运维/配置页，默认端口 `8787`。
+- `apps/dashboard-react` 是主 React 工作台；当前路由口径是 `/` 直达今日机会台，`/market` 回到市场大盘，`/ops/*` 收敛运行与 LLM 观测页。
 - `apps/dashboard-nest` 当前承担静态托管与 BFF 回退层角色，不是本地运维看板主入口。
 
 ## Spec Enrichment

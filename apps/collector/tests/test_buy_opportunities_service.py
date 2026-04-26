@@ -10,6 +10,7 @@ from goofish_insight.application.services.buy_opportunities import (
     classify_buy_opportunity_status,
     compute_opportunity_metrics,
     risk_findings_for_opportunity,
+    select_best_available_baseline_for_pricing_record,
     serialize_buy_opportunity,
     select_best_baseline_for_pricing_record,
     select_watch_target_for_pricing_record,
@@ -199,6 +200,74 @@ class BuyOpportunityServiceTests(unittest.TestCase):
             match_key,
             "template:apple_computer|model_name=MacBook Pro / M5|chip_family=M5|memory_gb=16|storage_gb=512",
         )
+
+    def test_select_best_available_baseline_uses_neighbor_fingerprint_fallback(self) -> None:
+        neighbor_baseline = BuyPriceBaseline(
+            id="baseline-neighbor",
+            category_id="cat-apple",
+            baseline_key="spec:MacBook Pro / M5 / 16G / 512G",
+            baseline_date=date(2026, 4, 8),
+            sample_size=4,
+            fair_price=Decimal("9000"),
+            buy_ceiling=Decimal("8200"),
+        )
+
+        result = select_best_available_baseline_for_pricing_record(
+            record={
+                "sample_snapshot": {"fingerprintHash": "fp-source"},
+                "spec_label": "MacBook Pro / M5 / 24G / 512G",
+                "product_label": "MacBook Pro / M5",
+                "brand": "Apple",
+            },
+            baselines_by_key={},
+            baselines_by_fingerprint={"fp-neighbor": neighbor_baseline},
+            neighbor_hashes_by_source={"fp-source": ["fp-neighbor"]},
+            category_id="cat-apple",
+        )
+
+        self.assertIsNotNone(result)
+        baseline, match_level, match_key = result
+        self.assertIs(baseline, neighbor_baseline)
+        self.assertEqual(match_level, "neighbor_fingerprint")
+        self.assertEqual(match_key, "fingerprint:fp-neighbor")
+
+    def test_select_best_available_baseline_uses_msrp_anchor_fallback(self) -> None:
+        anchor = type(
+            "Anchor",
+            (),
+            {
+                "id": "anchor-1",
+                "scope_key": "apple_computer",
+                "anchor_key": "product:MacBook Pro / M5",
+                "msrp_price": Decimal("12999"),
+                "buy_ceiling_ratio": Decimal("0.8000"),
+                "model_catalog_id": None,
+                "schema_id": 42,
+                "source_label": "manual_seed",
+                "currency_code": "CNY",
+                "effective_from": date(2026, 4, 1),
+            },
+        )()
+
+        result = select_best_available_baseline_for_pricing_record(
+            record={
+                "category_id": "cat-apple",
+                "schema_id": 42,
+                "product_label": "MacBook Pro / M5",
+                "brand": "Apple",
+            },
+            baselines_by_key={},
+            msrp_anchors_by_key={(None, "product:MacBook Pro / M5"): anchor},
+            category_id="cat-apple",
+        )
+
+        self.assertIsNotNone(result)
+        baseline, match_level, match_key = result
+        self.assertEqual(match_level, "msrp_anchor")
+        self.assertEqual(match_key, "product:MacBook Pro / M5")
+        self.assertEqual(baseline.sample_size, 0)
+        self.assertEqual(baseline.fair_price, Decimal("12999"))
+        self.assertEqual(baseline.buy_ceiling, Decimal("10399.20"))
 
     def test_select_watch_target_prefers_specific_match(self) -> None:
         generic = BuyWatchTarget(

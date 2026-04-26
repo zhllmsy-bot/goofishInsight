@@ -1,26 +1,15 @@
-# Web (Legacy Template Layer)
+# apps/web
 
-**Status**: Legacy — `apps/web` is the Jinja2 template and static asset layer for the internal dashboard, not the primary React workbench.
+`apps/web` 现在是 legacy Jinja 支持面，不是产品主路径。
 
-## What This Is
+当前保留范围：
 
-- Jinja2 templates and static assets served by `apps/collector` FastAPI
-- Fallback for legacy page navigation
-- Does not contain business logic or React components
+- 运维与配置页
+- 少量历史详情页和进度页
+- 仍被 `serve-web` 承载的模板与静态资产
 
-## Primary Workbench
+约束：
 
-The current main operational workbench is **`apps/dashboard-react`**, not `apps/web`.
-
-## Current Capability
-
-- Legacy dashboard pages served via FastAPI+Jinja2
-- Served at `http://127.0.0.1:8787` via `python -m goofish_insight.cli serve-web`
-
-## Local Start
-
-```bash
-python -m goofish_insight.cli serve-web --host 127.0.0.1 --port 8787
-```
-
-Open [http://127.0.0.1:8787](http://127.0.0.1:8787).
+- 新的买方主流程优先落到 `apps/dashboard-react`
+- 不再把 Jinja 页面当作首页、机会主队列或新功能默认落点
+- 如果继续保留，必须明确 support/admin 边界；否则进入归档候选

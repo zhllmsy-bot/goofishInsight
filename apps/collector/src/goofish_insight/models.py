@@ -547,6 +547,68 @@ class ItemSample(TimestampMixin, Base):
     sku_fingerprint: Mapped["SkuFingerprint"] = relationship(back_populates="samples")
 
 
+class ConditionAdjuster(TimestampMixin, Base):
+    __tablename__ = "condition_adjusters"
+    __table_args__ = (
+        UniqueConstraint("scope_key", "condition_code", name="uq_condition_adjuster_scope_code"),
+        Index("ix_condition_adjuster_scope_status", "scope_key", "status", "priority"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    scope_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    condition_code: Mapped[str] = mapped_column(String(32), nullable=False)
+    condition_label: Mapped[str | None] = mapped_column(String(64))
+    match_tokens: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    multiplier: Mapped[Decimal] = mapped_column(Numeric(6, 3), nullable=False)
+    priority: Mapped[int] = mapped_column(Integer, nullable=False, default=100)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="ACTIVE")
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+
+
+class SkuNeighbor(TimestampMixin, Base):
+    __tablename__ = "sku_neighbors"
+    __table_args__ = (
+        UniqueConstraint("sku_fingerprint_id", "neighbor_fingerprint_id", name="uq_sku_neighbor_pair"),
+        Index("ix_sku_neighbor_lookup", "sku_fingerprint_id", "neighbor_rank"),
+        Index("ix_sku_neighbor_schema", "schema_id", "neighbor_rank"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    schema_id: Mapped[int] = mapped_column(ForeignKey("sku_spec_schema_snapshots.schema_id"), nullable=False)
+    sku_fingerprint_id: Mapped[int] = mapped_column(ForeignKey("sku_fingerprints.id"), nullable=False)
+    neighbor_fingerprint_id: Mapped[int] = mapped_column(ForeignKey("sku_fingerprints.id"), nullable=False)
+    neighbor_rank: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    similarity_score: Mapped[Decimal] = mapped_column(Numeric(6, 4), nullable=False)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+
+
+class MsrpAnchor(TimestampMixin, Base):
+    __tablename__ = "msrp_anchors"
+    __table_args__ = (
+        UniqueConstraint(
+            "scope_key",
+            "model_catalog_id",
+            "schema_id",
+            "anchor_key",
+            name="uq_msrp_anchor_scope_model_schema_key",
+        ),
+        Index("ix_msrp_anchor_scope_status", "scope_key", "status"),
+    )
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    scope_key: Mapped[str] = mapped_column(String(64), nullable=False)
+    model_catalog_id: Mapped[str | None] = mapped_column(ForeignKey("category_model_catalog.id"))
+    schema_id: Mapped[int | None] = mapped_column(ForeignKey("sku_spec_schema_snapshots.schema_id"))
+    anchor_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    msrp_price: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
+    buy_ceiling_ratio: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))
+    currency_code: Mapped[str] = mapped_column(String(8), nullable=False, default="CNY")
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="ACTIVE")
+    source_label: Mapped[str] = mapped_column(String(64), nullable=False, default="manual")
+    effective_from: Mapped[date | None] = mapped_column(Date)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+
+
 class ItemSpecEnrichment(TimestampMixin, Base):
     __tablename__ = "item_spec_enrichments"
     __table_args__ = (
@@ -869,6 +931,39 @@ class BuyDecisionFeedback(TimestampMixin, Base):
     feedback_note: Mapped[str | None] = mapped_column(Text)
     purchase_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
     expected_resale_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+
+
+class DecisionFeedbackLog(Base):
+    __tablename__ = "decision_feedback_log"
+    __table_args__ = (
+        UniqueConstraint("feedback_id", name="uq_decision_feedback_log_feedback"),
+        Index("ix_decision_feedback_log_opportunity_time", "opportunity_id", "recorded_at"),
+        Index("ix_decision_feedback_log_scope_time", "scope_key", "recorded_at"),
+    )
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    feedback_id: Mapped[str] = mapped_column(ForeignKey("buy_decision_feedback.id"), nullable=False)
+    opportunity_id: Mapped[str] = mapped_column(ForeignKey("buy_opportunity.id"), nullable=False)
+    item_id_ref: Mapped[int | None] = mapped_column(ForeignKey("items.id"))
+    category_id: Mapped[str | None] = mapped_column(ForeignKey("category.id"))
+    scope_key: Mapped[str | None] = mapped_column(String(64))
+    model_catalog_id: Mapped[str | None] = mapped_column(ForeignKey("category_model_catalog.id"))
+    schema_id: Mapped[int | None] = mapped_column(ForeignKey("sku_spec_schema_snapshots.schema_id"))
+    fingerprint_hash: Mapped[str | None] = mapped_column(String(64))
+    baseline_match_level: Mapped[str | None] = mapped_column(String(64))
+    baseline_match_key: Mapped[str | None] = mapped_column(String(255))
+    feedback_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    feedback_label: Mapped[str] = mapped_column(String(64), nullable=False)
+    feedback_action: Mapped[str] = mapped_column(String(32), nullable=False)
+    feedback_category: Mapped[str | None] = mapped_column(String(64))
+    opportunity_status: Mapped[str | None] = mapped_column(String(32))
+    operator_id: Mapped[str | None] = mapped_column(String(64))
+    recorded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
     payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
 
 
