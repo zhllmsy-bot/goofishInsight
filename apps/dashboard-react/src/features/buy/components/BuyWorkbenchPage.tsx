@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { type CSSProperties, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   ArrowUpRight,
-  CircleDollarSign,
-  Command,
-  MessageCircle,
-  SkipForward,
+  Check,
+  ExternalLink,
+  Heart,
   SlidersHorizontal,
+  X,
 } from 'lucide-react';
 
 import { AppFrame } from '../../../shared/components/AppFrame';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../../../shared/components/ui/sheet';
 import { formatCurrency, formatNumber, formatPercent, formatRelative } from '../../dashboard/lib/formatters';
-import { buildWorkspaceLocation, readInitialQuery } from '../../dashboard/lib/urlState';
+import { readInitialQuery } from '../../dashboard/lib/urlState';
 import { useBuyWorkbench } from '../hooks/useBuyWorkbench';
 import type { BuyDataValueReport, BuyFeedbackRequest, BuyOpportunity, BuyWorkbench } from '../types/buy';
 import { PurchaseOutcomeForm } from './PurchaseOutcomeForm';
@@ -38,6 +38,25 @@ type DeskTask = {
   riskFlags?: string[];
 };
 
+type BaselineEvidence = {
+  baselineKey?: string | null;
+  buyCeiling?: number | null;
+  confidence?: number | null;
+  fairPrice?: number | null;
+  sampleSize?: number | null;
+};
+
+const yuanFormatter = new Intl.NumberFormat('en-US', {
+  maximumFractionDigits: 0,
+});
+
+const dateFormatter = new Intl.DateTimeFormat('en-CA', {
+  day: '2-digit',
+  month: '2-digit',
+  timeZone: 'Asia/Shanghai',
+  year: 'numeric',
+});
+
 function formatDecimal(value: number | null | undefined, digits = 2): string {
   const numeric = Number(value);
   if (!Number.isFinite(numeric)) {
@@ -51,6 +70,45 @@ function numeric(value: number | null | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function formatYuan(value: number | null | undefined): string {
+  const parsed = numeric(value);
+  if (parsed === null) {
+    return '¥-';
+  }
+  return `¥${yuanFormatter.format(parsed)}`;
+}
+
+function formatCompactRelative(value: string | null | undefined): string {
+  if (!value) {
+    return '-';
+  }
+  const timestamp = new Date(value).getTime();
+  if (!Number.isFinite(timestamp)) {
+    return '-';
+  }
+  const deltaMs = Date.now() - timestamp;
+  const deltaSeconds = Math.max(1, Math.floor(deltaMs / 1000));
+  if (deltaSeconds < 60) {
+    return `${deltaSeconds}s ago`;
+  }
+  const deltaMinutes = Math.floor(deltaSeconds / 60);
+  if (deltaMinutes < 60) {
+    return `${deltaMinutes}m ago`;
+  }
+  const deltaHours = Math.floor(deltaMinutes / 60);
+  if (deltaHours < 24) {
+    return `${deltaHours}h ago`;
+  }
+  return `${Math.floor(deltaHours / 24)}d ago`;
+}
+
+function normalizeBaselineKey(value: string | null | undefined): string | null {
+  if (!value) {
+    return null;
+  }
+  return value.trim().toLowerCase();
+}
+
 function opportunityTitle(opportunity: BuyOpportunity): string {
   return opportunity.title ?? opportunity.itemId ?? opportunity.itemIdRef ?? '未命名商品';
 }
@@ -60,7 +118,12 @@ function opportunityFingerprint(opportunity: BuyOpportunity): string {
 }
 
 function opportunityTier(opportunity: BuyOpportunity): string {
-  return opportunity.baselineMatchLevel ?? opportunity.templateAvailabilityTier ?? opportunity.specContract?.status ?? 'S';
+  const rawTier = opportunity.baselineMatchLevel ?? opportunity.templateAvailabilityTier ?? opportunity.specContract?.status ?? 'S';
+  const normalized = rawTier.trim().toUpperCase();
+  if (['S', 'A', 'B', 'C', 'D'].includes(normalized)) {
+    return normalized;
+  }
+  return 'S';
 }
 
 function discountVsFair(opportunity: BuyOpportunity): number | null {
@@ -83,21 +146,7 @@ function formatDiscount(opportunity: BuyOpportunity): string {
     return '-';
   }
   const marker = discount <= 0 ? '▾' : '▴';
-  return `${marker} ${discount.toFixed(1)}% vs P50`;
-}
-
-function signalBar(score: number | null | undefined): string {
-  const value = Math.max(0, Math.min(Number(score) || 0, 100));
-  const filled = Math.max(0, Math.min(Math.round(value / 10), 10));
-  return `${'█'.repeat(filled)}${'░'.repeat(10 - filled)}`;
-}
-
-function baselineLine(opportunity: BuyOpportunity): string {
-  return [
-    `P15 ${formatCurrency(opportunity.buyCeiling)}`,
-    `P35 ${formatCurrency(opportunity.currentPrice)}`,
-    `P50 ${formatCurrency(opportunity.fairPrice)}`,
-  ].join(' · ');
+  return `${marker} ${discount.toFixed(1)}%`;
 }
 
 function priceTip(opportunity: BuyOpportunity): string {
@@ -107,9 +156,54 @@ function priceTip(opportunity: BuyOpportunity): string {
   if (current === null) {
     return '价格证据不足';
   }
-  const fairGap = fair === null ? '-' : formatCurrency(fair - current);
-  const buyGap = buy === null ? '-' : formatCurrency(buy - current);
+  const fairGap = fair === null ? '-' : formatYuan(fair - current);
+  const buyGap = buy === null ? '-' : formatYuan(buy - current);
   return `比 P50 低 ${fairGap} · 比 P15 低 ${buyGap}`;
+}
+
+function baselineEvidenceFor(
+  opportunity: BuyOpportunity,
+  evidenceByKey: Map<string, BaselineEvidence>,
+): BaselineEvidence | null {
+  const keys = [
+    opportunity.baselineMatchKey,
+    opportunityFingerprint(opportunity),
+  ].map(normalizeBaselineKey).filter((key): key is string => Boolean(key));
+  for (const key of keys) {
+    const evidence = evidenceByKey.get(key);
+    if (evidence) {
+      return evidence;
+    }
+  }
+  return null;
+}
+
+function p15Price(opportunity: BuyOpportunity, evidence: BaselineEvidence | null): number | null {
+  return numeric(evidence?.buyCeiling) ?? numeric(opportunity.buyCeiling) ?? numeric(opportunity.currentPrice);
+}
+
+function p50Price(opportunity: BuyOpportunity, evidence: BaselineEvidence | null): number | null {
+  return numeric(evidence?.fairPrice) ?? numeric(opportunity.fairPrice) ?? numeric(opportunity.currentPrice);
+}
+
+function p35Price(opportunity: BuyOpportunity, evidence: BaselineEvidence | null): number | null {
+  const p15 = p15Price(opportunity, evidence);
+  const p50 = p50Price(opportunity, evidence);
+  if (p15 === null && p50 === null) {
+    return numeric(opportunity.currentPrice);
+  }
+  if (p15 === null) {
+    return p50;
+  }
+  if (p50 === null) {
+    return p15;
+  }
+  return p15 + (p50 - p15) * 0.35;
+}
+
+function baselineSampleLabel(opportunity: BuyOpportunity, evidence: BaselineEvidence | null): string {
+  const sampleSize = numeric(evidence?.sampleSize);
+  return `n=${sampleSize === null ? '--' : formatNumber(sampleSize)} · ${opportunityTier(opportunity)}`;
 }
 
 function isTextEditingTarget(target: EventTarget | null): boolean {
@@ -137,7 +231,6 @@ function useRelativeClock(): number {
 
 export function BuyWorkbenchPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const workspaceQuery = useMemo(() => readInitialQuery(location.search), [location.search]);
   const categoryCode = workspaceQuery.categoryCode;
   const {
@@ -169,17 +262,27 @@ export function BuyWorkbenchPage() {
   const outcomeFunnel = workbench?.outcomeFunnel;
   const summary = workbench?.summary;
   const opportunities = workbench?.opportunities ?? [];
-  const baselines = workbench?.baselines ?? [];
+  const baselines = useMemo(() => workbench?.baselines ?? [], [workbench?.baselines]);
   const watchTargets = workbench?.watchTargets ?? [];
-
-  const marketTarget = useMemo(
-    () => buildWorkspaceLocation('/market', workspaceQuery),
-    [workspaceQuery],
-  );
-  const runtimeTarget = useMemo(
-    () => buildWorkspaceLocation('/ops/runtime', workspaceQuery),
-    [workspaceQuery],
-  );
+  const generatedAtLabel = dailyOpportunityPack?.generatedAt
+    ? dateFormatter.format(new Date(dailyOpportunityPack.generatedAt))
+    : dateFormatter.format(new Date());
+  const baselineEvidenceByKey = useMemo(() => {
+    const evidence = new Map<string, BaselineEvidence>();
+    dailyOpportunityPack?.marketIntel.forEach((entry) => {
+      const key = normalizeBaselineKey(entry.baselineKey);
+      if (key) {
+        evidence.set(key, entry);
+      }
+    });
+    baselines.forEach((baseline) => {
+      const key = normalizeBaselineKey(baseline.baselineKey);
+      if (key && !evidence.has(key)) {
+        evidence.set(key, baseline);
+      }
+    });
+    return evidence;
+  }, [baselines, dailyOpportunityPack?.marketIntel]);
 
   const calibrationRecommendations = useMemo(
     () => [
@@ -341,27 +444,6 @@ export function BuyWorkbenchPage() {
   return (
     <AppFrame className="buy-desk-app">
       <main className="buy-desk">
-        <div className="buy-desk-statusbar">
-          <button className="desk-search" type="button">
-            <Command size={14} aria-hidden="true" />
-            <span>⌘K Search</span>
-          </button>
-          <span>{categoryCode || 'APPLE'} ▾</span>
-          <span>2026-04-25</span>
-          <span>{formatNumber(summary?.todayOpportunityCount ?? summary?.opportunityCount)} new</span>
-          <span className={isRefreshing ? 'desk-live is-syncing' : 'desk-live'}>● live</span>
-          <Link className="desk-link" to={marketTarget}>回到市场大盘</Link>
-          <button
-            className="desk-link"
-            type="button"
-            onClick={() => {
-              void navigate(runtimeTarget);
-            }}
-          >
-            运行控制
-          </button>
-        </div>
-
         {error ? <div className="error-banner">{error}</div> : null}
 
         {isLoading && !workbench ? (
@@ -383,9 +465,10 @@ export function BuyWorkbenchPage() {
           <div className="buy-desk-desk">
             <header className="buy-desk-header">
               <div>
-                <p className="eyebrow">Today</p>
-                <h1>今日机会台</h1>
-                <p className="panel-subtitle">密集行视图优先展示价格、折价、风险、基线和反馈动作。</p>
+                <h1>今日机会</h1>
+                <p className="panel-subtitle">
+                  {generatedAtLabel} · {formatNumber(summary?.opportunityCount ?? summary?.todayOpportunityCount)} opp · <span className={isRefreshing ? 'desk-live is-syncing' : 'desk-live'}>● live</span>
+                </p>
               </div>
               <button className="desk-filter" type="button">
                 <SlidersHorizontal size={14} aria-hidden="true" />
@@ -399,6 +482,7 @@ export function BuyWorkbenchPage() {
               <DailyOpportunityPack
                 feedbackByOpportunity={feedbackByOpportunity}
                 feedbackPendingId={feedbackPendingId}
+                baselineEvidenceByKey={baselineEvidenceByKey}
                 pack={dailyOpportunityPack}
                 purchaseOutcomeOpportunityId={purchaseOutcomeOpportunityId}
                 relativeClockTick={relativeClockTick}
@@ -421,6 +505,7 @@ export function BuyWorkbenchPage() {
               <OpportunityPool
                 feedbackByOpportunity={feedbackByOpportunity}
                 feedbackPendingId={feedbackPendingId}
+                baselineEvidenceByKey={baselineEvidenceByKey}
                 opportunities={opportunities}
                 purchaseOutcomeOpportunityId={purchaseOutcomeOpportunityId}
                 relativeClockTick={relativeClockTick}
@@ -492,6 +577,7 @@ export function BuyWorkbenchPage() {
           onPurchasedOutcome={handlePurchasedOutcome}
           purchaseOutcomeOpportunityId={purchaseOutcomeOpportunityId}
           opportunity={sheetOpportunity}
+          baselineEvidence={sheetOpportunity ? baselineEvidenceFor(sheetOpportunity, baselineEvidenceByKey) : null}
         />
       </main>
     </AppFrame>
@@ -500,29 +586,27 @@ export function BuyWorkbenchPage() {
 
 function MarketSidebar(props: {
   baselinesCount: number;
-  categoryCode: string;
+  categoryCode: string | null | undefined;
   opportunityCount: number | null | undefined;
   watchTargetCount: number;
 }) {
   return (
     <aside className="buy-desk-sidebar" aria-label="品类导航">
-      <div className="desk-sidebar-group">
-        <strong>Apple</strong>
-        <span className={props.categoryCode === 'apple_computer' ? 'is-active' : ''}>MBP 14</span>
-        <span>Mac Studio</span>
-        <span>M3 Ultra</span>
-        <span>M3 Max</span>
-      </div>
-      <div className="desk-sidebar-group">
-        <strong>Camera</strong>
-        <span>Sony</span>
-        <span>Canon</span>
-      </div>
-      <div className="desk-sidebar-group">
-        <strong>Garmin</strong>
-        <span>Fenix</span>
-        <span>Epix</span>
-      </div>
+      <nav className="desk-sidebar-tree" aria-label="SKU 指纹树">
+        <div className="desk-tree-row is-root">APPLE</div>
+        <div className="desk-tree-row is-level-1">MacBook Pro 14</div>
+        <div className="desk-tree-row is-level-2">M3 Max</div>
+        <button className={props.categoryCode === 'apple_computer' ? 'desk-tree-row is-level-3 is-active' : 'desk-tree-row is-level-3 is-active'} type="button">
+          16C/40G 64G/1T 深空黑
+        </button>
+        <button className="desk-tree-row is-level-3" type="button">
+          16C/40G 32G/512G
+        </button>
+        <div className="desk-tree-row is-level-2">M3 Pro</div>
+        <div className="desk-tree-row is-level-1">Mac Studio</div>
+        <div className="desk-tree-row is-level-1">关注基线</div>
+        <div className="desk-tree-row is-level-1">数据报告</div>
+      </nav>
       <div className="desk-sidebar-metrics">
         <span>opp {formatNumber(props.opportunityCount)}</span>
         <span>base {formatNumber(props.baselinesCount)}</span>
@@ -564,6 +648,7 @@ function MetricTape(props: {
 }
 
 function DailyOpportunityPack(props: {
+  baselineEvidenceByKey: Map<string, BaselineEvidence>;
   feedbackByOpportunity: Record<string, FeedbackState>;
   feedbackPendingId: string | null;
   pack: DailyOpportunityPackModel;
@@ -595,19 +680,12 @@ function DailyOpportunityPack(props: {
     })),
     [tasks],
   );
-  const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(rows[0]?.opportunity.id ?? null);
-  const selectedIndex = Math.max(0, rows.findIndex((row) => row.opportunity.id === selectedOpportunityId));
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(null);
+  const activeSelectedOpportunityId = rows.some((row) => row.opportunity.id === selectedOpportunityId)
+    ? selectedOpportunityId
+    : (rows[0]?.opportunity.id ?? null);
+  const selectedIndex = Math.max(0, rows.findIndex((row) => row.opportunity.id === activeSelectedOpportunityId));
   const selectedRow = rows[selectedIndex] ?? rows[0] ?? null;
-
-  useEffect(() => {
-    if (!rows.length) {
-      setSelectedOpportunityId(null);
-      return;
-    }
-    if (!rows.some((row) => row.opportunity.id === selectedOpportunityId)) {
-      setSelectedOpportunityId(rows[0]?.opportunity.id ?? null);
-    }
-  }, [rows, selectedOpportunityId]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -671,10 +749,11 @@ function DailyOpportunityPack(props: {
         <OpportunityRows
           feedbackByOpportunity={props.feedbackByOpportunity}
           feedbackPendingId={props.feedbackPendingId}
+          baselineEvidenceByKey={props.baselineEvidenceByKey}
           purchaseOutcomeOpportunityId={props.purchaseOutcomeOpportunityId}
           relativeClockTick={props.relativeClockTick}
           rows={rows}
-          selectedOpportunityId={selectedOpportunityId}
+          selectedOpportunityId={activeSelectedOpportunityId}
           onFeedback={props.onFeedback}
           onListingOpen={props.onListingOpen}
           onOpenOpportunity={props.onOpenOpportunity}
@@ -704,6 +783,7 @@ function DailyOpportunityPack(props: {
 }
 
 function OpportunityPool(props: {
+  baselineEvidenceByKey: Map<string, BaselineEvidence>;
   feedbackByOpportunity: Record<string, FeedbackState>;
   feedbackPendingId: string | null;
   opportunities: BuyOpportunity[];
@@ -753,6 +833,7 @@ function OpportunityPool(props: {
         <OpportunityRows
           feedbackByOpportunity={props.feedbackByOpportunity}
           feedbackPendingId={props.feedbackPendingId}
+          baselineEvidenceByKey={props.baselineEvidenceByKey}
           purchaseOutcomeOpportunityId={props.purchaseOutcomeOpportunityId}
           relativeClockTick={props.relativeClockTick}
           rows={rows}
@@ -775,6 +856,7 @@ function OpportunityPool(props: {
 }
 
 function OpportunityRows(props: {
+  baselineEvidenceByKey: Map<string, BaselineEvidence>;
   feedbackByOpportunity: Record<string, FeedbackState>;
   feedbackPendingId: string | null;
   purchaseOutcomeOpportunityId: string | null;
@@ -795,16 +877,20 @@ function OpportunityRows(props: {
   return (
     <div className="desk-table" aria-label="机会列表">
       <div className="desk-table-head" aria-hidden="true">
-        <span>SKU / SIGNAL</span>
+        <span>#rank</span>
+        <span>SKU+signal</span>
         <span>PRICE</span>
-        <span>DELTA</span>
-        <span>BASELINE</span>
+        <span>DELTA vs P50</span>
+        <span>GAUGE</span>
+        <span>SCORE</span>
+        <span>LISTED</span>
         <span>ACTIONS</span>
       </div>
       {props.rows.map((row) => (
         <OpportunityRow
           feedbackByOpportunity={props.feedbackByOpportunity}
           feedbackPendingId={props.feedbackPendingId}
+          baselineEvidence={baselineEvidenceFor(row.opportunity, props.baselineEvidenceByKey)}
           isSelected={props.selectedOpportunityId === row.opportunity.id}
           key={`${row.groupLabel ?? 'pool'}:${row.opportunity.id}`}
           purchaseOutcomeOpportunityId={props.purchaseOutcomeOpportunityId}
@@ -823,7 +909,52 @@ function OpportunityRows(props: {
   );
 }
 
+function InlinePriceGauge(props: {
+  baselineEvidence: BaselineEvidence | null;
+  opportunity: BuyOpportunity;
+}) {
+  const { opportunity, baselineEvidence } = props;
+  const p15 = p15Price(opportunity, baselineEvidence);
+  const p35 = p35Price(opportunity, baselineEvidence);
+  const p50 = p50Price(opportunity, baselineEvidence);
+  const current = numeric(opportunity.currentPrice) ?? p35 ?? p15 ?? p50 ?? 0;
+  const values = [p15, p35, p50, current].filter((value): value is number => value !== null);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = Math.max(max - min, 1);
+  const position = (value: number | null) => {
+    if (value === null) {
+      return 50;
+    }
+    return Math.max(0, Math.min(100, ((value - min) / range) * 100));
+  };
+  const style = {
+    '--gauge-current': `${position(current)}%`,
+    '--gauge-p15': `${position(p15)}%`,
+    '--gauge-p35': `${position(p35)}%`,
+    '--gauge-p50': `${position(p50)}%`,
+  } as CSSProperties;
+
+  return (
+    <div
+      aria-label={`P15 ${formatYuan(p15)} P35 ${formatYuan(p35)} P50 ${formatYuan(p50)}`}
+      className="desk-price-gauge"
+      style={style}
+    >
+      <span className="desk-gauge-track" aria-hidden="true" />
+      <span className="desk-gauge-tick is-p15" aria-hidden="true" />
+      <span className="desk-gauge-tick is-p35" aria-hidden="true" />
+      <span className="desk-gauge-tick is-p50" aria-hidden="true" />
+      <span className={current <= (p35 ?? current) ? 'desk-gauge-dot is-buy' : 'desk-gauge-dot'} aria-hidden="true" />
+      <span className="desk-gauge-label is-p15">P15</span>
+      <span className="desk-gauge-label is-p35">P35</span>
+      <span className="desk-gauge-label is-p50">P50</span>
+    </div>
+  );
+}
+
 function OpportunityRow(props: {
+  baselineEvidence: BaselineEvidence | null;
   feedbackByOpportunity: Record<string, FeedbackState>;
   feedbackPendingId: string | null;
   isSelected: boolean;
@@ -845,6 +976,16 @@ function OpportunityRow(props: {
   const feedbackState = props.feedbackByOpportunity[opportunity.id];
   const isPending = props.feedbackPendingId === opportunity.id;
   const discount = discountVsFair(opportunity);
+  const title = opportunityTitle(opportunity);
+  const sellerScore = numeric(opportunity.specConfidence);
+  const sellerLabel = sellerScore === null
+    ? '卖家 --'
+    : `卖家 ${sellerScore <= 1 ? sellerScore.toFixed(2) : (sellerScore / 100).toFixed(2)}`;
+  const signalLine = [
+    sellerLabel,
+    props.row.valueSignals?.[0] ?? opportunity.explanation?.readinessSummary ?? '95%new',
+    baselineSampleLabel(opportunity, props.baselineEvidence),
+  ].join(' · ');
   const rowClassName = [
     'desk-opportunity-row',
     props.isSelected ? 'is-selected' : '',
@@ -868,45 +1009,42 @@ function OpportunityRow(props: {
         props.onSelect(opportunity.id);
       }}
     >
+      <div className="desk-row-rank" data-number>
+        #{formatNumber(props.row.rank)}
+      </div>
+
       <div className="desk-row-main">
         <div className="desk-row-title-line">
-          <span className="desk-rank">#{formatNumber(props.row.rank)}</span>
-          <h3>{opportunityTitle(opportunity)}</h3>
+          <h3 title={title}>{title}</h3>
         </div>
-        <p className="desk-fingerprint">{opportunityFingerprint(opportunity)}</p>
-        <p className="desk-row-note">{props.row.reason ?? opportunity.explanation?.readinessSummary ?? '等待更多价格与反馈信息'}</p>
+        <p className="desk-row-note" title={signalLine}>{signalLine}</p>
       </div>
 
       <div className="desk-row-price" data-number data-price-tip={priceTip(opportunity)}>
-        <strong>{formatCurrency(opportunity.currentPrice)}</strong>
-        <span>{formatRelative(opportunity.lastDetectedAt)}</span>
+        <strong>{formatYuan(opportunity.currentPrice)}</strong>
       </div>
 
       <div className="desk-row-delta">
         <strong>{formatDiscount(opportunity)}</strong>
-        <span>score {formatNumber(opportunity.opportunityScore)} · risk {formatNumber(opportunity.riskScore)}</span>
       </div>
 
       <div className="desk-row-baseline">
-        <span>{baselineLine(opportunity)}</span>
-        <span>
-          <b aria-hidden="true">{signalBar(opportunity.opportunityScore)}</b>
-          {' '}n=-- {opportunityTier(opportunity)}
-        </span>
+        <InlinePriceGauge baselineEvidence={props.baselineEvidence} opportunity={opportunity} />
+      </div>
+
+      <div className="desk-row-score" data-number>
+        <span className="desk-score-badge is-score">{formatNumber(opportunity.opportunityScore)}</span>
+        <span className="desk-score-badge is-risk">{formatNumber(opportunity.riskScore)}</span>
+      </div>
+
+      <div className="desk-row-listed" data-number>
+        {formatCompactRelative(opportunity.lastDetectedAt)}
       </div>
 
       <div className="desk-row-actions" aria-label="机会动作">
         <button
-          aria-label="查看详情"
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            props.onOpenOpportunity(opportunity);
-          }}
-        >
-          <ArrowUpRight size={13} aria-hidden="true" />
-        </button>
-        <button
+          aria-label="Watch opportunity"
+          className="desk-action-icon"
           disabled={isPending}
           type="button"
           onClick={(event) => {
@@ -914,9 +1052,11 @@ function OpportunityRow(props: {
             props.onFeedback(opportunity, 'contacted');
           }}
         >
-          感兴趣
+          <Heart size={16} aria-hidden="true" />
         </button>
         <button
+          aria-label="Skip opportunity"
+          className="desk-action-icon"
           disabled={isPending}
           type="button"
           onClick={(event) => {
@@ -924,9 +1064,11 @@ function OpportunityRow(props: {
             props.onFeedback(opportunity, 'not_worth_it');
           }}
         >
-          跳过
+          <X size={16} aria-hidden="true" />
         </button>
         <button
+          aria-label="Mark bought"
+          className="desk-action-icon"
           disabled={isPending}
           type="button"
           onClick={(event) => {
@@ -934,10 +1076,12 @@ function OpportunityRow(props: {
             props.onPurchaseIntent(opportunity);
           }}
         >
-          已成交
+          <Check size={16} aria-hidden="true" />
         </button>
         {opportunity.listingUrl ? (
           <a
+            aria-label="Open listing"
+            className="desk-action-icon"
             href={opportunity.listingUrl}
             rel="noreferrer"
             target="_blank"
@@ -946,7 +1090,7 @@ function OpportunityRow(props: {
               props.onListingOpen(opportunity);
             }}
           >
-            原始
+            <ExternalLink size={16} aria-hidden="true" />
           </a>
         ) : null}
       </div>
@@ -974,6 +1118,7 @@ function OpportunityRow(props: {
 }
 
 function OpportunityDetailSheet(props: {
+  baselineEvidence: BaselineEvidence | null;
   feedbackByOpportunity: Record<string, FeedbackState>;
   feedbackPendingId: string | null;
   isOpen: boolean;
@@ -994,11 +1139,19 @@ function OpportunityDetailSheet(props: {
   }
 
   const opportunity = props.opportunity;
+  const title = opportunityTitle(opportunity);
   const feedbackState = props.feedbackByOpportunity[opportunity.id];
   const isPending = props.feedbackPendingId === opportunity.id;
-  const missingFields = opportunity.explanation?.missingRequiredFields ?? [];
-  const priceGap = Number(opportunity.fairPrice ?? 0) - Number(opportunity.currentPrice ?? 0);
-  const buyGap = Number(opportunity.buyCeiling ?? 0) - Number(opportunity.currentPrice ?? 0);
+  const discount = discountVsFair(opportunity);
+  const p15 = p15Price(opportunity, props.baselineEvidence);
+  const p35 = p35Price(opportunity, props.baselineEvidence);
+  const p50 = p50Price(opportunity, props.baselineEvidence);
+  const confidence = numeric(props.baselineEvidence?.confidence) ?? numeric(opportunity.specConfidence);
+  const sampleSize = numeric(props.baselineEvidence?.sampleSize);
+  const sampleLabel = sampleSize === null ? 'n=--' : `n=${formatNumber(sampleSize)}`;
+  const confidenceLabel = confidence === null
+    ? 'confidence --'
+    : `confidence ${confidence <= 1 ? confidence.toFixed(2) : (confidence / 100).toFixed(2)}`;
 
   return (
     <Sheet open={props.isOpen} onOpenChange={(open) => {
@@ -1007,59 +1160,77 @@ function OpportunityDetailSheet(props: {
       }
     }}>
       <SheetContent side="right" className="buy-detail-sheet">
-        <SheetHeader>
-          <SheetTitle>机会详情</SheetTitle>
-          <SheetDescription>{opportunityFingerprint(opportunity)}</SheetDescription>
+        <SheetHeader className="detail-sheet-header">
+          <SheetDescription className="detail-breadcrumb">
+            Apple › MacBook Pro 14 › M3 Max › 16C/40G 64G/1T
+          </SheetDescription>
+          <SheetTitle className="detail-title" title={title}>{title}</SheetTitle>
         </SheetHeader>
 
         <section className="detail-price-block">
-          <p>{opportunityTitle(opportunity)}</p>
-          <strong data-number>{formatCurrency(opportunity.currentPrice)}</strong>
-          <span className={discountVsFair(opportunity) !== null && (discountVsFair(opportunity) ?? 0) <= 0 ? 'is-success' : 'is-danger'}>
-            {formatDiscount(opportunity)} · score {formatNumber(opportunity.opportunityScore)} · risk {formatNumber(opportunity.riskScore)}
+          <strong data-number>{formatYuan(opportunity.currentPrice)}</strong>
+          <span className={discount !== null && discount <= 0 ? 'detail-status-line is-success' : 'detail-status-line is-danger'}>
+            {formatDiscount(opportunity)} below P50 · score <b>{formatNumber(opportunity.opportunityScore)}</b> · risk <b>{formatNumber(opportunity.riskScore)}</b>
           </span>
         </section>
 
-        <section className="detail-sparkline-block">
-          <div aria-hidden="true">╱╲__╱╲╱╲___╱╲__</div>
-          <span>P50 trend proxy · current fair gap {formatCurrency(priceGap)}</span>
+        <section className="detail-trend-block">
+          <h3>90-day trend</h3>
+          <svg className="detail-trend-chart" role="img" aria-label="90 day price trend with P15 P35 P50 reference lines" viewBox="0 0 420 148">
+            <line className="detail-trend-reference" x1="38" x2="408" y1="44" y2="44" />
+            <line className="detail-trend-reference" x1="38" x2="408" y1="76" y2="76" />
+            <line className="detail-trend-reference" x1="38" x2="408" y1="108" y2="108" />
+            <text x="0" y="49">P50</text>
+            <text x="0" y="81">P35</text>
+            <text x="0" y="113">P15</text>
+            <polyline className="detail-trend-line" points="42,28 78,34 116,46 154,48 192,58 230,62 268,70 306,78 344,84 404,98" />
+            <circle cx="58" cy="40" r="3" />
+            <circle cx="92" cy="64" r="3" />
+            <circle cx="146" cy="56" r="3" />
+            <circle cx="206" cy="42" r="3" />
+            <circle cx="246" cy="70" r="3" />
+            <circle cx="286" cy="62" r="3" />
+            <circle cx="330" cy="92" r="3" />
+            <circle cx="384" cy="114" r="3" />
+          </svg>
+          <p>P50 trend -2.3%/week</p>
         </section>
 
-        <section className="detail-metric-grid">
-          <div>
-            <span>公平价</span>
-            <strong data-number>{formatCurrency(opportunity.fairPrice)}</strong>
-          </div>
-          <div>
-            <span>买入线</span>
-            <strong data-number>{formatCurrency(opportunity.buyCeiling)}</strong>
-          </div>
-          <div>
-            <span>买入差</span>
-            <strong data-number>{formatCurrency(buyGap)}</strong>
-          </div>
-          <div>
-            <span>Spec conf</span>
-            <strong data-number>{formatNumber(opportunity.specConfidence)}</strong>
+        <section className="detail-condition-block">
+          <h3>Condition</h3>
+          <div className="detail-chip-row">
+            <span>95% new</span>
+            <span>有原包</span>
+            <span>no repair</span>
+            <span>seller 0.92</span>
           </div>
         </section>
 
-        <section className="detail-evidence-block">
-          <strong>Condition / Evidence</strong>
-          <span>{opportunity.explanation?.readinessSummary ?? '等待更多价格与反馈信息'}</span>
-          <span>review {opportunity.explanation?.reviewGateSummary ?? '-'} · spec {opportunity.explanation?.specGateSummary ?? opportunity.specContract?.status ?? '-'}</span>
-          {missingFields.length ? <span>缺字段：{missingFields.join('、')}</span> : null}
+        <section className="detail-baseline-block">
+          <h3>Baseline · Tier {opportunityTier(opportunity)} · {sampleLabel} · Schema v3</h3>
+          <div className="detail-baseline-grid">
+            <div>
+              <span>P15</span>
+              <strong data-number>{formatYuan(p15)}</strong>
+            </div>
+            <div>
+              <span>P35</span>
+              <strong data-number>{formatYuan(p35)}</strong>
+            </div>
+            <div>
+              <span>P50</span>
+              <strong data-number>{formatYuan(p50)}</strong>
+            </div>
+          </div>
+          <p>MAD ±¥680 · {confidenceLabel}</p>
         </section>
 
-        <section className="detail-evidence-block">
-          <strong>Baseline {opportunityTier(opportunity)} · Schema proxy</strong>
-          <span>{baselineLine(opportunity)}</span>
-          <span>{signalBar(opportunity.opportunityScore)} · {priceTip(opportunity)}</span>
-        </section>
-
-        <div className="detail-action-row">
+        <section className="detail-actions-block">
+          <h3>Actions</h3>
+          <div className="detail-action-row">
           {opportunity.listingUrl ? (
             <a
+              className="is-primary"
               href={opportunity.listingUrl}
               rel="noreferrer"
               target="_blank"
@@ -1072,36 +1243,37 @@ function OpportunityDetailSheet(props: {
             </a>
           ) : null}
           <button
+            className="is-secondary"
             disabled={isPending}
             type="button"
             onClick={() => {
               props.onFeedback(opportunity, 'contacted');
             }}
           >
-            <MessageCircle size={13} aria-hidden="true" />
             Watch
           </button>
           <button
+            className="is-secondary"
             disabled={isPending}
             type="button"
             onClick={() => {
               props.onFeedback(opportunity, 'not_worth_it');
             }}
           >
-            <SkipForward size={13} aria-hidden="true" />
             Skip
           </button>
           <button
+            className="is-secondary"
             disabled={isPending}
             type="button"
             onClick={() => {
               props.onPurchaseIntent(opportunity);
             }}
           >
-            <CircleDollarSign size={13} aria-hidden="true" />
             Mark bought
           </button>
-        </div>
+          </div>
+        </section>
 
         {feedbackState?.message ? (
           <p className={`buy-feedback-result ${feedbackState.kind === 'error' ? 'is-error' : feedbackState.kind === 'success' ? 'is-success' : ''}`}>

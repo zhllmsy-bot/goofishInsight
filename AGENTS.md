@@ -7,7 +7,7 @@
 - After changing service-layer code, run the relevant tests before reporting success.
 - Treat `python -m goofish_insight.cli` as the canonical local entrypoint.
 - Treat [docs/23-best-practice-architecture-implementation-spec.md](<repo-root>/docs/23-best-practice-architecture-implementation-spec.md) as the current best-practice architecture baseline when changing data contracts, resident jobs, pricing eligibility, or runtime controls.
-- Treat [docs/32-dashboard-ui-design-system-migration-todolist-20260425.md](<repo-root>/docs/32-dashboard-ui-design-system-migration-todolist-20260425.md) as the dashboard UI constitution baseline when changing React dashboard UI.
+- Treat [docs/39-goofish-insight-ui-constitution-v2-20260426.md](<repo-root>/docs/39-goofish-insight-ui-constitution-v2-20260426.md) as the dashboard UI constitution baseline when changing React dashboard UI. Older dashboard UI docs are historical unless they agree with v2.
 
 ## Project Purpose
 

@@ -225,9 +225,9 @@ describe('BuyWorkbenchPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: '今日机会台' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '今日机会' })).toBeInTheDocument();
     });
-    expect(screen.getByRole('button', { name: /⌘K Search/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '打开全局搜索' })).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: '数据资产利用率' })).toBeInTheDocument();
@@ -238,16 +238,16 @@ describe('BuyWorkbenchPage', () => {
     expect(screen.getByText(/把 OPEN 机会消化成反馈、联系、成交和 ROI 证据/)).toBeInTheDocument();
     expect(screen.getByText(/OPEN backlog 941 · 未入队 940/)).toBeInTheDocument();
 
-    expect(screen.getByRole('link', { name: '回到市场大盘' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: '前往市场大盘' })).toHaveAttribute(
       'href',
       '/market?category_code=apple_computer&product_label=MacBook+Pro+%2F+M5&spec_label=16G+%2F+512G&pricing_scope=all&pricing_freshness_days=30',
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: '感兴趣' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Watch opportunity' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '感兴趣' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Watch opportunity' }));
 
     await waitFor(() => {
       expect(screen.getAllByText(/已回写：CONTACTED · contacted/).length).toBeGreaterThan(0);
@@ -336,10 +336,10 @@ describe('BuyWorkbenchPage', () => {
     renderDashboardApp('/?category_code=apple_computer');
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: '已成交' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Mark bought' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '已成交' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mark bought' }));
     fireEvent.change(screen.getByRole('spinbutton', { name: '实际买入价' }), {
       target: { value: '6800' },
     });
@@ -852,7 +852,7 @@ describe('BuyWorkbenchPage', () => {
     fireEvent.keyDown(window, { key: 'Enter' });
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: '机会详情' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'MacBook M1' })).toBeInTheDocument();
     });
     expect(window.location.pathname).toBe('/');
   });

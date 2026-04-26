@@ -233,7 +233,7 @@ def _seed_known_category_roles() -> None:
                     """
                     UPDATE category_attr_template_item AS item
                     SET role = :role,
-                        weight = :weight,
+                        weight = CAST(:weight AS numeric),
                         is_required = true
                     FROM category_attr_template AS template,
                          category AS category,

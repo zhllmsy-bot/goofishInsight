@@ -6,12 +6,57 @@
 
 本项目不复刻外观，仅借鉴信息密度、层次、导航和密集数据面表达节奏。
 
-- **Bloomberg Terminal（官方站点）**  
+- **Bloomberg Terminal（官方站点）**：<https://www.bloomberg.com/professional/products/bloomberg-terminal/>  
   参照点：信息优先级、表格式密度、告警与数据标注方式。
-- **Linear（官方站点）**  
+- **Linear（官方站点）**：<https://linear.app/>  
   参照点：命令式导航、布局稳定性、快捷键优先语义。
-- **Notion（官方站点）**  
+- **Notion Calendar（官方站点）**：<https://www.notion.com/product/calendar>  
   参照点：日常审美约束与交互清晰度（尤其是列表/筛选信息条）
+
+| Bloomberg / Linear 参照点 | Goofish 金标准判例 | PR 对照要求 |
+|---|---|---|
+| Bloomberg Terminal：密集行情表、数字优先、低装饰 | ![今日机会台 Light](./design-benchmarks/today-opportunity-light-20260426.JPG) | Light 截图并排审读，首屏 10+ 行、不廉价 |
+| Linear：单行导航、命令入口、稳定选中态 | ![今日机会台 Dark](./design-benchmarks/today-opportunity-dark-20260426.JPG) | Dark 截图并排审读，只换 token 不换版式 |
+| Bloomberg / Linear：保留上下文的侧向下钻 | ![SKU 指纹详情 Sheet](./design-benchmarks/today-opportunity-sheet-20260426.JPG) | 详情必须 Sheet，不跳路由 |
+
+## 金标准判例（今日机会台）
+
+以下三张稿是 Goofish Insight dashboard 的唯一视觉金标准。UI 宪法 v2 是规则，本节是判例；当页面实现与判例不一致时，先对齐判例，再扩散到其他页面。
+
+### 稿 1：今日机会台 Light
+
+![今日机会台 Light](./design-benchmarks/today-opportunity-light-20260426.JPG)
+
+判例落点：
+
+- 顶部导航单行 56px，命令搜索常驻，品类快切在同一行。
+- 左栏至少四级下钻：品类、产品线、型号、SKU 指纹。
+- KPI 横排 5 列，数字 display，标签 caption。
+- 机会表一屏至少 10 行，目标行高 56px。
+- 价格列 mono、tabular nums、`¥`、千分位，数值右对齐。
+- DELTA 用 `▾ -17.4%` 或 `▴ +3.2%`，颜色只用于数值。
+- inline `PriceGauge` 是价格基线唯一可视化方式。
+- score / risk 用 badge，Actions 默认隐藏，hover 或 focus 出现。
+- 发丝分隔、无阴影、6px 卡片圆角、零 emoji、零调试串。
+
+### 稿 2：今日机会台 Dark
+
+![今日机会台 Dark](./design-benchmarks/today-opportunity-dark-20260426.JPG)
+
+Dark 主题只换色，不换版式。底色、panel、hair、accent、up/down 必须走 v2 token；禁止科技炫光、渐变和装饰黑。
+
+### 稿 3：SKU 指纹详情 Sheet
+
+![SKU 指纹详情 Sheet](./design-benchmarks/today-opportunity-sheet-20260426.JPG)
+
+判例落点：
+
+- 详情从右侧 Sheet 打开，背景表格仍可见，宽度约 480px。
+- 面包屑最多 3 级，焦点价格 display 级 mono。
+- 90 日趋势用极简 sparkline 和 P15/P35/P50 参考线。
+- Baseline 区必须显示 Tier、`n=xx`、Schema。
+- `Open on Goofish` 是 primary，Watch / Skip / Mark bought 是 secondary。
+- 详情不跳路由，不显示调试 JSON，不混用中英 label。
 
 ## 参照规范（需长期保持）
 

@@ -1,6 +1,6 @@
 # Bloomberg 级买方情报终端 UI 重设计 Todo
 
-Status: Active
+Status: Historical v1, superseded by [39-goofish-insight-ui-constitution-v2-20260426.md](./39-goofish-insight-ui-constitution-v2-20260426.md)
 Updated: 2026-04-25
 Spec: [35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md](<repo-root>/docs/35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md)
 
@@ -13,7 +13,7 @@ Spec: [35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md](<repo-root>/docs/
 - [x] 固化 Bloomberg / Linear / Notion Calendar / Raycast 参照系
 - [x] 明确“不全站大改，先做今日机会台标杆页”
 - [x] 明确 dashboard React 继续遵守 token-only、Light/Dark 同步和 `AppFrame`
-- [x] 明确标题字距因上层 UI 约束保持 `0`
+- [x] 明确 v2 constitution 是当前 UI 基线；执行环境仍禁止负 tracking 时，以工具链约束为实现例外
 
 ## Phase 1：Foundation Token
 

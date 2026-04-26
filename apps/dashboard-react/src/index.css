@@ -3,6 +3,7 @@
 @import "./themes/light.css";
 @import "./themes/dark.css";
 @import "./shared/styles/app-ui.css";
+@import "./shared/styles/app-ui-data.css";
 
 @theme inline {
   --color-background: var(--surface-0);

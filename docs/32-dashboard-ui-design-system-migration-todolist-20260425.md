@@ -1,6 +1,7 @@
 # Dashboard UI Design System Migration Todolist
 
 Date: 2026-04-25
+Status: Superseded by [39-goofish-insight-ui-constitution-v2-20260426.md](./39-goofish-insight-ui-constitution-v2-20260426.md)
 
 Goal: make Goofish Insight dashboard UI follow the buyer-decision design constitution: decision-first, quiet UI, loud data, one screen one job, token-only styling, dual theme, audited primitives, and bounded composite components.
 
@@ -29,7 +30,7 @@ Goal: make Goofish Insight dashboard UI follow the buyer-decision design constit
 
 - Design audit: `npm run design-system:audit -w @goofish/dashboard-react`
 - Dashboard CI script: `bash scripts/ci/run_dashboard_checks.sh`
-- CSS budget after migration: total dashboard CSS is under 20KB.
+- CSS budget after migration: v2 gate keeps each dashboard CSS file under 15KB and total dashboard CSS under 40KB.
 - Required theme files exist:
   - `apps/dashboard-react/src/themes/tokens.css`
   - `apps/dashboard-react/src/themes/light.css`

@@ -15,6 +15,8 @@
 
     --brand-600: #3B8AFF;
     --brand-500: #3B8AFF;
+    --accent: #3B8AFF;
+    --focus-ring: #3B8AFF;
     --brand-50: var(--surface-2);
     --brand-900: var(--ink-primary);
     --brand-tint: var(--surface-2);
@@ -24,6 +26,9 @@
     --signal-warn: #EA5B52;
     --signal-danger: #EA5B52;
     --signal-info: #3B8AFF;
+    --up: #3FBF6A;
+    --down: #EA5B52;
+    --hair: #2E2E2B;
 
     --decision-buy: #3FBF6A;
     --decision-watch: #3B8AFF;
@@ -57,6 +62,8 @@
 
   --brand-600: #3B8AFF;
   --brand-500: #3B8AFF;
+  --accent: #3B8AFF;
+  --focus-ring: #3B8AFF;
   --brand-50: var(--surface-2);
   --brand-900: var(--ink-primary);
   --brand-tint: var(--surface-2);
@@ -66,6 +73,9 @@
   --signal-warn: #EA5B52;
   --signal-danger: #EA5B52;
   --signal-info: #3B8AFF;
+  --up: #3FBF6A;
+  --down: #EA5B52;
+  --hair: #2E2E2B;
 
   --decision-buy: #3FBF6A;
   --decision-watch: #3B8AFF;

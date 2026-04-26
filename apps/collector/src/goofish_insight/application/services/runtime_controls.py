@@ -1566,10 +1566,16 @@ def _safe_buy_jobs_runtime_summary(*, category_code: str | None = None) -> dict[
             if category_id is not None:
                 baseline_query = baseline_query.where(BuyPriceBaseline.category_id == category_id)
                 opportunity_query = opportunity_query.where(BuyOpportunity.category_id == category_id)
-                alert_query = alert_query.where(BuyAlertEvent.category_id == category_id)
+                alert_query = alert_query.join(
+                    BuyOpportunity,
+                    BuyOpportunity.id == BuyAlertEvent.opportunity_id,
+                ).where(BuyOpportunity.category_id == category_id)
                 recent_baseline_query = recent_baseline_query.where(BuyPriceBaseline.category_id == category_id)
                 recent_opportunity_query = recent_opportunity_query.where(BuyOpportunity.category_id == category_id)
-                recent_alert_query = recent_alert_query.where(BuyAlertEvent.category_id == category_id)
+                recent_alert_query = recent_alert_query.join(
+                    BuyOpportunity,
+                    BuyOpportunity.id == BuyAlertEvent.opportunity_id,
+                ).where(BuyOpportunity.category_id == category_id)
 
             summary["latest_baseline_at"] = session.execute(baseline_query).scalar_one_or_none()
             summary["latest_opportunity_at"] = session.execute(opportunity_query).scalar_one_or_none()

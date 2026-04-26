@@ -35,6 +35,7 @@ Goofish Insight 是一套面向闲鱼公开供给的二手买入决策系统。�
 - 最佳实践改造方案：[docs/23-best-practice-architecture-implementation-spec.md](./docs/23-best-practice-architecture-implementation-spec.md)
 - 买方业务技术实施书：[docs/16-buy-side-implementation-spec.md](./docs/16-buy-side-implementation-spec.md)
 - 核心属性与 Schema 快照方案：[docs/33-core-attribute-role-schema-spec-20260425.md](./docs/33-core-attribute-role-schema-spec-20260425.md)
+- Dashboard UI 宪法 v2：[docs/39-goofish-insight-ui-constitution-v2-20260426.md](./docs/39-goofish-insight-ui-constitution-v2-20260426.md)
 - Bloomberg 买方终端 UI 方案：[docs/35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md](./docs/35-bloomberg-buy-terminal-ui-redesign-spec-20260425.md)
 - 架构重构追踪说明：[docs/08-architecture-refactor-spec.md](./docs/08-architecture-refactor-spec.md)
 - 商品属性系统方案：[docs/product-attribute-system/README.md](./docs/product-attribute-system/README.md)
@@ -169,6 +170,18 @@ The current P0 gates are:
 - `npm run test:e2e -w @goofish/dashboard-nest -- --runInBand`
 - `python -m compileall apps/collector/src apps/analyzer/src -q`
 - `PYTHONPATH=apps/collector/src:apps/analyzer/src:packages/schema/src python -m unittest <selected modules>`
+
+## Dashboard UI Gate
+
+Dashboard UI work is governed by [UI constitution v2](./docs/39-goofish-insight-ui-constitution-v2-20260426.md). Treat it as the source of truth over older dashboard UI specs.
+
+Required UI gates:
+
+- start from a Figma or hand wireframe before implementation
+- keep `/today` as the benchmark page before spreading patterns to other routes
+- run `npm run design-system:check -w @goofish/dashboard-react` for ordinary UI work
+- run `npm run design-system:audit -w @goofish/dashboard-react` for broad UI migrations
+- include Light and Dark screenshots plus the pull request checklist for every UI PR
 
 ## 环境配置
 

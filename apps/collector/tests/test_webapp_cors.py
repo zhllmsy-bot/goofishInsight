@@ -35,3 +35,31 @@ class WebappCorsTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers.get("access-control-allow-origin"), "http://127.0.0.1:5174")
+
+    def test_served_dashboard_origin_is_allowed_for_fastapi_backend(self) -> None:
+        client = TestClient(create_app())
+
+        response = client.options(
+            "/api/buy/opportunities",
+            headers={
+                "Origin": "http://127.0.0.1:8787",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers.get("access-control-allow-origin"), "http://127.0.0.1:8787")
+
+    def test_nest_static_origin_is_allowed_for_fastapi_backend(self) -> None:
+        client = TestClient(create_app())
+
+        response = client.options(
+            "/api/buy/opportunities",
+            headers={
+                "Origin": "http://127.0.0.1:3030",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers.get("access-control-allow-origin"), "http://127.0.0.1:3030")

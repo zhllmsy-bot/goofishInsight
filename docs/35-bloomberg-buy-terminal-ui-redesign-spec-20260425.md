@@ -1,6 +1,6 @@
 # Bloomberg 级买方情报终端 UI 重设计技术方案
 
-Status: Draft v1
+Status: Historical v1, superseded by [39-goofish-insight-ui-constitution-v2-20260426.md](./39-goofish-insight-ui-constitution-v2-20260426.md)
 Updated: 2026-04-25
 Workspace: `<repo-root>`
 
@@ -22,7 +22,7 @@ Related:
 - 打开证据
 - 回写反馈或成交
 
-本轮不全站重写，先把 foundation token 与今日机会台做成后续页面的 UI benchmark。
+本轮不全站重写，先把 foundation token 与今日机会台做成后续页面的 UI benchmark。Current implementation must follow the v2 constitution when this v1 draft differs.
 
 ## 2. 美学参照系
 
@@ -85,7 +85,7 @@ Dark 主题：
 - 所有数字使用 `--font-num = --font-mono` 与 tabular nums
 - SKU、型号、baseline key、schema 版本用 mono
 - 标题字重 560，正文 420，数字 500-520
-- 由于上层 UI 约束禁止负字距，本项目标题 `letter-spacing` 保持 `0`
+- v2 constitution is the active typography contract. In this execution environment, code must also obey the active frontend harness rule that forbids negative tracking.
 
 ### 3.3 字号
 
@@ -132,10 +132,10 @@ Dark 主题：
 
 首屏结构：
 
-1. 40px 级顶部全局栏：`⌘K Search / category / date / new count / live`
+1. 56px 级顶部全局栏：`⌘K Search / category / date / new count / live`
 2. 左侧紧凑品类树：Apple / Camera / Garmin
 3. 主工作区：Today opportunity queue
-4. 行内机会列表：每行约 72px，一屏至少 8 条
+4. 行内机会列表：每行 56px，一屏至少 10 条
 5. 右侧 Sheet 详情：点击行或 Enter 打开，不离开上下文
 6. 下方辅助区：反馈校准、数据价值、watch targets、baselines
 

@@ -1,0 +1,191 @@
+.price-gauge,
+.price-gauge-track,
+.progress-track,
+.bar-track {
+  position: relative;
+  overflow: hidden;
+  height: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.price-gauge-segment,
+.progress-fill,
+.bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand-600);
+}
+
+.price-p15 {
+  color: var(--price-p15);
+}
+
+.price-p35 {
+  color: var(--price-p35);
+}
+
+.price-p50 {
+  color: var(--price-p50);
+}
+
+.price-gauge {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-14);
+}
+
+.price-gauge-track {
+  height: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.price-gauge-range {
+  position: absolute;
+  top: var(--space-14);
+  height: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.price-gauge-range.buy {
+  background: var(--decision-buy);
+}
+
+.price-gauge-range.watch {
+  background: var(--decision-watch);
+}
+
+.price-gauge-distribution {
+  position: absolute;
+  top: calc(var(--space-14) - var(--space-2));
+  right: 0;
+  left: 0;
+  height: var(--space-5);
+  pointer-events: none;
+}
+
+.price-gauge-dot {
+  position: absolute;
+  width: var(--space-2);
+  height: var(--space-2);
+  transform: translateX(-50%);
+  border: 1px solid var(--ink-inverse);
+  border-radius: 50%;
+  background: var(--ink-primary);
+  opacity: 0.3;
+  pointer-events: auto;
+}
+
+.price-gauge-dot.is-current {
+  opacity: 1;
+}
+
+.price-gauge-point-popover {
+  position: absolute;
+  z-index: 20;
+  min-width: 180px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  background: var(--surface-1);
+  pointer-events: none;
+}
+
+.price-gauge-popover-title {
+  margin: 0 0 4px;
+  color: var(--ink-primary);
+  font-size: var(--text-body-size);
+  font-weight: var(--text-h3-weight);
+}
+
+.price-gauge-point-popover p {
+  margin: 2px 0;
+  color: var(--ink-secondary);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+}
+
+.price-gauge-current {
+  position: absolute;
+  top: calc(var(--space-14) - var(--space-3));
+  width: var(--space-4);
+  height: var(--space-4);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--ink-inverse);
+  border: 1px solid var(--signal-info);
+}
+
+.price-marker {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  min-width: var(--space-20);
+  text-align: center;
+  display: grid;
+  gap: var(--space-1);
+  color: var(--ink-primary);
+}
+
+.price-marker strong {
+  font-size: var(--text-body-size);
+}
+
+.price-marker span,
+.price-axis span {
+  font-size: var(--text-caption-size);
+  color: var(--ink-secondary);
+}
+
+.price-axis {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price-gauge-summary {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--text-caption-size);
+  font-weight: var(--text-h3-weight);
+}
+
+.price-marker::after {
+  content: '';
+  justify-self: center;
+  width: 1px;
+  height: var(--space-8);
+  background: var(--border-subtle);
+}
+
+.marker-shape {
+  display: inline-flex;
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-right: var(--space-1);
+  vertical-align: middle;
+}
+
+.marker-shape-safe {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: 50%;
+  background: var(--price-p15);
+}
+
+.marker-shape-watch {
+  width: var(--space-2);
+  height: var(--space-2);
+  border: 1px solid var(--price-p35);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.marker-shape-market {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid var(--price-p50);
+  border-top: 0;
+}

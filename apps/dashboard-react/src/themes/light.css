@@ -15,6 +15,8 @@
 
   --brand-600: #0066FF;
   --brand-500: #0066FF;
+  --accent: #0066FF;
+  --focus-ring: #0066FF;
   --brand-50: var(--surface-2);
   --brand-900: var(--ink-primary);
   --brand-tint: var(--surface-2);
@@ -24,6 +26,9 @@
   --signal-warn: #C8342B;
   --signal-danger: #C8342B;
   --signal-info: #0066FF;
+  --up: #0A7F3F;
+  --down: #C8342B;
+  --hair: #E5E5E2;
 
   --decision-buy: #0A7F3F;
   --decision-watch: #0066FF;
